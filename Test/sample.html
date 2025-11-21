@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>등록특허 제10-2835875호 시각화</title>
+    <style>
+        :root {
+            --primary-green: #2ecc71; /* 작물/농업 느낌 */
+            --point-red: #e74c3c; /* 딸기 포인트 */
+            --frame-color: #34495e;
+            --highlight-bg: rgba(46, 204, 113, 0.15);
+            --text-highlight: #27ae60;
+        }
+
+        body {
+            font-family: 'Pretendard', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background: #f4f6f7;
+            overflow: hidden;
+        }
+
+        /* [왼쪽] 도면 영역 */
+        .visual-section {
+            flex: 1.4;
+            background: #fff;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #ddd;
+        }
+
+        .figure-label {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        /* SVG 스타일 */
+        svg {
+            width: 85%;
+            height: auto;
+            max-height: 80vh;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+        }
+
+        .patent-part {
+            fill: none;
+            stroke: var(--frame-color);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* 부품별 디테일 스타일 */
+        .part-bed { fill: #ecf0f1; stroke-width: 2; } /* 베드 */
+        .part-pot { fill: #fff; stroke: var(--point-red); } /* 육묘포트 */
+        .part-lid { fill: none; stroke-width: 3; } /* 뚜껑 */
+
+        /* 활성화 효과 */
+        .patent-part.active {
+            stroke: var(--primary-green);
+            stroke-width: 4;
+            filter: drop-shadow(0 0 8px var(--primary-green));
+        }
+        
+        .part-bed.active { fill: var(--highlight-bg); }
+        .part-pot.active { fill: #ffcdd2; stroke: #c0392b; }
+
+        /* 지시선 텍스트 */
+        .ref-text {
+            font-size: 12px;
+            font-family: monospace;
+            fill: #7f8c8d;
+            font-weight: bold;
+            opacity: 0.6;
+        }
+        .ref-text.active {
+            fill: var(--primary-green);
+            opacity: 1;
+            font-size: 14px;
+        }
+
+        /* [오른쪽] 명세서 영역 */
+        .text-section {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: #fdfdfd;
+        }
+
+        h2 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .patent-info { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 30px; }
+
+        .claim-text {
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: #34495e;
+        }
+
+        /* 상호작용 텍스트 */
+        .interactive {
+            cursor: pointer;
+            border-bottom: 2px dashed #bdc3c7;
+            padding: 0 2px;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .interactive:hover, .interactive.active {
+            background: var(--primary-green);
+            color: white;
+            border-radius: 4px;
+            border-bottom: none;
+        }
+
+        /* 툴팁 박스 (마우스 오버 시 설명) */
+        .tooltip {
+            position: absolute;
+            bottom: 30px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="visual-section">
+        <div class="figure-label">FIG. 4 (단면도 기반 재구성)</div>
+        
+        <svg viewBox="0 0 500 600">
+            <path id="part-111" class="patent-part" d="M 150 600 L 150 350 M 350 600 L 350 350" />
+            <text x="130" y="500" class="ref-text">111</text>
+
+            <path id="part-112" class="patent-part part-bed" d="M 130 250 L 160 350 L 340 350 L 370 250" />
+            <text x="240" y="330" class="ref-text">112</text>
+
+            <path id="part-121" class="patent-part" d="M 140 450 L 140 300 M 360 450 L 360 300" />
+            <text x="110" y="400" class="ref-text">121</text>
+
+            <path id="part-122" class="patent-part" d="M 140 300 C 80 300, 80 200, 140 200 M 360 300 C 420 300, 420 200, 360 200" />
+            <text x="60" y="250" class="ref-text">122 (호형)</text>
+
+            <path id="part-123" class="patent-part" d="M 140 200 L 140 100 M 360 200 L 360 100" />
+            <text x="110" y="150" class="ref-text">123</text>
+
+            <g id="part-A">
+                <rect x="150" y="105" width="40" height="40" class="patent-part part-pot" />
+                <rect x="200" y="105" width="40" height="40" class="patent-part part-pot" />
+                <rect x="250" y="105" width="40" height="40" class="patent-part part-pot" />
+                <rect x="300" y="105" width="40" height="40" class="patent-part part-pot" />
+            </g>
+            <text x="240" y="130" class="ref-text">A (육묘포트)</text>
+
+            <path id="part-130" class="patent-part part-lid" d="M 120 100 Q 250 50 380 100" />
+            <path id="part-132" class="patent-part" d="M 250 75 L 250 85" stroke-width="1" /> <text x="240" y="60" class="ref-text">130</text>
+        </svg>
+        
+        <div class="tooltip" id="visual-tooltip">부품에 마우스를 올려보세요</div>
+    </div>
+
+    <div class="text-section">
+        <h2>고설재배용 딸기 육묘장치</h2>
+        <div class="patent-info">
+            등록번호: 10-2835875 | 특허권자: 김근섭, 김옥형
+        </div>
+
+        <div class="claim-text">
+            <strong>[청구항 1]</strong><br><br>
+            지면으로부터 수직방향으로 형성되는 다수의 
+            <span class="interactive" data-target="part-111">지주프레임(111)</span>과, 
+            상기 지주프레임의 상부에 안착되는 
+            <span class="interactive" data-target="part-112">베드(112)</span>를 포함하는 
+            <span class="interactive" data-target="part-111,part-112">고설재배부(110)</span>;<br><br>
+
+            상기 지주프레임의 상부 외측에 고정되는 
+            <span class="interactive" data-target="part-121">고정프레임(121)</span>과, 
+            <br>상기 고정프레임의 상단에 결합되고 
+            <strong>베드(112)에 간섭받지 아니하도록 외측으로 돌출형성되는</strong> 
+            <span class="interactive" data-target="part-122">호형프레임(122)</span>,<br> 
+            상기 호형프레임의 상부로 연장되고 내측에 
+            <span class="interactive" data-target="part-A">육묘포트(A)</span>를 걸어두기 위한 
+            <span class="interactive" data-target="part-123">수직프레임(123)</span>으로 이루어진 
+            <span class="interactive" data-target="part-121,part-122,part-123,part-A">육묘프레임부(120)</span>;<br><br>
+
+            상기 수직프레임(123)의 상단에 결합되는 완만한 곡선프레임으로 이루어진 
+            <span class="interactive" data-target="part-130,part-132">뚜껑프레임부(130)</span>;
+            를 포함하는 것을 특징으로 하는 고설재배용 딸기 육묘장치.
+        </div>
+    </div>
+
+    <script>
+        // 양방향 인터랙션 로직
+        const texts = document.querySelectorAll('.interactive');
+        const parts = document.querySelectorAll('.patent-part');
+        const tooltip = document.getElementById('visual-tooltip');
+
+        // 1. 텍스트 -> 도면 강조
+        texts.forEach(text => {
+            text.addEventListener('mouseenter', () => {
+                const targets = text.getAttribute('data-target').split(',');
+                targets.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) {
+                        el.classList.add('active');
+                        // SVG 내의 g 태그인 경우 자식들도 처리
+                        if(el.tagName === 'g') {
+                           Array.from(el.children).forEach(child => child.classList.add('active')); 
+                        }
+                    }
+                });
+                text.classList.add('active');
+                tooltip.style.opacity = '1';
+                tooltip.innerText = text.innerText + " 위치 확인";
+            });
+
+            text.addEventListener('mouseleave', () => {
+                const targets = text.getAttribute('data-target').split(',');
+                targets.forEach(id => {
+                     const el = document.getElementById(id);
+                     if(el) {
+                        el.classList.remove('active');
+                        if(el.tagName === 'g') {
+                           Array.from(el.children).forEach(child => child.classList.remove('active')); 
+                        }
+                     }
+                });
+                text.classList.remove('active');
+                tooltip.style.opacity = '0';
+            });
+        });
+
+        // 2. 도면 -> 텍스트 강조
+        parts.forEach(part => {
+            part.addEventListener('mouseenter', function() {
+                this.classList.add('active');
+                const id = this.id || this.parentElement.id; // 그룹(g) 처리
+                
+                // 해당 ID를 포함하는 모든 텍스트 하이라이트
+                const relatedTexts = document.querySelectorAll(`.interactive[data-target*="${id}"]`);
+                relatedTexts.forEach(t => t.classList.add('active'));
+                
+                tooltip.style.opacity = '1';
+                tooltip.innerText = "도면부호: " + id.replace('part-', '');
+            });
+
+            part.addEventListener('mouseleave', function() {
+                this.classList.remove('active');
+                const id = this.id || this.parentElement.id;
+                
+                const relatedTexts = document.querySelectorAll(`.interactive[data-target*="${id}"]`);
+                relatedTexts.forEach(t => t.classList.remove('active'));
+                tooltip.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>
