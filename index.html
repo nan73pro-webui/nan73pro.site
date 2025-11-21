@@ -31,13 +31,23 @@
                     </svg>
                     <span class="ml-2 text-xl font-bold text-gray-900">JH™Yoo@PATENT</span>
                 </div>
-                <button onclick="scrollToContact()" class="hidden md:flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                    무료 상담 신청
-                    <!-- ArrowRight Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
-                        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-                    </svg>
-                </button>
+                
+                <!-- 우측 버튼 그룹 (수정됨) -->
+                <div class="hidden md:flex items-center gap-3">
+                    <!-- 무료 상담 신청 버튼 -->
+                    <button onclick="scrollToContact()" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+                        무료 상담 신청
+                        <!-- ArrowRight Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+                            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                        </svg>
+                    </button>
+
+                    <!-- 샘플 버튼 (추가됨) -->
+                    <a href="https://nan73pro.site/PatentSearch" target="_blank" class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 no-underline">
+                        샘플
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
@@ -262,12 +272,13 @@
                         </a>
                         <p class="mt-3 text-xs text-gray-400 text-center">
                             상담은 100% 무료이며 비밀이 보장됩니다.
-                        </p>
+                        </p>                         
                     </div>
                 </div>
             </div>
-        </div>
     </section>
+        </div>
+
 
     <!-- Footer -->
     <footer class="bg-slate-950 text-gray-400 py-8 border-t border-slate-900">
