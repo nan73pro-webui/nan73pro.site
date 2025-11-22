@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>전기자동차 스마트 화재진압 시스템 - 디지털 특허 브로슈어</title>
+    <title>이안코리아 스마트 썬룸 시스템 - 디지털 특허 브로슈어</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,12 +27,13 @@
         }
         .animate-in { animation: fadeIn 0.5s ease-out forwards; }
 
-        /* 물 분사 애니메이션 */
-        @keyframes dropWater {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(100px); opacity: 0; }
+        /* 클램프 탄성 애니메이션 */
+        @keyframes snapAction {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.9); }
+            100% { transform: scale(1); }
         }
-        .water-drop { animation: dropWater 0.5s linear infinite; }
+        .snap-effect { animation: snapAction 0.3s ease-in-out; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -42,193 +43,209 @@
         const { useState, useEffect } = React;
 
         // --- Icons (Lucide React Style) ---
-        const ShieldCheck = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>;
-        const Droplets = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.8-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>;
-        const Flame = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>;
-        const Box = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>;
-        const ArrowDown = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>;
-        const Zap = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+        const Sun = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
+        const Hammer = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25V2.44c0-1.17-1.6-1.91-2.53-1.17L10 6.44c-.9.71-1.42 1.81-1.42 2.97V12c0 .85.33 1.65.93 2.25l1.25 1.25"/></svg>;
+        const Grid = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>;
+        const RefreshCw = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>;
+        const LockKeyhole = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>;
+        const CreditCard = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>;
+        const MoveVertical = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="8 18 12 22 16 18"/><polyline points="8 6 12 2 16 6"/><line x1="12" x2="12" y1="2" y2="22"/></svg>;
+        const Sparkles = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 5h4"/><path d="M3 9h4"/></svg>;
+        const ThumbsUp = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>;
+        const Clock = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+        const Palette = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>;
 
         // --- Main Component ---
-        const EVFireSystem = () => {
+        const IanSunroom = () => {
             const [activeTab, setActiveTab] = useState('overview');
             const [selectedPart, setSelectedPart] = useState(null);
-            const [isExtinguishing, setIsExtinguishing] = useState(false);
+            const [isInstalled, setIsInstalled] = useState(false);
+            const [isCardInserted, setIsCardInserted] = useState(false);
 
             // Patent Data
             const patentInfo = {
-                title: "전기자동차의 화재진압 장치",
-                englishTitle: "ELECTRIC VEHICLE FIRE SUPPRESSION SYSTEM",
-                summary: "전기차 화재 시 부스 상부에 저장된 대량의 소화수를 배터리(발화점)에 집중 낙하하여 1차 진압하고, 측면 소화관으로 2차 진압하는 부스형 방호 시스템.",
-                keywords: ["부스형 방호프레임", "상부 집중 낙하", "집수 프레임", "전동 셔터"]
+                title: "원터치 조립식 썬룸",
+                patentNumber: "10-2819310",
+                holder: "(주)이안코리아",
+                summary: "볼트 없이 클램프 탄성을 이용해 인테리어 패널을 원터치로 결합하고, 전용 카드로 손쉽게 분리하는 혁신적인 썬룸 시스템.",
+                keywords: ["무볼트 조립", "인테리어 패널", "탄성 클램프", "스마트 루프"]
             };
 
             const partsData = {
-                "110": {
-                    id: "110",
-                    name: "방호프레임 (Protection Booth)",
-                    desc: "화재 확산을 막고 진압 공간을 형성하는 부스형 구조물입니다.",
-                    detail: "알루미늄 광폭 마감재로 제작되어 내화/방염 성능이 우수하며, 바닥, 벽체, 천장으로 구성된 밀폐형 구조입니다."
+                "10": {
+                    id: "10",
+                    name: "지지바 (Support Bar)",
+                    desc: "썬룸 후면판에 수직으로 설치되는 뼈대입니다.",
+                    detail: "패널 설치의 기준이 되며, 전면에 클램프(20)가 장착됩니다."
                 },
-                "120": {
-                    id: "120",
-                    name: "전동셔터 (Auto Shutter)",
-                    desc: "화재 발생 시 자동으로 하강하여 부스를 밀폐합니다.",
-                    detail: "천장면과 셔터프레임(121) 사이에 위치하며, 외부 공기 유입을 차단하여 질식 효과를 돕고 화염 유출을 막습니다."
+                "20": {
+                    id: "20",
+                    name: "탄성 클램프 (Elastic Clamp)",
+                    desc: "패널을 잡아주는 핵심 부품입니다. (특허 핵심)",
+                    detail: "금속판을 절곡하여 탄성을 가짐. 가압판(23)과 돌출부(23b)가 패널의 고정공에 '딸깍' 끼워집니다."
                 },
-                "130": {
-                    id: "130",
-                    name: "집수프레임 (Water Tank Frame)",
-                    desc: "천장 하부에 설치된 소화수 저장 공간입니다.",
-                    detail: "중심부로 하향 경사진 구조로, 저장된 소화수(140)가 차량 중앙(배터리)으로 자연스럽게 모여 쏟아지도록 설계되었습니다."
+                "30": {
+                    id: "30",
+                    name: "인테리어 패널 (Interior Panel)",
+                    desc: "썬룸 내부를 마감하는 장식 패널입니다.",
+                    detail: "모퉁이에 고정판(32)이 있으며, 이곳의 구멍(고정공)이 클램프와 결합됩니다."
                 },
-                "131": {
-                    id: "131",
-                    name: "개폐관 (Drop Nozzles)",
-                    desc: "소화수를 차량 위로 쏟아붓는 낙하구입니다.",
-                    detail: "내부에 나사산(131b)이 형성되어 물을 넓게 흩날리며 낙하시키고, 차량의 전/중/후반부에 고루 배치됩니다."
+                "33": {
+                    id: "33",
+                    name: "해제용 장공 (Release Slot)",
+                    desc: "패널 분리를 위한 카드 삽입구입니다.",
+                    detail: "이곳에 카드(34)를 넣으면 클램프의 탄성판이 뒤로 밀리며 결합이 해제됩니다."
                 },
-                "112a": {
-                    id: "112a",
-                    name: "측면 소화관 (Side Sprayers)",
-                    desc: "1차 진압 실패 시 외부 소방용수를 공급받아 분사합니다.",
-                    detail: "기존 소방설비와 연결되어 지속적인 냉각수를 공급, 2차 진압을 수행합니다."
+                "50": {
+                    id: "50",
+                    name: "스마트 개폐 시스템",
+                    desc: "천정판 자동 개폐 및 처짐 방지 기술.",
+                    detail: "리드스크류와 실린더, 광센서를 연동하여 지붕이 처지지 않고 수평을 유지하며 열립니다."
                 }
             };
 
-            // --- Toggle Simulation ---
-            const toggleSimulation = () => {
-                setIsExtinguishing(!isExtinguishing);
+            // --- Actions ---
+            const toggleInstallation = () => {
+                if (isInstalled) {
+                    // 분리 시뮬레이션: 카드가 들어갔다가 패널이 빠짐
+                    setIsCardInserted(true);
+                    setTimeout(() => {
+                        setIsInstalled(false);
+                        setIsCardInserted(false);
+                    }, 800);
+                } else {
+                    // 설치 시뮬레이션
+                    setIsInstalled(true);
+                }
             };
 
             // --- Schematic Diagram SVG ---
             const SchematicDiagram = () => {
                 return (
-                    <div className="relative w-full h-96 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex items-center justify-center shadow-2xl">
+                    <div className="relative w-full h-96 bg-slate-100 rounded-xl border border-slate-200 overflow-hidden flex items-center justify-center shadow-inner">
                         {/* Title Badge */}
-                        <div className="absolute top-4 left-4 z-10 bg-white/10 backdrop-blur px-3 py-1 rounded text-xs text-white font-mono">
-                            FIG. 2 Cross-Section View
+                        <div className="absolute top-4 left-4 z-10 bg-white/80 backdrop-blur px-3 py-1 rounded text-xs text-slate-600 font-mono border border-slate-200">
+                            FIG. 15 Cross-Section View (Mechanism)
                         </div>
 
-                        {/* Simulation Control */}
+                        {/* Control Button */}
                         <button 
-                            onClick={(e) => { e.stopPropagation(); toggleSimulation(); }}
-                            className={`absolute top-4 right-4 z-20 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 shadow-lg transition-all ${isExtinguishing ? 'bg-red-600 text-white animate-pulse' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
+                            onClick={(e) => { e.stopPropagation(); toggleInstallation(); }}
+                            className={`absolute bottom-6 right-6 z-20 px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg transition-all ${isInstalled ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-green-600 text-white hover:bg-green-500'}`}
                         >
-                            {isExtinguishing ? <><Flame size={14}/> 진압 중 (Reset)</> : <><Droplets size={14}/> 화재 진압 시뮬레이션</>}
+                            {isInstalled ? <><CreditCard size={16}/> 카드 삽입하여 분리</> : <><Hammer size={16}/> 원터치 설치 (Click)</>}
                         </button>
 
                         <svg viewBox="0 0 500 400" className="w-full h-full max-w-lg">
                             <defs>
-                                <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
-                                    <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.9" />
-                                </linearGradient>
+                                <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+                                    <feOffset dx="2" dy="2" result="offsetblur"/>
+                                    <feComponentTransfer>
+                                        <feFuncA type="linear" slope="0.3"/>
+                                    </feComponentTransfer>
+                                    <feMerge> 
+                                        <feMergeNode/>
+                                        <feMergeNode in="SourceGraphic"/> 
+                                    </feMerge>
+                                </filter>
                             </defs>
 
-                            {/* 110: Frame (Floor & Walls) */}
-                            <g onClick={() => setSelectedPart(partsData["110"])} className="cursor-pointer hover:opacity-80 transition-opacity">
-                                <rect x="50" y="350" width="400" height="20" fill="#475569" /> {/* Floor */}
-                                <rect x="50" y="50" width="20" height="300" fill="#64748b" />   {/* Left Wall */}
-                                <rect x="430" y="50" width="20" height="300" fill="#64748b" />  {/* Right Wall */}
-                                <rect x="50" y="30" width="400" height="20" fill="#475569" />  {/* Ceiling */}
-                                <text x="60" y="375" className="text-[10px] fill-slate-400 font-bold">110. 방호프레임</text>
+                            {/* 3. Back Wall (Base) */}
+                            <rect x="50" y="50" width="400" height="300" fill="#f1f5f9" />
+                            
+                            {/* 10. Support Bar (Vertical) */}
+                            <g onClick={() => setSelectedPart(partsData["10"])} className="cursor-pointer">
+                                <rect x="235" y="50" width="30" height="300" fill="#cbd5e1" stroke="#94a3b8" />
+                                <text x="250" y="80" textAnchor="middle" className="text-[10px] fill-slate-500 font-bold">10. 지지바</text>
                             </g>
 
-                            {/* 120: Shutter (Partially down for visual) */}
-                            <g onClick={() => setSelectedPart(partsData["120"])} className="cursor-pointer hover:opacity-80 transition-opacity">
-                                <rect x="70" y="50" width="360" height="15" fill="#94a3b8" /> {/* Shutter Box */}
-                                <line x1="250" y1="65" x2="250" y2={isExtinguishing ? 350 : 100} stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4" className="transition-all duration-1000" />
-                                <rect x="70" y="65" width="360" height={isExtinguishing ? 285 : 30} fill="#94a3b8" fillOpacity="0.3" stroke="#cbd5e1" strokeWidth="1" className="transition-all duration-1000"/>
-                            </g>
-
-                            {/* 130: Water Tank (Slanted V Shape) */}
-                            <g onClick={() => setSelectedPart(partsData["130"])} className="cursor-pointer hover:opacity-80 transition-opacity">
-                                {/* Tank Structure */}
-                                <path d="M70 80 L430 80 L430 100 L250 140 L70 100 Z" fill="#1e293b" stroke="#334155" strokeWidth="2" />
-                                {/* Water Inside */}
-                                <path d="M75 85 L425 85 L425 95 L250 135 L75 95 Z" fill="url(#waterGrad)" className={`transition-all duration-1000 ${isExtinguishing ? 'opacity-0 translate-y-10' : 'opacity-100'}`} />
-                                <text x="250" y="90" textAnchor="middle" className="text-[10px] fill-white font-bold">130. 집수프레임 (소화수 저장)</text>
-                            </g>
-
-                            {/* Car (EV) */}
-                            <g transform="translate(150, 270)">
-                                <path d="M0 50 L10 30 L40 20 L120 20 L160 30 L180 50 L180 70 L0 70 Z" fill="#ef4444" />
-                                <circle cx="30" cy="70" r="12" fill="#111" />
-                                <circle cx="150" cy="70" r="12" fill="#111" />
-                                <rect x="40" y="65" width="100" height="10" fill="#fbbf24" /> {/* Battery Pack */}
-                                <text x="90" y="60" textAnchor="middle" className="text-[8px] fill-white font-bold">EV (Battery)</text>
+                            {/* 20. Clamp (Elastic Clip) */}
+                            <g onClick={() => setSelectedPart(partsData["20"])} className="cursor-pointer">
+                                {/* Base attached to bar */}
+                                <rect x="230" y="180" width="40" height="40" fill="#64748b" rx="2" />
                                 
-                                {/* Fire Effect */}
-                                {isExtinguishing && (
-                                    <g className="animate-pulse">
-                                        <path d="M70 20 Q90 0 110 20" fill="none" stroke="orange" strokeWidth="3" />
-                                        <path d="M80 15 Q90 -5 100 15" fill="none" stroke="yellow" strokeWidth="2" />
-                                    </g>
-                                )}
+                                {/* Elastic Arms (V shape) - Animated */}
+                                <path 
+                                    d={isInstalled && !isCardInserted ? "M230 190 L210 170 M270 190 L290 170" : "M230 190 L220 175 M270 190 L280 175"} 
+                                    stroke="#334155" strokeWidth="4" fill="none"
+                                    className="transition-all duration-300"
+                                />
+                                {/* Locking Protrusion */}
+                                <circle cx="220" cy="175" r="3" fill="#ef4444" className={isInstalled ? "opacity-100" : "opacity-50"} />
+                                <circle cx="280" cy="175" r="3" fill="#ef4444" className={isInstalled ? "opacity-100" : "opacity-50"} />
+                                
+                                <text x="250" y="210" textAnchor="middle" className="text-[10px] fill-white font-bold">20. 클램프</text>
                             </g>
 
-                            {/* 131: Drop Nozzles & Water Action */}
-                            <g onClick={() => setSelectedPart(partsData["131"])}>
-                                <rect x="240" y="140" width="20" height="10" fill="#64748b" />
-                                {isExtinguishing && (
-                                    <>
-                                        {/* Main Drop */}
-                                        <line x1="250" y1="150" x2="250" y2="340" stroke="#60a5fa" strokeWidth="10" strokeLinecap="round" strokeDasharray="10 5" className="water-drop" style={{animationDuration: '0.3s'}} />
-                                        <line x1="240" y1="150" x2="230" y2="340" stroke="#93c5fd" strokeWidth="2" strokeDasharray="4" className="water-drop" style={{animationDelay: '0.1s'}} />
-                                        <line x1="260" y1="150" x2="270" y2="340" stroke="#93c5fd" strokeWidth="2" strokeDasharray="4" className="water-drop" style={{animationDelay: '0.2s'}} />
-                                        
-                                        {/* Splash on Car */}
-                                        <circle cx="240" cy="330" r="20" fill="#60a5fa" fillOpacity="0.5" className="animate-ping" />
-                                    </>
-                                )}
+                            {/* 30. Interior Panel - Moving Part */}
+                            <g 
+                                transform={isInstalled ? "translate(0, 0)" : "translate(0, 80)"} 
+                                className="transition-transform duration-500 ease-out"
+                                onClick={() => setSelectedPart(partsData["30"])}
+                            >
+                                {/* Panel Body */}
+                                <rect x="100" y="150" width="130" height="100" fill="#fcd34d" stroke="#d97706" strokeWidth="2" filter="url(#dropShadow)" />
+                                <rect x="270" y="150" width="130" height="100" fill="#fcd34d" stroke="#d97706" strokeWidth="2" filter="url(#dropShadow)" />
+                                
+                                {/* 32. Fixing Plate (Hooks) */}
+                                <path d="M230 160 L230 240 L220 240 L220 160 Z" fill="#94a3b8" /> {/* Left Hook */}
+                                <path d="M270 160 L270 240 L280 240 L280 160 Z" fill="#94a3b8" /> {/* Right Hook */}
+
+                                {/* 32b. Fixing Hole (Visual representation where clamp locks) */}
+                                <circle cx="225" cy="175" r="4" fill="white" stroke="black" strokeWidth="1" />
+                                <circle cx="275" cy="175" r="4" fill="white" stroke="black" strokeWidth="1" />
+
+                                {/* 33. Release Slot */}
+                                <rect x="225" y="200" width="2" height="20" fill="#333" />
+                                <rect x="273" y="200" width="2" height="20" fill="#333" />
+
+                                <text x="165" y="200" textAnchor="middle" className="text-sm fill-amber-900 font-bold">30. 패널(좌)</text>
+                                <text x="335" y="200" textAnchor="middle" className="text-sm fill-amber-900 font-bold">30. 패널(우)</text>
                             </g>
 
-                            {/* 112a: Side Sprayers */}
-                            <g onClick={() => setSelectedPart(partsData["112a"])}>
-                                <rect x="65" y="200" width="10" height="10" fill="#ef4444" />
-                                <rect x="425" y="200" width="10" height="10" fill="#ef4444" />
-                                {isExtinguishing && (
-                                    <>
-                                        <line x1="75" y1="205" x2="150" y2="280" stroke="#93c5fd" strokeWidth="2" strokeDasharray="2" />
-                                        <line x1="425" y1="205" x2="350" y2="280" stroke="#93c5fd" strokeWidth="2" strokeDasharray="2" />
-                                    </>
-                                )}
+                            {/* 34. Removal Card (Animated) */}
+                            <g 
+                                transform={isCardInserted ? "translate(0, -40)" : "translate(0, 0)"}
+                                className={`transition-transform duration-300 ${isCardInserted ? 'opacity-100' : 'opacity-0'}`}
+                            >
+                                <rect x="223" y="240" width="6" height="40" fill="#3b82f6" rx="1" />
+                                <rect x="271" y="240" width="6" height="40" fill="#3b82f6" rx="1" />
+                                <text x="250" y="290" textAnchor="middle" className="text-xs fill-blue-600 font-bold">Card Inserting...</text>
                             </g>
 
-                            {/* Selection Indicator */}
-                            {selectedPart && selectedPart.id === "110" && <rect x="45" y="25" width="410" height="350" fill="none" stroke="#ef4444" strokeWidth="3" strokeDasharray="5" className="animate-pulse"/>}
-                            {selectedPart && selectedPart.id === "130" && <circle cx="250" cy="110" r="30" fill="none" stroke="#ef4444" strokeWidth="3" className="animate-ping"/>}
-
+                            {/* Selection Highlighting */}
+                            {selectedPart && selectedPart.id === "20" && (
+                                <circle cx="250" cy="200" r="30" fill="none" stroke="#ef4444" strokeWidth="2" className="animate-ping" />
+                            )}
                         </svg>
                         
                         <div className="absolute bottom-4 left-4 text-slate-400 text-xs">
-                            * 도면 1,2를 개념적으로 재구성함. 클릭하여 부품 확인.
+                            * 도면 5, 9, 15를 기반으로 재구성된 구조도입니다.
                         </div>
                     </div>
                 );
             };
 
             return (
-                <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-20">
+                <div className="min-h-screen bg-amber-50/30 font-sans text-slate-800 pb-20">
                     {/* Header */}
-                    <header className="bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-xl border-b-4 border-red-600">
+                    <header className="bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xl border-b-4 border-amber-700">
                         <div className="max-w-6xl mx-auto px-4 py-10">
                             <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
                                 <div>
                                     <div className="flex items-center gap-2 mb-2">
-                                        <span className="bg-red-600 text-white px-2 py-0.5 rounded text-xs font-bold animate-pulse">FIRE SAFETY</span>
-                                        <span className="text-slate-400 text-xs">Registered Patent</span>
+                                        <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-bold backdrop-blur-sm">등록특허 {patentInfo.patentNumber}</span>
+                                        <span className="text-amber-100 text-xs flex items-center gap-1"><Sun size={12}/> {patentInfo.holder}</span>
                                     </div>
                                     <h1 className="text-3xl md:text-4xl font-bold mb-2">{patentInfo.title}</h1>
-                                    <h2 className="text-sm text-slate-400 font-mono mb-4">{patentInfo.englishTitle}</h2>
-                                    <p className="text-slate-300 max-w-2xl leading-relaxed">
+                                    <p className="text-amber-100 max-w-2xl leading-relaxed text-sm md:text-base">
                                         {patentInfo.summary}
                                     </p>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex flex-wrap gap-2">
                                     {patentInfo.keywords.map((kw, i) => (
-                                        <span key={i} className="px-3 py-1 bg-white/10 rounded-full text-xs border border-white/20">#{kw}</span>
+                                        <span key={i} className="px-3 py-1 bg-black/10 rounded-full text-xs border border-white/10 backdrop-blur-md">#{kw}</span>
                                     ))}
                                 </div>
                             </div>
@@ -236,26 +253,32 @@
                     </header>
 
                     {/* Navigation */}
-                    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm">
+                    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-amber-100 shadow-sm">
                         <div className="max-w-6xl mx-auto px-4">
-                            <nav className="flex space-x-8">
+                            <nav className="flex space-x-8 overflow-x-auto">
                                 <button 
                                     onClick={() => setActiveTab('overview')}
-                                    className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'overview' ? 'border-red-600 text-red-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                                    className={`py-4 text-sm font-bold border-b-2 whitespace-nowrap transition-colors ${activeTab === 'overview' ? 'border-amber-600 text-amber-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
                                 >
-                                    시스템 개요
+                                    기술 개요
                                 </button>
                                 <button 
                                     onClick={() => setActiveTab('structure')}
-                                    className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'structure' ? 'border-red-600 text-red-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                                    className={`py-4 text-sm font-bold border-b-2 whitespace-nowrap transition-colors ${activeTab === 'structure' ? 'border-amber-600 text-amber-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
                                 >
-                                    구조도 & 시뮬레이션
+                                    결합 구조 (원터치)
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('smart')}
+                                    className={`py-4 text-sm font-bold border-b-2 whitespace-nowrap transition-colors ${activeTab === 'smart' ? 'border-amber-600 text-amber-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                                >
+                                    스마트 루프
                                 </button>
                                 <button 
                                     onClick={() => setActiveTab('effect')}
-                                    className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'effect' ? 'border-red-600 text-red-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                                    className={`py-4 text-sm font-bold border-b-2 whitespace-nowrap transition-colors ${activeTab === 'effect' ? 'border-amber-600 text-amber-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
                                 >
-                                    작동 원리 및 효과
+                                    기대효과
                                 </button>
                             </nav>
                         </div>
@@ -268,66 +291,57 @@
                         {activeTab === 'overview' && (
                             <div className="grid md:grid-cols-2 gap-8">
                                 <div className="space-y-6">
-                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                                         <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-                                            <Flame className="text-red-500" /> 기존 문제점
+                                            <RefreshCw className="text-slate-400" /> 기존 방식의 문제점
                                         </h3>
                                         <ul className="space-y-3 text-slate-600">
                                             <li className="flex gap-3 items-start">
                                                 <span className="text-red-500 font-bold mt-1">×</span>
-                                                <span>스프링클러로는 배터리 열폭주 진압 불가 (냉각 한계)</span>
+                                                <span>후면판에 볼트로 고정하여 설치 시간이 오래 걸림</span>
                                             </li>
                                             <li className="flex gap-3 items-start">
                                                 <span className="text-red-500 font-bold mt-1">×</span>
-                                                <span>기존 수조 방식은 하부부터 채워져 초기 대응 늦음</span>
+                                                <span>인테리어 교체 시 해체가 매우 번거로움</span>
                                             </li>
                                             <li className="flex gap-3 items-start">
                                                 <span className="text-red-500 font-bold mt-1">×</span>
-                                                <span>화재 발생 지점(배터리)에 물을 집중 투하하기 어려움</span>
+                                                <span>외부에 나사 자국이 보여 미관상 좋지 않음</span>
                                             </li>
                                         </ul>
                                     </div>
                                     
-                                    <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                                        <h3 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
-                                            <ShieldCheck className="text-blue-600" /> 본 발명의 솔루션
+                                    <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100">
+                                        <h3 className="text-xl font-bold text-amber-800 mb-4 flex items-center gap-2">
+                                            <Hammer className="text-amber-600" /> 이안코리아 솔루션
                                         </h3>
-                                        <ul className="space-y-3 text-blue-800">
+                                        <ul className="space-y-3 text-amber-900">
                                             <li className="flex gap-3 items-start">
-                                                <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">1</span>
-                                                <span><strong>Top-Down 방식:</strong> 차량 상부의 집수프레임에서 소화수를 즉시 낙하</span>
+                                                <span className="bg-amber-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">1</span>
+                                                <span><strong>Snap-Fit 결합:</strong> 탄성 클램프를 이용해 밀어 넣으면 '딸깍' 고정</span>
                                             </li>
                                             <li className="flex gap-3 items-start">
-                                                <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">2</span>
-                                                <span><strong>집중 타격:</strong> 중심부로 경사진 구조로 발화점(배터리) 집중 냉각</span>
+                                                <span className="bg-amber-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">2</span>
+                                                <span><strong>간편한 분리:</strong> 전용 카드를 틈새(장공)에 끼우면 즉시 분리 가능</span>
                                             </li>
                                             <li className="flex gap-3 items-start">
-                                                <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">3</span>
-                                                <span><strong>부스형 밀폐:</strong> 전동셔터로 산소 차단 및 화염 확산 방지</span>
+                                                <span className="bg-amber-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">3</span>
+                                                <span><strong>매끈한 마감:</strong> 볼트 자국 없는 깔끔한 인테리어 완성</span>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 
-                                <div className="bg-slate-800 text-white p-8 rounded-2xl shadow-lg flex flex-col justify-center relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-red-600 rounded-full filter blur-3xl opacity-20"></div>
-                                    <h2 className="text-2xl font-bold mb-6 z-10">Why This System?</h2>
-                                    <p className="text-slate-300 leading-relaxed mb-6 z-10">
-                                        전기차 화재의 특성상 <strong>'초기 대량 냉각'</strong>이 필수적입니다. 
-                                        본 발명은 주차 공간 자체를 <strong>하나의 소화기</strong>처럼 만들어, 
-                                        화재 감지 즉시 상부에 저장된 물을 폭포수처럼 쏟아붓는 
-                                        혁신적인 시스템입니다.
-                                    </p>
-                                    <div className="grid grid-cols-2 gap-4 z-10">
-                                        <div className="bg-white/10 p-4 rounded-lg text-center">
-                                            <div className="text-2xl font-bold text-red-400">1300℃</div>
-                                            <div className="text-xs text-slate-400">내열 설계 (알루미늄)</div>
-                                        </div>
-                                        <div className="bg-white/10 p-4 rounded-lg text-center">
-                                            <div className="text-2xl font-bold text-blue-400">2-Way</div>
-                                            <div className="text-xs text-slate-400">상부낙하 + 측면분사</div>
-                                        </div>
+                                <div className="bg-white p-8 rounded-2xl shadow-lg flex flex-col justify-center items-center text-center border border-slate-200">
+                                    <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6 text-orange-500">
+                                        <Grid size={48} />
                                     </div>
+                                    <h2 className="text-2xl font-bold mb-4 text-slate-800">"인테리어를 10분 만에"</h2>
+                                    <p className="text-slate-500 leading-relaxed mb-6">
+                                        계절마다, 기분마다 바꾸고 싶은 썬룸 인테리어.<br/>
+                                        이제 전문가 없이도 누구나 쉽게 패널을 교체할 수 있습니다.<br/>
+                                        <span className="text-orange-600 font-bold">특허받은 클램프 기술</span>이 공간의 가치를 높입니다.
+                                    </p>
                                 </div>
                             </div>
                         )}
@@ -338,18 +352,18 @@
                                 {/* Left: List */}
                                 <div className="lg:col-span-1 space-y-4">
                                     <h3 className="font-bold text-slate-700 flex items-center gap-2">
-                                        <Box size={20}/> 주요 구성요소
+                                        <LockKeyhole size={20} className="text-amber-600"/> 핵심 구성요소
                                     </h3>
                                     <div className="space-y-2">
-                                        {Object.values(partsData).map((part) => (
+                                        {Object.values(partsData).filter(p => ['10','20','30','33'].includes(p.id)).map((part) => (
                                             <button
                                                 key={part.id}
                                                 onClick={() => setSelectedPart(part)}
-                                                className={`w-full text-left p-4 rounded-xl border transition-all ${selectedPart?.id === part.id ? 'border-red-500 bg-red-50 ring-1 ring-red-500' : 'border-slate-200 hover:bg-white bg-slate-50'}`}
+                                                className={`w-full text-left p-4 rounded-xl border transition-all ${selectedPart?.id === part.id ? 'border-amber-500 bg-amber-50 ring-1 ring-amber-500' : 'border-slate-200 hover:bg-white bg-white'}`}
                                             >
                                                 <div className="flex justify-between items-center mb-1">
                                                     <span className="font-bold text-slate-800">{part.name}</span>
-                                                    <span className="text-xs bg-slate-200 px-2 py-0.5 rounded text-slate-500">{part.id}</span>
+                                                    <span className="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-500">{part.id}</span>
                                                 </div>
                                                 <p className="text-xs text-slate-500 truncate">{part.desc}</p>
                                             </button>
@@ -358,13 +372,13 @@
                                     
                                     {selectedPart && (
                                         <div className="mt-4 p-4 bg-slate-800 text-white rounded-xl animate-in">
-                                            <strong className="block text-red-400 mb-2">{selectedPart.name} 상세</strong>
+                                            <strong className="block text-amber-400 mb-2">{selectedPart.name} 상세</strong>
                                             <p className="text-sm text-slate-300 leading-relaxed">{selectedPart.detail}</p>
                                         </div>
                                     )}
                                 </div>
 
-                                {/* Right: SVG */}
+                                {/* Right: SVG Simulation */}
                                 <div className="lg:col-span-2">
                                     <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 h-full">
                                         <SchematicDiagram />
@@ -373,42 +387,84 @@
                             </div>
                         )}
 
-                        {/* TAB: MECHANISM */}
-                        {activeTab === 'effect' && (
+                        {/* TAB: SMART ROOF */}
+                        {activeTab === 'smart' && (
                             <div className="space-y-8">
-                                <div className="grid md:grid-cols-3 gap-6">
-                                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 bg-slate-100 px-3 py-1 rounded-bl-xl text-xs font-bold text-slate-500">Step 1</div>
-                                        <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4">
-                                            <Flame />
+                                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="bg-blue-100 p-3 rounded-full text-blue-600">
+                                            <MoveVertical size={24} />
                                         </div>
-                                        <h3 className="font-bold text-lg mb-2">화재 감지 및 밀폐</h3>
-                                        <p className="text-sm text-slate-600">바닥면 열감지센서(113b)가 화재를 감지하면 전동셔터(120)가 즉시 하강하여 부스를 밀폐, 화염 확산을 차단합니다.</p>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-slate-800">스마트 루프 개폐 시스템 (실시예 3)</h3>
+                                            <p className="text-sm text-slate-500">천장 처짐 방지 및 자동 수평 제어 기술</p>
+                                        </div>
                                     </div>
 
-                                    <div className="bg-white p-6 rounded-2xl border-2 border-blue-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                                         <div className="absolute top-0 right-0 bg-blue-100 px-3 py-1 rounded-bl-xl text-xs font-bold text-blue-600">Step 2 (Core)</div>
-                                        <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
-                                            <ArrowDown />
+                                    <div className="grid md:grid-cols-3 gap-6">
+                                        <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                                            <h4 className="font-bold text-slate-700 mb-2">1. 광센서 감지</h4>
+                                            <p className="text-sm text-slate-600">
+                                                천장(4)과 전면판(2)에 발광수단(70)과 수광센서(80)가 마주보고 있어, 
+                                                지붕이 이동할 때 빛의 위치를 실시간으로 감지합니다.
+                                            </p>
                                         </div>
-                                        <h3 className="font-bold text-lg mb-2">소화수 집중 낙하</h3>
-                                        <p className="text-sm text-slate-600">천장의 개폐관(131)이 열리며 저장된 소화수(140)가 쏟아집니다. 나사산 구조가 물을 흩날리게 하여 배터리 열폭주를 제어합니다.</p>
+                                        <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                                            <h4 className="font-bold text-slate-700 mb-2">2. 처짐/들림 판단</h4>
+                                            <p className="text-sm text-slate-600">
+                                                지붕이 뒤로 밀릴 때 무게로 인해 처지거나 들리면, 
+                                                센서가 이를 즉시 감지하여 제어부(90)에 신호를 보냅니다.
+                                            </p>
+                                        </div>
+                                        <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                                            <h4 className="font-bold text-slate-700 mb-2">3. 실린더 자동 보정</h4>
+                                            <p className="text-sm text-slate-600">
+                                                후면의 실린더기구(60)가 자동으로 신축하여 
+                                                지붕의 높이를 보정, 항상 완벽한 수평 상태로 부드럽게 열립니다.
+                                            </p>
+                                        </div>
                                     </div>
-
-                                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                                         <div className="absolute top-0 right-0 bg-slate-100 px-3 py-1 rounded-bl-xl text-xs font-bold text-slate-500">Step 3</div>
-                                        <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-4">
-                                            <Zap />
-                                        </div>
-                                        <h3 className="font-bold text-lg mb-2">2차 지속 진압</h3>
-                                        <p className="text-sm text-slate-600">1차 낙하 후, 측면 소화관(112a)이 외부 소방설비와 연결되어 지속적으로 물을 분사, 완전 진압을 수행합니다.</p>
+                                    
+                                    <div className="mt-6 p-4 bg-blue-50 rounded-lg text-center text-blue-800 text-sm font-medium border border-blue-100">
+                                        "무거운 천장판이 레일에서 이탈하거나 손상되는 것을 원천적으로 방지합니다."
                                     </div>
                                 </div>
+                            </div>
+                        )}
 
-                                <div className="bg-slate-100 p-6 rounded-2xl text-center">
-                                    <p className="text-slate-600 font-medium">
-                                        "본 발명은 단순한 주차 공간이 아닌, <span className="text-red-600 font-bold">즉각적인 재난 대응 시스템</span>입니다."
-                                    </p>
+                        {/* TAB: EXPECTED EFFECTS (New) */}
+                        {activeTab === 'effect' && (
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in">
+                                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all">
+                                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-4">
+                                        <ThumbsUp size={24} />
+                                    </div>
+                                    <h3 className="font-bold text-slate-800 mb-2">설치 편의성 극대화</h3>
+                                    <p className="text-sm text-slate-600">볼트 조립 없이 '딸깍' 끼우는 방식(Snap-fit)으로 전문가 없이도 누구나 손쉽게 설치 및 분리가 가능합니다.</p>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all">
+                                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mb-4">
+                                        <Palette size={24} />
+                                    </div>
+                                    <h3 className="font-bold text-slate-800 mb-2">심미적 완성도</h3>
+                                    <p className="text-sm text-slate-600">패널 전면에 나사 자국이나 구멍이 노출되지 않아 깔끔하고 고급스러운 인테리어 마감을 제공합니다.</p>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all">
+                                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-4">
+                                        <Sparkles size={24} />
+                                    </div>
+                                    <h3 className="font-bold text-slate-800 mb-2">구조적 안정성</h3>
+                                    <p className="text-sm text-slate-600">스마트 센서와 실린더가 지붕의 처짐을 실시간 보정하여, 장기간 사용에도 레일 이탈이나 파손을 방지합니다.</p>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all">
+                                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mb-4">
+                                        <Clock size={24} />
+                                    </div>
+                                    <h3 className="font-bold text-slate-800 mb-2">유지보수 효율성</h3>
+                                    <p className="text-sm text-slate-600">전용 카드로 간단히 패널을 분리할 수 있어, 파손 시 교체나 계절에 따른 인테리어 변경이 매우 자유롭습니다.</p>
                                 </div>
                             </div>
                         )}
@@ -417,7 +473,7 @@
                     {/* Footer */}
                     <footer className="bg-slate-900 text-slate-400 py-10 mt-12 text-center text-sm">
                         <div className="max-w-6xl mx-auto px-4">
-                            <p className="mb-2">본 브로슈어는 '전기자동차의 화재진압 장치' 특허 명세서를 기반으로 제작된 디지털 자료입니다.</p>
+                            <p className="mb-2">본 브로슈어는 '이안코리아 썬룸' 특허 명세서(10-2819310)를 기반으로 제작된 디지털 자료입니다.</p>
                             <p>&copy; 2025 Patent Visualization Assistant.</p>
                         </div>
                     </footer>
@@ -426,7 +482,7 @@
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<EVFireSystem />);
+        root.render(<IanSunroom />);
     </script>
 </body>
 </html>
