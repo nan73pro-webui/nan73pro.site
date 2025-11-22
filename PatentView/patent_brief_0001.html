@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고설재배용 딸기 육묘장치 - 디지털 특허 브로슈어</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* 폰트 설정 (Noto Sans KR) */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        
+        /* 커스텀 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- Icons (Lucide React 아이콘을 SVG 컴포넌트로 직접 구현) ---
+        const Info = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
+        const Layers = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>;
+        const Sprout = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.2.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>;
+        const ShieldCheck = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>;
+        const Maximize = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>;
+        const ArrowUp = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>;
+        const BookOpen = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>;
+        const Settings = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>;
+        const Sun = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
+        const CloudRain = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>;
+
+        // --- Main Component ---
+        const StrawberrySystem = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+            const [selectedPart, setSelectedPart] = useState(null);
+
+            // Patent Data
+            const patentInfo = {
+                title: "고설재배용 딸기 육묘장치",
+                patentNumber: "10-2835875",
+                patentHolder: "김근섭, 김옥형",
+                summary: "기존 베드의 측면이 아닌 '상부'공간을 활용하여 딸기 육묘를 재배하는 장치. 공간 활용도를 높이고 공기 순환을 원활하게 하여 병충해를 예방함.",
+            };
+
+            const partsData = {
+                "110": {
+                    id: "110",
+                    name: "고설재배부 (Cultivation Unit)",
+                    desc: "기존의 딸기 재배 시설입니다. 지면에서 띄워진 베드와 이를 지지하는 지주로 구성됩니다.",
+                    detail: "지주프레임(111)과 베드(112)로 구성되어 작물이 심어지는 기본 바디입니다."
+                },
+                "120": {
+                    id: "120",
+                    name: "육묘프레임부 (Seedling Frame)",
+                    desc: "본 발명의 핵심 지지 구조입니다. 베드를 피해 밖으로 휘어진 '호형' 디자인이 특징입니다.",
+                    detail: "고정프레임(121), 호형프레임(122), 수직프레임(123)으로 구성됩니다. 베드에 간섭을 주지 않기 위해 바깥으로 둥글게 휘어있습니다."
+                },
+                "130": {
+                    id: "130",
+                    name: "뚜껑프레임부 (Lid Frame)",
+                    desc: "최상단에 위치하며 육묘 포트를 거치하거나 비닐/차광막을 씌우는 지붕 역할을 합니다.",
+                    detail: "곡선프레임(131)과 미스트 걸이대(132)를 포함합니다. 육묘포트(A)가 이곳에 안착됩니다."
+                },
+                "A": {
+                    id: "A",
+                    name: "육묘포트 (Seedling Pot)",
+                    desc: "새로운 딸기 모종(자묘)이 자라는 포트입니다.",
+                    detail: "공중 부양된 상태로 배치되어 통기성이 좋고 하단 베드의 작물과 간섭이 없습니다."
+                }
+            };
+
+            // Schematic SVG Component
+            const SchematicDiagram = () => {
+                return (
+                    <div className="relative w-full h-96 bg-slate-50 rounded-xl border border-slate-200 overflow-hidden flex items-center justify-center">
+                        <svg viewBox="0 0 400 500" className="w-full h-full max-w-md drop-shadow-xl">
+                            <defs>
+                                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                                    <feOffset dx="2" dy="4" result="offsetblur" />
+                                    <feComponentTransfer>
+                                        <feFuncA type="linear" slope="0.2" />
+                                    </feComponentTransfer>
+                                    <feMerge>
+                                        <feMergeNode in="offsetblur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                            </defs>
+
+                            {/* 110: 고설재배부 (Legs & Bed) */}
+                            <g 
+                                onClick={() => setSelectedPart(partsData["110"])}
+                                className={`cursor-pointer transition-all duration-300 ${selectedPart?.id === "110" ? "opacity-100" : "opacity-90 hover:opacity-100"}`}
+                            >
+                                <line x1="120" y1="300" x2="120" y2="480" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
+                                <line x1="280" y1="300" x2="280" y2="480" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
+                                <path d="M100 250 L300 250 L280 350 L120 350 Z" fill="#e2e8f0" stroke="#475569" strokeWidth="2" />
+                                <text x="200" y="310" textAnchor="middle" className="text-xs fill-slate-500 font-bold pointer-events-none">110. 고설재배부(베드)</text>
+                            </g>
+
+                            {/* 120: 육묘프레임부 (Side Frames) */}
+                            <g 
+                                onClick={() => setSelectedPart(partsData["120"])}
+                                className={`cursor-pointer transition-all duration-300 ${selectedPart?.id === "120" ? "opacity-100" : "opacity-90 hover:opacity-100"}`}
+                            >
+                                <rect x="110" y="300" width="10" height="80" fill="#3b82f6" rx="2" />
+                                <rect x="280" y="300" width="10" height="80" fill="#3b82f6" rx="2" />
+                                <path d="M115 300 C 60 300, 60 200, 115 200" fill="none" stroke="#3b82f6" strokeWidth="6" />
+                                <path d="M285 300 C 340 300, 340 200, 285 200" fill="none" stroke="#3b82f6" strokeWidth="6" />
+                                <line x1="115" y1="200" x2="115" y2="120" stroke="#3b82f6" strokeWidth="6" />
+                                <line x1="285" y1="200" x2="285" y2="120" stroke="#3b82f6" strokeWidth="6" />
+                                <text x="60" y="250" textAnchor="middle" className="text-xs fill-blue-600 font-bold pointer-events-none">120. 육묘프레임</text>
+                            </g>
+
+                            {/* 130: 뚜껑프레임부 (Top Lid) */}
+                            <g 
+                                onClick={() => setSelectedPart(partsData["130"])}
+                                className={`cursor-pointer transition-all duration-300 ${selectedPart?.id === "130" ? "opacity-100" : "opacity-90 hover:opacity-100"}`}
+                            >
+                                <path d="M90 120 Q 200 80 310 120" fill="none" stroke="#10b981" strokeWidth="6" strokeLinecap="round" />
+                                <text x="200" y="90" textAnchor="middle" className="text-xs fill-emerald-600 font-bold pointer-events-none">130. 뚜껑/지붕</text>
+                            </g>
+
+                            {/* A: 육묘포트 (Seedling Pots) */}
+                            <g 
+                                onClick={() => setSelectedPart(partsData["A"])}
+                                className={`cursor-pointer transition-all duration-300 ${selectedPart?.id === "A" ? "opacity-100" : "opacity-90 hover:opacity-100"}`}
+                            >
+                                <line x1="115" y1="140" x2="285" y2="140" stroke="#f59e0b" strokeWidth="3" />
+                                {[130, 165, 200, 235, 270].map((x, i) => (
+                                    <path key={i} d={`M${x-10} 140 L${x-5} 160 L${x+5} 160 L${x+10} 140 Z`} fill="#fcd34d" stroke="#d97706" strokeWidth="1" />
+                                ))}
+                                <text x="200" y="130" textAnchor="middle" className="text-xs fill-amber-600 font-bold pointer-events-none">A. 육묘포트(공중부양)</text>
+                            </g>
+
+                            {/* Selection Indicator */}
+                            {selectedPart && (
+                                <circle cx="360" cy="40" r="10" fill="#ef4444" className="animate-ping opacity-75" />
+                            )}
+                        </svg>
+
+                        <div className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-lg shadow text-xs text-slate-500 border border-slate-200">
+                            * 부품을 클릭하여 상세설명을 확인하세요.
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+                    {/* Header Section */}
+                    <header className="bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-lg">
+                        <div className="max-w-5xl mx-auto px-4 py-8">
+                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                                <div>
+                                    <span className="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm mb-2 font-medium">등록특허 {patentInfo.patentNumber}</span>
+                                    <h1 className="text-3xl md:text-4xl font-bold mb-2">{patentInfo.title}</h1>
+                                    <p className="text-red-100 flex items-center gap-2">
+                                        <Info size={18} /> 발명자: {patentInfo.patentHolder}
+                                    </p>
+                                </div>
+                                <div className="text-right hidden md:block">
+                                    <p className="text-sm opacity-80">공고일자: 2025년 07월 17일</p>
+                                    <p className="text-sm opacity-80">출원번호: 10-2023-0128589</p>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Navigation */}
+                    <div className="sticky top-0 z-10 bg-white border-b border-slate-200 shadow-sm">
+                        <div className="max-w-5xl mx-auto px-4">
+                            <nav className="flex space-x-6 overflow-x-auto">
+                                <button 
+                                    onClick={() => setActiveTab('overview')}
+                                    className={`py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${activeTab === 'overview' ? 'border-red-500 text-red-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                                >
+                                    기술 요약
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('structure')}
+                                    className={`py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${activeTab === 'structure' ? 'border-red-500 text-red-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                                >
+                                    구조 시각화 (도면)
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('effect')}
+                                    className={`py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${activeTab === 'effect' ? 'border-red-500 text-red-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                                >
+                                    발명 효과
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <main className="max-w-5xl mx-auto px-4 py-8">
+                        
+                        {/* TAB: OVERVIEW */}
+                        {activeTab === 'overview' && (
+                            <div className="space-y-8 animate-in">
+                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                                    <h2 className="text-xl font-bold flex items-center gap-2 mb-4 text-slate-800">
+                                        <BookOpen className="text-red-500" /> 발명 배경 및 해결 과제
+                                    </h2>
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                                            <h3 className="font-bold text-slate-700 mb-3 flex items-center">😫 기존 방식의 문제점</h3>
+                                            <ul className="space-y-2 text-slate-600 text-sm">
+                                                <li className="flex items-start gap-2"><span className="text-red-500">•</span> 유인육묘 시 별도의 넓은 육묘장 공간 필요</li>
+                                                <li className="flex items-start gap-2"><span className="text-red-500">•</span> 베드 측면에 설치 시 통로 방해 및 작업 불편</li>
+                                                <li className="flex items-start gap-2"><span className="text-red-500">•</span> 어미묘와 자묘 포트 간 거리가 멀어 생육 시간 소요</li>
+                                                <li className="flex items-start gap-2"><span className="text-red-500">•</span> 공기 순환 불량으로 인한 병충해(응애 등) 빈번</li>
+                                            </ul>
+                                        </div>
+                                        <div className="bg-red-50 p-5 rounded-xl border border-red-100">
+                                            <h3 className="font-bold text-red-800 mb-3 flex items-center">💡 본 발명의 솔루션</h3>
+                                            <ul className="space-y-2 text-slate-700 text-sm">
+                                                <li className="flex items-start gap-2"><span className="text-green-600">✔</span> <strong className="text-red-600">상부 공간 활용:</strong> 베드 바로 위에 육묘포트 배치</li>
+                                                <li className="flex items-start gap-2"><span className="text-green-600">✔</span> <strong className="text-red-600">호형 프레임:</strong> 베드 간섭 없이 공중 부양 구조 실현</li>
+                                                <li className="flex items-start gap-2"><span className="text-green-600">✔</span> <strong className="text-red-600">환경 개선:</strong> 통기성 확보로 병충해 감소</li>
+                                                <li className="flex items-start gap-2"><span className="text-green-600">✔</span> <strong className="text-red-600">효율성:</strong> 자가 육묘 용이 및 수확량 증대</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-8 rounded-2xl shadow-lg">
+                                    <h2 className="text-2xl font-bold mb-4">기술 핵심 요약</h2>
+                                    <p className="text-lg leading-relaxed text-slate-300">
+                                        본 발명은 딸기 고설재배 베드의 <span className="text-white font-bold border-b-2 border-red-500">상부 공간</span>에 
+                                        육묘 장치를 설치하는 것입니다. 이를 위해 베드를 감싸는 형태의 
+                                        <span className="text-white font-bold"> '호형 프레임'</span>을 사용하여 공간 간섭을 없애고, 
+                                        공중에서 육묘를 키워 <span className="text-white font-bold">공기 순환</span>을 극대화했습니다.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: STRUCTURE (Interactive Diagram) */}
+                        {activeTab === 'structure' && (
+                            <div className="grid lg:grid-cols-5 gap-8 animate-in">
+                                {/* Left: Controls & List */}
+                                <div className="lg:col-span-2 space-y-4">
+                                    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                                        <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                                            <Layers size={20} className="text-red-500" />
+                                            구성 요소 (Components)
+                                        </h3>
+                                        <div className="space-y-2">
+                                            {Object.values(partsData).map((part) => (
+                                                <button
+                                                    key={part.id}
+                                                    onClick={() => setSelectedPart(part)}
+                                                    className={`w-full text-left p-3 rounded-lg border transition-all flex items-center justify-between ${selectedPart?.id === part.id ? 'border-red-500 bg-red-50 ring-1 ring-red-500' : 'border-slate-200 hover:bg-slate-50'}`}
+                                                >
+                                                    <span className="font-medium text-slate-700">{part.id}. {part.name}</span>
+                                                    <ArrowUp size={16} className={`transform transition-transform ${selectedPart?.id === part.id ? 'rotate-90 text-red-500' : 'text-slate-300'}`} />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {selectedPart ? (
+                                        <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl">
+                                            <h4 className="font-bold text-blue-900 text-lg mb-2">{selectedPart.name}</h4>
+                                            <p className="text-blue-800 text-sm mb-3 font-medium">{selectedPart.desc}</p>
+                                            <div className="bg-white p-3 rounded border border-blue-100 text-xs text-slate-600 leading-relaxed">
+                                                <strong className="block mb-1 text-slate-800">상세 설명:</strong>
+                                                {selectedPart.detail}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-slate-100 border border-slate-200 p-5 rounded-xl text-center text-slate-500 text-sm">
+                                            우측 도면의 부품을 클릭하거나<br/>위 목록을 선택하여 상세 내용을 확인하세요.
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Right: Interactive Diagram */}
+                                <div className="lg:col-span-3">
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-full flex flex-col">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h3 className="font-bold text-slate-700">장치 구조도 (Digital Twin Concept)</h3>
+                                            <span className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500">Interactive SVG</span>
+                                        </div>
+                                        <div className="flex-grow flex items-center justify-center bg-slate-50 rounded-xl border border-slate-100 p-4">
+                                            <SchematicDiagram />
+                                        </div>
+                                        <p className="text-center text-xs text-slate-400 mt-4">
+                                            * 명세서의 도면 1, 2를 기반으로 재구성된 개념도입니다. 실제 비율과는 다를 수 있습니다.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: EFFECT */}
+                        {activeTab === 'effect' && (
+                            <div className="animate-in">
+                                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-4">
+                                            <Maximize size={24} />
+                                        </div>
+                                        <h3 className="font-bold text-slate-800 mb-2">공간 효율 극대화</h3>
+                                        <p className="text-sm text-slate-600">베드 상부 유휴 공간을 활용하여 별도의 육묘장이 필요 없음.</p>
+                                    </div>
+
+                                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-4">
+                                            <ShieldCheck size={24} />
+                                        </div>
+                                        <h3 className="font-bold text-slate-800 mb-2">병충해 예방</h3>
+                                        <p className="text-sm text-slate-600">공기 순환이 원활한 구조로 응애 등 해충 발생 억제 및 관리 용이.</p>
+                                    </div>
+
+                                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                        <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 mb-4">
+                                            <Settings size={24} />
+                                        </div>
+                                        <h3 className="font-bold text-slate-800 mb-2">작업 효율성</h3>
+                                        <p className="text-sm text-slate-600">서서 작업할 수 있는 고설 베드 위치에서 육묘 관리까지 한 번에 가능.</p>
+                                    </div>
+
+                                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mb-4">
+                                            <Sprout size={24} />
+                                        </div>
+                                        <h3 className="font-bold text-slate-800 mb-2">우량 묘 생산</h3>
+                                        <p className="text-sm text-slate-600">균일한 환경 조성으로 고품질 모종 생산 및 농가 소득 증대.</p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-2xl border border-slate-200">
+                                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                                        <Sun className="text-orange-500" /> 추가 기능 및 확장성
+                                    </h3>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="flex gap-4 items-start">
+                                            <div className="mt-1"><CloudRain className="text-blue-400" size={20}/></div>
+                                            <div>
+                                                <h4 className="font-bold text-slate-700">미스트 분무 시스템 (청구항 3)</h4>
+                                                <p className="text-sm text-slate-600 mt-1">
+                                                    뚜껑 프레임 중앙에 미스트 걸이대(132)를 설치하여 농약이나 영양제를 위에서 아래로 집중 분사할 수 있습니다.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-4 items-start">
+                                            <div className="mt-1"><Layers className="text-indigo-400" size={20}/></div>
+                                            <div>
+                                                <h4 className="font-bold text-slate-700">가변형 프레임 연결 (청구항 2)</h4>
+                                                <p className="text-sm text-slate-600 mt-1">
+                                                    고정프레임과 호형프레임 연결부를 경첩 구조 또는 끼움 구조로 선택하여 설치 편의성을 높였습니다.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    <footer className="bg-slate-800 text-slate-400 py-8 mt-12">
+                        <div className="max-w-5xl mx-auto px-4 text-center text-sm">
+                            <p className="mb-2">본 페이지는 등록특허 제10-2835875호 공고전문을 바탕으로 이해를 돕기 위해 제작되었습니다.</p>
+                            <p>&copy; 2025 Patent Visualization Assistant.</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<StrawberrySystem />);
+    </script>
+</body>
+</html>
