@@ -1,1 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium IP Visualization : 딸기 육묘장치</title>
+    <style>
+        :root {
+            --primary-green: #2ecc71;
+            --dark-green: #27ae60;
+            --point-red: #e74c3c;
+            --frame-color: #34495e;
+            --bg-color: #f4f6f7;
+        }
 
+        body {
+            font-family: 'Pretendard', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background: var(--bg-color);
+            overflow: hidden;
+        }
+
+        /* [왼쪽] 도면 영역 */
+        .visual-section {
+            flex: 1.5;
+            background: #fff;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #ddd;
+            overflow: hidden; /* 애니메이션 시 넘침 방지 */
+        }
+
+        /* 컨트롤 버튼 영역 */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .btn:hover { background: #f8f9fa; transform: translateY(-2px); }
+        .btn.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+
+        .figure-label {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-weight: bold;
+            color: #7f8c8d;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* SVG 및 애니메이션 설정 */
+        svg {
+            width: 80%;
+            height: auto;
+            max-height: 75vh;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 쫀득한 움직임 */
+        }
+
+        .patent-part {
+            fill: none;
+            stroke: var(--frame-color);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* 분해 뷰(Exploded View)용 트랜스폼 */
+        .exploded #group-lid { transform: translateY(-60px); transition: transform 0.8s; }
+        .exploded #group-pot { transform: translateY(-30px); transition: transform 0.8s 0.1s; }
+        .exploded #group-frame { transform: scale(1.02); transition: transform 0.8s 0.2s; }
+        .exploded #group-bed { transform: translateY(40px); transition: transform 0.8s 0.3s; }
+
+        /* 부품 스타일 */
+        .part-bed { fill: #ecf0f1; stroke-width: 2; }
+        .part-pot { fill: #fff; stroke: var(--point-red); }
+        .part-lid { fill: none; stroke-width: 3; }
+
+        /* 활성화 효과 */
+        .patent-part.active {
+            stroke: var(--primary-green);
+            stroke-width: 4;
+            filter: drop-shadow(0 0 8px var(--primary-green));
+        }
+        .part-bed.active { fill: rgba(46, 204, 113, 0.15); }
+        .part-pot.active { fill: #ffcdd2; stroke: #c0392b; }
+
+        /* [오른쪽] 텍스트 영역 */
+        .text-section {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: #fdfdfd;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.02);
+        }
+
+        h2 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        
+        .claim-text {
+            line-height: 1.9;
+            font-size: 1.05rem;
+            color: #34495e;
+        }
+
+        .interactive {
+            cursor: pointer;
+            border-bottom: 2px dashed #bdc3c7;
+            transition: all 0.2s;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .interactive:hover, .interactive.active {
+            background: var(--primary-green);
+            color: white;
+            border-radius: 4px;
+            border-bottom: 2px solid transparent;
+            padding: 0 4px;
+        }
+
+        /* === 팝업 모달 스타일 (고도화 핵심) === */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            backdrop-filter: blur(3px); /* 고급스러운 블러 처리 */
+        }
+
+        .modal-overlay.open { opacity: 1; visibility: visible; }
+
+        .modal-card {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .modal-overlay.open .modal-card { transform: translateY(0); }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-title { font-size: 1.4rem; font-weight: bold; color: var(--dark-green); }
+        .modal-close { 
+            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; 
+        }
+        .modal-close:hover { color: #333; }
+
+        .modal-body h4 { margin: 15px 0 5px 0; color: #555; font-size: 0.95rem; }
+        .modal-body p { margin: 0; color: #666; line-height: 1.6; font-size: 1rem; }
+        
+        .tech-tag {
+            display: inline-block;
+            background: #e8f5e9;
+            color: var(--dark-green);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="visual-section" id="visual-container">
+        <div class="figure-label">FIG. 4 (Interactive View)</div>
+        
+        <div class="controls">
+            <button class="btn" onclick="toggleExplode()" id="btn-explode">🔧 분해/조립 보기</button>
+        </div>
+        
+        <svg viewBox="0 0 500 600">
+            
+            <g id="group-bed">
+                <path id="part-111" class="patent-part" d="M 150 600 L 150 350 M 350 600 L 350 350" />
+                <path id="part-112" class="patent-part part-bed" d="M 130 250 L 160 350 L 340 350 L 370 250" />
+                <text x="130" y="500" fill="#999" font-size="12">111</text>
+                <text x="230" y="330" fill="#999" font-size="12">112 (베드)</text>
+            </g>
+
+            <g id="group-frame">
+                <path id="part-121" class="patent-part" d="M 140 450 L 140 300 M 360 450 L 360 300" />
+                <path id="part-122" class="patent-part" d="M 140 300 C 80 300, 80 200, 140 200 M 360 300 C 420 300, 420 200, 360 200" />
+                <path id="part-123" class="patent-part" d="M 140 200 L 140 100 M 360 200 L 360 100" />
+                <text x="50" y="250" fill="#999" font-size="12">122 (간섭회피)</text>
+            </g>
+
+            <g id="group-pot">
+                <rect id="part-A" class="patent-part part-pot" x="150" y="105" width="40" height="40" />
+                <rect class="patent-part part-pot" x="200" y="105" width="40" height="40" />
+                <rect class="patent-part part-pot" x="250" y="105" width="40" height="40" />
+                <rect class="patent-part part-pot" x="300" y="105" width="40" height="40" />
+                <text x="350" y="130" fill="#999" font-size="12">A (육묘포트)</text>
+            </g>
+
+            <g id="group-lid">
+                <path id="part-130" class="patent-part part-lid" d="M 120 100 Q 250 50 380 100" />
+                <path id="part-132" class="patent-part" d="M 250 75 L 250 85" stroke-width="1" />
+                <text x="230" y="60" fill="#999" font-size="12">130</text>
+            </g>
+
+        </svg>
+    </div>
+
+    <div class="text-section">
+        <h2>🍓 고설재배용 딸기 육묘장치</h2>
+        <p style="color:#666; font-size:0.9rem;">등록번호: 10-2835875 | 발명자: 김근섭 외 1명</p>
+        <p style="font-size: 0.9rem; background: #eef; padding: 10px; border-radius: 5px;">
+            💡 <strong>Interactive Guide:</strong> 왼쪽 도면의 <span style="color: red; font-weight: bold;">'분해/조립' 버튼</span>을 누르거나, <span style="color: red; font-weight: bold;">밑줄 친 텍스트 및 도면 부품을 클릭</span>하여 상세 정보를 확인하세요.
+        </p>
+
+        <div class="claim-text">
+            <strong>[청구항 1 핵심 요약]</strong><br><br>
+            본 발명은 지면으로부터 수직인 
+            <span class="interactive" data-id="part-111">지주프레임(111)</span>과 
+            그 위의 <span class="interactive" data-id="part-112">베드(112)</span>로 구성된 
+            고설재배부 상측에 설치됩니다.<br><br>
+
+            핵심은 <span class="interactive" data-id="part-121">고정프레임(121)</span>에 연결되되, 
+            <strong>베드(112)의 재배 공간을 침범하지 않도록 바깥으로 휘어진</strong> 
+            <span class="interactive" data-id="part-122">호형프레임(122)</span>입니다.<br><br>
+            
+            이 구조 덕분에 상부의 <span class="interactive" data-id="part-123">수직프레임(123)</span>에 
+            <span class="interactive" data-id="part-A">육묘포트(A)</span>를 걸어두어도 
+            하부 작물의 성장을 방해하지 않으며, 최상단의 
+            <span class="interactive" data-id="part-130">뚜껑프레임(130)</span>이 
+            전체를 보호합니다.
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title" id="mTitle">부품 명칭</div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <span class="tech-tag" id="mTag">핵심 구성요소</span>
+                <div id="mContent">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 특허 데이터베이스 (JSON 형식으로 관리하여 확장성 확보)
+        const patentData = {
+            "part-111": {
+                title: "지주프레임 (111)",
+                tag: "지지 구조",
+                desc: "지면으로부터 수직으로 설치되어 전체 하중을 지지하는 기본 프레임입니다. 2열로 배치되어 안정성을 확보합니다."
+            },
+            "part-112": {
+                title: "재배 베드 (112)",
+                tag: "기존 재배 공간",
+                desc: "딸기 등 작물이 실제로 심겨지는 공간입니다. 본 발명은 이 베드의 상부 공간을 활용하므로 추가적인 토지가 필요하지 않습니다."
+            },
+            "part-121": {
+                title: "고정프레임 (121)",
+                tag: "결합 수단",
+                desc: "지주프레임의 외측에 단단히 고정되어 육묘 장치를 지지하는 베이스 역할을 합니다. 클립이나 밴드로 체결됩니다."
+            },
+            "part-122": {
+                title: "호형프레임 (122)",
+                tag: "★ 핵심 기술 (Key Feature)",
+                desc: "<b>'베드에 간섭받지 아니하도록 외측으로 돌출 형성'</b>된 둥근(호형) 프레임입니다. <br>이 형상 덕분에 하부 베드에서 자라는 딸기의 잎이나 줄기를 건드리지 않고 상부 공간을 확보할 수 있습니다."
+            },
+            "part-123": {
+                title: "수직프레임 (123)",
+                tag: "육묘 공간 확보",
+                desc: "호형프레임 위로 연장되어 실제 육묘포트가 걸릴 높이를 제공합니다. 내측에 걸이대가 구비됩니다."
+            },
+            "part-A": {
+                title: "육묘포트 (A)",
+                tag: "생산성 증대",
+                desc: "어미묘로부터 나온 자묘를 받아 키우는 포트입니다. 베드 바로 위에 위치하여 작업 동선을 최소화하고 공기 순환을 돕습니다."
+            },
+            "part-130": {
+                title: "뚜껑프레임부 (130)",
+                tag: "환경 제어",
+                desc: "비닐이나 차광막을 씌울 수 있는 지붕 구조입니다. 중앙에 미스트 노즐(132)을 설치하여 습도 조절 및 방제가 가능합니다."
+            }
+        };
+
+        // 2. 모달 제어 로직
+        const modal = document.getElementById('modalOverlay');
+        const mTitle = document.getElementById('mTitle');
+        const mTag = document.getElementById('mTag');
+        const mContent = document.getElementById('mContent');
+
+        function openModal(id) {
+            const data = patentData[id];
+            if (!data) return; // 데이터 없으면 무시
+
+            mTitle.innerText = data.title;
+            mTag.innerText = data.tag;
+            mContent.innerHTML = `
+                <h4>기능 및 역할</h4>
+                <p>${data.desc}</p>
+            `;
+            modal.classList.add('open');
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+            // 하이라이트 초기화
+            document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+        }
+
+        // 배경 클릭 시 닫기
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // 3. 인터랙션 이벤트 연결 (도면 & 텍스트)
+        
+        // 텍스트 링크 클릭 이벤트
+        document.querySelectorAll('.interactive').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const id = item.getAttribute('data-id');
+                highlightPart(id);
+                openModal(id);
+            });
+            // 호버 효과
+            item.addEventListener('mouseenter', () => highlightPart(item.getAttribute('data-id')));
+            item.addEventListener('mouseleave', () => removeHighlight());
+        });
+
+        // SVG 부품 클릭 이벤트
+        document.querySelectorAll('.patent-part').forEach(part => {
+            part.addEventListener('click', (e) => {
+                // 그룹 내부 path 클릭 시 상위 ID 찾기 등의 로직이 필요할 수 있음. 
+                // 여기서는 ID가 명확하므로 바로 사용.
+                const id = part.id; 
+                if(patentData[id]) openModal(id);
+            });
+            // 호버 효과
+            part.addEventListener('mouseenter', function() {
+                this.classList.add('active');
+            });
+            part.addEventListener('mouseleave', function() {
+                this.classList.remove('active');
+            });
+        });
+
+        // 하이라이트 함수
+        function highlightPart(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
+        }
+
+        function removeHighlight() {
+            document.querySelectorAll('.patent-part').forEach(el => el.classList.remove('active'));
+        }
+
+        // 4. 분해/조립 애니메이션 토글
+        function toggleExplode() {
+            const container = document.getElementById('visual-container');
+            const btn = document.getElementById('btn-explode');
+            
+            container.classList.toggle('exploded');
+            
+            if (container.classList.contains('exploded')) {
+                btn.classList.add('active');
+                btn.innerText = "🔒 조립 상태로 복구";
+            } else {
+                btn.classList.remove('active');
+                btn.innerText = "🔧 분해/조립 보기";
+            }
+        }
+
+    </script>
+</body>
+</html>
