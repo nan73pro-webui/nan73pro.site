@@ -24,7 +24,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        html { scroll-behavior: smooth; } /* 부드러운 스크롤 이동 */
+        html { scroll-behavior: smooth; }
         
         body { 
             font-family: 'Pretendard', sans-serif; 
@@ -41,12 +41,12 @@
         .container {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 0 20px; /* 모바일 좌우 여백 */
+            padding: 0 20px;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 60px; /* 원래 여백 유지 */
         }
 
         .section-title {
@@ -70,7 +70,7 @@
         }
 
         /* =========================================
-           1. Hero Section (Brand Story)
+           1. Hero Section
            ========================================= */
         .hero-section {
             position: relative;
@@ -165,14 +165,14 @@
         }
 
         /* =========================================
-           2. Brand Identity & Process (Optimized)
+           2. Brand Identity & Process
            ========================================= */
         .comparison-section {
-            padding: 100px 0;
+            padding: 100px 0; /* 원래 패딩 유지 */
             background-color: var(--bg-secondary);
         }
         .process-section {
-            padding: 100px 0;
+            padding: 100px 0; /* 원래 패딩 유지 */
             background-color: var(--bg-color);
         }
 
@@ -197,12 +197,12 @@
         
         .check::before { content: '✨'; position: absolute; left: 0; top: 0; font-size: 1.1rem; color: var(--accent-color); }
 
-        /* Brand Story Grid Specific */
+        /* Brand Story Grid */
         .brand-story-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 50px;
+            grid-template-columns: 1fr 1fr; /* 기본: PC에서는 2열 */
+            gap: 40px; /* 원래 간격 유지 */
+            margin-top: 50px; /* 원래 여백 유지 */
         }
         
         .story-card {
@@ -285,7 +285,7 @@
         }
 
         /* =========================================
-           5. Contact & Footer Section (Updated)
+           5. Contact & Footer Section
            ========================================= */
         .contact-section {
             padding: 100px 0;
@@ -302,13 +302,12 @@
             flex: 1; 
             display: flex;
             flex-direction: column;
-            justify-content: center; /* 폼과 높이 맞추기 */
+            justify-content: center;
         }
         .contact-tag { color: var(--accent-color); font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 15px; }
         .contact-title { font-size: 2.5rem; font-weight: 800; line-height: 1.3; margin-bottom: 20px; }
         .contact-desc { color: var(--text-sub); font-size: 1.05rem; line-height: 1.6; margin-bottom: 40px; }
 
-        /* Security Box Style (Re-added from index.html) */
         .security-box {
             background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 12px; padding: 20px; display: flex; gap: 15px; margin-bottom: 40px;
         }
@@ -316,18 +315,17 @@
         .sec-text strong { display: block; color: var(--accent-color); font-size: 0.95rem; margin-bottom: 5px; }
         .sec-text p { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
 
-        /* Contact Details Style (Re-added from index.html) */
         .contact-details { margin-top: 20px; }
         .detail-item { margin-bottom: 15px; display: flex; align-items: center; }
         .detail-item .label { display: inline-block; width: 80px; font-size: 0.85rem; color: #64748b; flex-shrink: 0; }
         .detail-item .value { 
             color: var(--text-main); 
             font-weight: 600; 
-            transition: color 0.3s, text-decoration 0.3s; /* 트랜지션 추가 */
+            transition: color 0.3s, text-decoration 0.3s;
         }
         .detail-item .value:hover { 
             color: var(--accent-color); 
-            text-decoration: underline; /* 밑줄 추가 */
+            text-decoration: underline;
         }
 
         .contact-form-wrapper { 
@@ -361,7 +359,7 @@
         .copyright { color: #64748b; font-size: 0.8rem; line-height: 1.6; }
 
         /* =========================================
-           Responsive (Mobile)
+           Responsive (Mobile) - 수정됨
            ========================================= */
         @media (max-width: 900px) {
             .hero-title { font-size: 2.2rem; }
@@ -369,21 +367,25 @@
             .btn-group { flex-direction: column; width: 100%; }
             .btn { width: 100%; }
             
-            .brand-story-grid { grid-template-columns: 1fr; gap: 30px; }
+            /* [핵심 수정] 모바일에서는 무조건 1열로 강제 설정하여 한 화면에 하나씩 보이도록 함 */
+            .brand-story-grid { 
+                grid-template-columns: 1fr !important; 
+                gap: 40px; /* 카드가 붙지 않도록 간격 유지 */
+            }
+
             .integration-quote { font-size: 1.2rem; }
             .integration-quote::before, .integration-quote::after { font-size: 4rem; }
             
             .contact-wrapper { flex-direction: column; gap: 40px; }
             .contact-form-wrapper { width: 100%; max-width: 100%; }
             .contact-title { font-size: 2rem; text-align: center; }
-            /* 모바일에서 좌측 텍스트 중앙 정렬 유지 */
+            
             .contact-info { text-align: center; }
             .contact-desc { text-align: center; }
             .contact-details { text-align: center !important; }
-            .detail-item { justify-content: center; } /* 모바일에서 상세 항목 중앙 정렬 */
+            .detail-item { justify-content: center; }
             .detail-item .label { width: auto; margin-right: 10px; }
         }
-
 
     </style>
 </head>
@@ -486,7 +488,7 @@
         </div>
     </section>
 
-<section class="integration-section">
+    <section class="integration-section">
         <div class="container">
             <h2 class="section-title" style="margin-bottom: 50px;">
                 Nan73Pro, <span class="highlight" style="font-weight: 900;">우리가 존재하는 이유</span>
