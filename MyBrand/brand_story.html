@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="nan73pro의 브랜드 철학: 고객의 자원을 특허 기반 3단계 프로세스로 구조화하여 증명 가능한 성과로 완주시키는 IP Developer 스토리.">
+    <title>Nan73Pro - 브랜드 스토리</title>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <style>
+        /* =========================================
+           0. Global Variables & Reset
+           ========================================= */
+        :root {
+            --bg-color: #0f172a;       /* Deep Navy */
+            --bg-secondary: #1e293b;   /* Lighter Navy */
+            --text-main: #f8fafc;      /* White */
+            --text-sub: #94a3b8;       /* Gray */
+            --accent-color: #38bdf8;   /* Tech Blue */
+            --accent-green: #34d399;   /* Success Green */
+            --gradient-text: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; } /* 부드러운 스크롤 이동 */
+        
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* 공통 레이아웃 클래스 */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px; /* 모바일 좌우 여백 */
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        /* 텍스트 강조 유틸리티 */
+        .highlight {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =========================================
+           1. Hero Section (Brand Story)
+           ========================================= */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+            overflow: hidden;
+        }
+
+        .hero-bg-grid {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            padding: 0 20px;
+            animation: fadeUp 1s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .hero-eyebrow {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1.3;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            word-break: keep-all;
+        }
+
+        .hero-desc {
+            font-size: 1.25rem;
+            color: var(--text-sub);
+            line-height: 1.7;
+            margin-bottom: 3rem;
+            font-weight: 400;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            word-break: keep-all;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+        
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================
+           2. Brand Identity & Process (Optimized)
+           ========================================= */
+        .comparison-section {
+            padding: 100px 0;
+            background-color: var(--bg-secondary);
+        }
+        .process-section {
+            padding: 100px 0;
+            background-color: var(--bg-color);
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        .feature-list { list-style: none; padding: 0;}
+        .feature-list li {
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 30px;
+        }
+        .feature-list li strong { display: block; font-size: 1.1rem; margin-bottom: 5px; }
+        .feature-list li p { font-size: 0.95rem; font-weight: 300; color: #94a3b8; }
+        
+        .check::before { content: '✨'; position: absolute; left: 0; top: 0; font-size: 1.1rem; color: var(--accent-color); }
+
+        /* Brand Story Grid Specific */
+        .brand-story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .story-card {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.3s ease;
+        }
+        .story-card:hover { border-color: var(--accent-color); }
+        
+        .story-card h3 { 
+            font-size: 1.8rem; 
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .story-card h3 span { 
+            font-size: 3rem; 
+            margin-right: 15px; 
+            line-height: 1;
+        }
+        .story-desc {
+            font-size: 1rem;
+            color: var(--text-sub);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .story-tag {
+            display: inline-block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            background: rgba(52, 211, 153, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* Integration Section */
+        .integration-section {
+            padding: 80px 0;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        .integration-quote {
+            max-width: 900px;
+            margin: 0 auto;
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.6;
+            color: var(--text-main);
+            position: relative;
+            padding: 30px 0;
+        }
+        .integration-quote strong {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+        .integration-quote::before, .integration-quote::after {
+            content: "“";
+            font-size: 6rem;
+            color: rgba(56, 189, 248, 0.15);
+            position: absolute;
+            opacity: 0.8;
+            top: -10px;
+            left: 0;
+            z-index: -1;
+        }
+        .integration-quote::after {
+            content: "”";
+            left: auto;
+            right: 0;
+            top: auto;
+            bottom: -50px;
+        }
+
+        /* =========================================
+           5. Contact & Footer Section (Updated)
+           ========================================= */
+        .contact-section {
+            padding: 100px 0;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .contact-wrapper {
+            display: flex; 
+            justify-content: space-between; 
+            gap: 60px;
+        }
+
+        .contact-info { 
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* 폼과 높이 맞추기 */
+        }
+        .contact-tag { color: var(--accent-color); font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 15px; }
+        .contact-title { font-size: 2.5rem; font-weight: 800; line-height: 1.3; margin-bottom: 20px; }
+        .contact-desc { color: var(--text-sub); font-size: 1.05rem; line-height: 1.6; margin-bottom: 40px; }
+
+        /* Security Box Style (Re-added from index.html) */
+        .security-box {
+            background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 12px; padding: 20px; display: flex; gap: 15px; margin-bottom: 40px;
+        }
+        .sec-icon { font-size: 1.5rem; }
+        .sec-text strong { display: block; color: var(--accent-color); font-size: 0.95rem; margin-bottom: 5px; }
+        .sec-text p { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+
+        /* Contact Details Style (Re-added from index.html) */
+        .contact-details { margin-top: 20px; }
+        .detail-item { margin-bottom: 15px; display: flex; align-items: center; }
+        .detail-item .label { display: inline-block; width: 80px; font-size: 0.85rem; color: #64748b; flex-shrink: 0; }
+        .detail-item .value { 
+            color: var(--text-main); 
+            font-weight: 600; 
+            transition: color 0.3s, text-decoration 0.3s; /* 트랜지션 추가 */
+        }
+        .detail-item .value:hover { 
+            color: var(--accent-color); 
+            text-decoration: underline; /* 밑줄 추가 */
+        }
+
+        .contact-form-wrapper { 
+            flex: 1; 
+            max-width: 500px; 
+        }
+        .contact-form {
+            background: #1e293b; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px 15px; color: white; font-size: 0.95rem; font-family: inherit; transition: all 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1); }
+
+        .btn-submit {
+            width: 100%; padding: 16px; background: var(--gradient-text); color: #0f172a; font-weight: 800; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: transform 0.2s;
+        }
+        .btn-submit:hover { transform: translateY(-2px); opacity: 0.95; }
+
+
+        .site-footer { background: #0f172a; padding: 40px 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .footer-logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 15px; color: white; }
+        .footer-logo .dot { color: var(--accent-color); }
+        .copyright { color: #64748b; font-size: 0.8rem; line-height: 1.6; }
+
+        /* =========================================
+           Responsive (Mobile)
+           ========================================= */
+        @media (max-width: 900px) {
+            .hero-title { font-size: 2.2rem; }
+            .hero-desc { font-size: 1rem; }
+            .btn-group { flex-direction: column; width: 100%; }
+            .btn { width: 100%; }
+            
+            .brand-story-grid { grid-template-columns: 1fr; gap: 30px; }
+            .integration-quote { font-size: 1.2rem; }
+            .integration-quote::before, .integration-quote::after { font-size: 4rem; }
+            
+            .contact-wrapper { flex-direction: column; gap: 40px; }
+            .contact-form-wrapper { width: 100%; max-width: 100%; }
+            .contact-title { font-size: 2rem; text-align: center; }
+            /* 모바일에서 좌측 텍스트 중앙 정렬 유지 */
+            .contact-info { text-align: center; }
+            .contact-desc { text-align: center; }
+            .contact-details { text-align: center !important; }
+            .detail-item { justify-content: center; } /* 모바일에서 상세 항목 중앙 정렬 */
+            .detail-item .label { width: auto; margin-right: 10px; }
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <section class="hero-section">
+        <div class="hero-bg-grid"></div>
+        <div class="hero-container">
+            <span class="hero-eyebrow">The Nan73Pro Story</span>
+            <h1 class="hero-title">
+                고객의 아이디어를<br>
+                <span class="highlight">증명 가능한 행운(Outcome)</span>으로<br>
+                완주시키는 여정
+            </h1>
+            <p class="hero-desc">
+                단순한 특허 등록을 넘어, 개발자적 시각으로 기술의 가치를 구조화하고<br>
+                투자와 비즈니스 확장을 위한 경쟁 우위를 설계합니다.
+            </p>
+            <div class="btn-group">
+                <a href="#contact" class="btn btn-primary">전문가와 대화 시작하기</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Identity</span>
+                <h2 class="section-title"><span class="highlight">Nan7</span> : 고객의 기회를 행운으로</h2>
+                <p class="section-subtitle">
+                    'Nan(나는)'과 '7(행운)'의 결합.<br>
+                    고객이 가진 가능성과 기회를 현실적인 행운(등록, 투자, 사업 확장)으로 전환하는 철학입니다.
+                </p>
+            </div>
+            <div class="brand-story-grid">
+                <div class="story-card" style="grid-column: 1 / span 2; text-align: center;">
+                    <h3><span>🍀</span> 고객을 행운의 주인공으로 모신다!</h3>
+                    <p class="story-desc" style="max-width: 800px; margin: 0 auto; font-size: 1.1rem; color: var(--text-main);">
+                        저희는 고객의 아이디어가 우연한 기회로 사라지지 않고, <br>
+                        시스템적인 노력과 정교한 설계를 통해 필연적인 성공으로 이어지도록 합니다. <br>
+                        특허는 이 필연적인 성공을 위한 가장 강력한 증거입니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="process-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag" style="border-color: var(--accent-green); color: var(--accent-green);">Process</span>
+                <h2 class="section-title"><span class="highlight">3Pro</span> : 성과를 재현하는 3단계 알고리즘</h2>
+                <p class="section-subtitle">
+                    문제 정의 및 분석(Diagnosis) → 계획 및 수립 구조화(Architecture) → 결과 검증 및 최적화(Visualization)<br>
+                    이 3단계 전문 프로세스는 'P-r-o'의 가치를 통해 구현됩니다.
+                </p>
+            </div>
+            
+            <div class="brand-story-grid">
+                <div class="story-card" style="background: linear-gradient(145deg, rgba(56, 189, 248, 0.05) 0%, rgba(15, 23, 42, 0.4) 100%); border-color: var(--accent-color);">
+                    <span class="story-tag">P - Patent</span>
+                    <h3>보호되는 지식과 기술</h3>
+                    <p class="story-desc">
+                        특허(Patent)는 단순히 기술을 보호하는 수단이 아닌, <br>
+                        시장(Market)에서 나의 권리를 주장하고 가치를 증명하는 법률적 기반입니다.
+                    </p>
+                    <ul class="feature-list">
+                        <li class="check"><strong>독점적 권리 확보</strong></li>
+                        <li class="check"><strong>투자자 신뢰도 증대</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="story-card" style="background: linear-gradient(145deg, rgba(52, 211, 153, 0.05) 0%, rgba(15, 23, 42, 0.4) 100%); border-color: var(--accent-green);">
+                    <span class="story-tag">r - Resources</span>
+                    <h3>고객의 핵심 자원 활용</h3>
+                    <p class="story-desc">
+                        고객이 보유한 경험, 아이디어, 데이터가 곧 가장 중요한 자원(Resources)입니다. <br>
+                        이를 특허의 언어로 번역하고, 최적화된 구조로 설계합니다.
+                    </p>
+                    <ul class="feature-list">
+                        <li class="check"><strong>아이디어의 구조화</strong></li>
+                        <li class="check"><strong>개발자 제품 및 코드 분석</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="story-card" style="grid-column: 1 / span 2; background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(15, 23, 42, 0.4) 100%); border-color: #f8fafc;">
+                    <span class="story-tag">o - Outcome</span>
+                    <h3>명확하고 측정 가능한 성과</h3>
+                    <p class="story-desc">
+                        우리의 목표는 단순한 출원(Result)이 아니라, 특허 등록, 투자 유치, 사업 확장 등<br>
+                        명확하고 측정 가능한 성과(Outcome)로 이어지게 하는 것입니다. <br>
+                        웹 포트폴리오는 이 성과를 시각화하는 도구입니다.
+                    </p>
+                    <ul class="feature-list" style="display: flex; gap: 40px; justify-content: center; margin-top: 30px;">
+                        <li class="check"><strong>웹 포트폴리오 시각화</strong></li>
+                        <li class="check"><strong>투자 유치 설득력 확보</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="integration-section">
+        <div class="container">
+            <h2 class="section-title" style="margin-bottom: 50px;">
+                Nan73Pro, <span class="highlight" style="font-weight: 900;">우리가 존재하는 이유</span>
+            </h2>
+            <div class="integration-quote">
+                Nan73Pro는 고객이 보유한 생각·지식·기술이라는 <br>
+                <span class="highlight">자원(Resources)</span>을 <span class="highlight">특허(Patent)</span>로 구현 및 3단계 프로세스로 구조화하여,<br>
+                단순한 결과(Result)가 아니라 
+                <br><br>
+                증명 가능한 <span class="highlight">성과(Outcome)</span>로 완주시키는 브랜드입니다. 
+                <br>
+                고객의 기회를 행운으로 바꾸는 것, <br>
+                그것이 <span class="highlight">Nan73Pro</span>가 추구하는 본질입니다.
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <span class="contact-tag">Ready to Start?</span>
+                    <h2 class="contact-title">지금, 당신의 아이디어를<br><span class="highlight">현실의 자산</span>으로 만드세요.</h2>
+                    <p class="contact-desc">
+                        가장 전문적인 로드맵과 개발자적 시각을 가진 파트너가<br>
+                        무료 기술 진단부터 성공적인 웹 포트폴리오 구축까지 책임집니다.
+                    </p>
+                    
+                    <div class="security-box">
+                        <div class="sec-icon">🔒</div>
+                        <div class="sec-text">
+                            <strong>철저한 비밀 보장 (Confidential)</strong>
+                            <p>모든 상담 내용은 변리사법 제23조에 의거하여 비밀이 보장되며, 필요 시 별도의 NDA(비밀유지계약) 체결이 가능합니다.</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-details" style="text-align: left;">
+                        <div class="detail-item">
+                            <span class="label">Blog</span>
+                            <a href="https://blog.naver.com/nan-pro" target="_blank" class="value">네이버 블로그 바로가기 ↗</a>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Sample</span>
+                            <a href="/PatentView/sample.html" target="_blank" class="value">등록특허 시각화 샘플 ↗</a>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Proposal</span>
+                            <a href="/Proposal/proposal.html" target="_blank" class="value">특허출원 제안서 바로가기</a>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Search</span>
+                            <a href="/PatentSearch/Search_0001.html" target="_blank" class="value">선행기술조사 보고서 ↗</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <form class="contact-form" id="ajaxForm">
+                        <input type="hidden" name="accessKey" value="sf_j0k15mnnlnkfkdj7fmai1lc3">
+                        <input type="hidden" name="subject" value="nan73pro 브랜드 스토리에서 문의">
+
+                        <div class="form-group">
+                            <label for="name">성함 / 기업명</label>
+                            <input type="text" id="name" name="name" placeholder="홍길동 / (주)스타트업" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">연락처</label>
+                            <input type="tel" id="phone" name="phone" placeholder="010-1234-5678" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">해당 분야</label>
+                            <select id="category" name="category">
+                                <option value="">해당 분야를 선택해주세요</option>
+                                <option value="bm">BM 특허</option>
+                                <option value="product">제품 특허</option>
+                                <option value="method">방법 특허</option>
+                                <option value="composition">조성물 특허</option>
+                                <option value="consulting">기타 / 컨설팅 문의</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">문의 내용 (간략히)</label>
+                            <textarea id="message" name="message" rows="4" placeholder="예: 위치기반 매칭 서비스를 준비 중인데 특허가 가능한지 궁금합니다.
+예: 등록특허의 웹 시각화 및 홍보 페이지의 웹호스팅을 문의합니다."></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">무료 기술 진단 신청하기</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-logo"><span style="color:#6AD7FF;">Nan7</span><span style="color:#17C8C8;">3Pro</span><span class="dot">.</span></div>
+            <p class="copyright">© 2025 nan73pro. All rights reserved. <br>Designed & Developed by The IP Developer.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('ajaxForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 페이지 이동 막기
+
+            const btn = document.querySelector('.btn-submit');
+            const originalText = btn.innerText;
+            btn.innerText = "전송 중...";
+            btn.disabled = true;
+
+            // FormData 객체 생성
+            const formData = new FormData(this);
+            
+            // JSON 형식으로 변환 (Static Forms 권장 사항)
+            const jsonData = Object.fromEntries(formData.entries());
+
+            // Static Forms 엔드포인트
+            const STATIC_FORMS_URL = "https://api.staticforms.xyz/submit"; 
+
+            fetch(STATIC_FORMS_URL, {
+                method: "POST",
+                body: JSON.stringify(jsonData),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                // HTTP 상태 코드가 200~299(성공)이면 무조건 성공 처리
+                if (response.ok) {
+                    alert("성공적으로 접수되었습니다. 곧 연락드리겠습니다.");
+                    document.getElementById('ajaxForm').reset(); // 폼 초기화
+                } else {
+                    // 서버가 명시적으로 에러 코드(400, 500 등)를 보낸 경우
+                    alert("전송에 실패했습니다. 다시 시도해주세요.");
+                }
+            })
+            .catch(error => {
+                // 네트워크 자체 문제 등 심각한 오류
+                alert("오류가 발생했습니다.");
+                console.error(error);
+            })
+            .finally(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+    </script>
+
+</body>
+</html>
