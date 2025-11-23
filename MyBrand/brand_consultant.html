@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nan73Pro - Branding Consultant</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            900: '#0f172a', // Uploaded file bg-color
+                            800: '#1e293b', // Uploaded file bg-secondary
+                        },
+                        tech: {
+                            blue: '#38bdf8', // Accent color
+                            green: '#34d399',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'hero-gradient': 'radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%)',
+                        'text-gradient': 'linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        /* Global Styles from uploaded file */
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        html { scroll-behavior: smooth; }
+
+        /* Text Gradient Utility */
+        .text-gradient {
+            background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Button Glow Effect */
+        .btn-glow {
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+        }
+
+        /* Background Grid Pattern */
+        .bg-grid-pattern {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // --- Inline Icon Components (Customized for new style) ---
+        const IconBase = ({ size = 24, className = "", children }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const ArrowUpRight = (p) => <IconBase {...p}><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></IconBase>;
+        const Layers = (p) => <IconBase {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></IconBase>;
+        const Zap = (p) => <IconBase {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></IconBase>;
+        const Hexagon = (p) => <IconBase {...p}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></IconBase>;
+        const CheckCircle = (p) => <IconBase {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></IconBase>;
+        const ArrowRight = (p) => <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></IconBase>;
+        const TrendingUp = (p) => <IconBase {...p}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></IconBase>;
+        const Anchor = (p) => <IconBase {...p}><circle cx="12" cy="5" r="3"></circle><line x1="12" y1="22" x2="12" y2="8"></line><path d="M5 12H2a10 10 0 0 0 20 0h-3"></path></IconBase>;
+
+        // --- Components ---
+
+        const RevealOnScroll = ({ children, className = "" }) => {
+            const [isVisible, setIsVisible] = useState(false);
+            const ref = useRef(null);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); }
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => { if (ref.current) observer.unobserve(ref.current); };
+            }, []);
+
+            return (
+                <div ref={ref} className={`transition-all duration-1000 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"} ${className}`}>
+                    {children}
+                </div>
+            );
+        };
+
+        // Logo Component updated to match "Tech Blue" theme
+        const Logo = () => (
+            <div className="flex items-center gap-2 group cursor-pointer">
+                <div className="relative w-10 h-10 flex items-end justify-center">
+                    {/* Step 1: Foundation (Darker Blue) */}
+                    <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm transform skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
+                    {/* Step 2: Process (Tech Blue) */}
+                    <div className="absolute bottom-3 left-3 w-3 h-3 bg-slate-400 rounded-sm transform skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
+                    {/* Step 3: Luck/Outcome (Gradient/Bright) */}
+                    <div className="absolute bottom-6 left-6 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm transform skew-y-[-10deg] shadow-[0_0_15px_rgba(56,189,248,0.5)] flex items-center justify-center">
+                        <div className="w-1 h-1 bg-white rounded-full animate-pulse"></div>
+                    </div>
+                </div>
+                <div className="flex flex-col justify-center">
+                    <span className="text-xl font-bold tracking-tight text-white leading-none">
+                        Nan7<span className="text-tech-blue font-light">3</span>Pro
+                    </span>
+                    <span className="text-[10px] text-slate-400 tracking-widest uppercase">Branding Consultant</span>
+                </div>
+            </div>
+        );
+
+        const StepCard = ({ number, title, desc, icon: Icon, isLast = false }) => (
+            <div className={`relative p-8 border-l-4 ${isLast ? 'border-tech-blue bg-gradient-to-r from-tech-blue/10 to-transparent' : 'border-slate-700 bg-navy-800/50'} backdrop-blur-sm hover:bg-navy-800 transition-all duration-300 group rounded-r-xl`}>
+                <div className={`absolute -left-[21px] top-8 w-10 h-10 border-2 rounded-full flex items-center justify-center z-10 transition-colors bg-navy-900 ${isLast ? 'border-tech-blue' : 'border-slate-700 group-hover:border-white'}`}>
+                    <span className={`font-bold ${isLast ? 'text-tech-blue' : 'text-slate-400'}`}>{number}</span>
+                </div>
+                <div className="ml-6">
+                    <div className="flex items-center gap-3 mb-3">
+                        <Icon className={`w-6 h-6 ${isLast ? 'text-tech-blue' : 'text-slate-300'}`} />
+                        <h3 className={`text-2xl font-bold ${isLast ? 'text-tech-blue' : 'text-white'}`}>{title}</h3>
+                    </div>
+                    <p className="text-slate-400 leading-relaxed font-light">{desc}</p>
+                </div>
+            </div>
+        );
+
+        const Nan73ProHomepage = () => {
+            return (
+                <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
+                    
+                    {/* Navigation */}
+                    <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
+                        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                            <Logo />
+                            <div className="hidden md:flex items-center gap-8 font-medium text-slate-300">
+                                <a href="#analysis" className="text-base hover:text-tech-blue transition-colors">Analysis</a>
+                                <a href="#structure" className="text-base hover:text-tech-blue transition-colors">Structure</a>
+                                <a href="#result" className="text-base hover:text-tech-blue transition-colors">Result</a>
+                                <a href="#contact" className="px-5 py-2 border border-slate-600 text-white rounded-lg hover:bg-tech-blue hover:text-navy-900 hover:border-tech-blue transition-all duration-300 font-bold hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] flex items-center">
+                                    Contact Us
+                                </a>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <header className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden flex items-center justify-center text-center bg-hero-gradient">
+                        <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern z-0 opacity-50 pointer-events-none"></div>
+                        <div className="container mx-auto relative z-10">
+                            <RevealOnScroll>
+                                <div className="max-w-4xl mx-auto">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tech-blue/10 border border-tech-blue/20 text-tech-blue text-xs font-bold tracking-wider uppercase mb-8">
+                                        <Zap size={14} />
+                                        Brand Identity Renewal
+                                    </div>
+                                    <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
+                                        구조적 전문성에서 <br />
+                                        <span className="text-gradient">
+                                            피어나는 필연적 행운
+                                        </span>
+                                    </h1>
+                                    <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+                                        Nan73Pro는 차가운 이성(Science)과 뜨거운 결과(Magic)를 연결합니다.<br className="hidden md:block"/>
+                                        우리는 우연을 구조화하여 필연적인 성공으로 이끄는 브랜드 아키텍트입니다.
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                        <a href="#result" className="flex items-center justify-center gap-2 px-8 py-4 bg-tech-blue text-navy-900 font-bold rounded-lg btn-glow hover:bg-sky-400">
+                                            BI 가이드라인 확인 <ArrowRight size={20} />
+                                        </a>
+                                        <a href="#structure" className="flex items-center justify-center gap-2 px-8 py-4 border border-white/20 text-white font-medium rounded-lg hover:bg-white/5 transition-colors">
+                                            컨설팅 프로세스
+                                        </a>
+                                    </div>
+                                </div>
+                            </RevealOnScroll>
+                        </div>
+                    </header>
+
+                    {/* Phase 1: Problem Definition */}
+                    <section id="analysis" className="py-24 bg-navy-800 border-y border-white/5">
+                        <div className="container mx-auto px-6">
+                            <RevealOnScroll>
+                                <div className="flex flex-col md:flex-row gap-16 items-center">
+                                    <div className="w-full md:w-1/2">
+                                        <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+                                            <span className="w-8 h-8 rounded bg-navy-900 flex items-center justify-center text-sm text-slate-400 border border-slate-700">01</span>
+                                            문제 정의 및 분석
+                                        </h2>
+                                        <p className="text-slate-400 mb-8 text-lg font-light leading-relaxed">
+                                            가장 큰 시각적 난제는 <strong>'차가운 프로세스'</strong>와 <strong>'감성적인 행운'</strong>이라는 상반된 가치를 어떻게 하나의 심볼에 담을 것인가였습니다.
+                                        </p>
+                                        <ul className="space-y-4">
+                                            {[
+                                                "DNA 해체: Nan7 (Goal) vs 3Pro (Process)",
+                                                "핵심 과제: 4글자 네이밍의 가독성 유지와 의미 부여",
+                                                "방향성: 정지된 로고가 아닌 '움직임'과 '변화'의 서사"
+                                            ].map((item, i) => (
+                                                <li key={i} className="flex items-start gap-3 text-slate-300">
+                                                    <CheckCircle size={20} className="text-slate-500 mt-1 shrink-0" />
+                                                    <span>{item}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div className="w-full md:w-1/2 bg-navy-900 p-10 rounded-2xl border border-white/5 relative">
+                                        {/* Visualizing the Conflict - Updated Colors */}
+                                        <div className="flex justify-between items-center text-center mb-4">
+                                            <div className="p-6 bg-navy-800 rounded-xl border border-slate-700">
+                                                <Hexagon className="mx-auto mb-3 text-slate-500" />
+                                                <span className="text-sm font-bold text-slate-400">Structure<br/>(Science)</span>
+                                            </div>
+                                            <div className="h-0.5 flex-1 bg-gradient-to-r from-slate-700 to-tech-blue mx-6 relative">
+                                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-navy-900 px-3 text-xs text-slate-500 border border-slate-800 rounded-full">
+                                                    Integration
+                                                </div>
+                                            </div>
+                                            <div className="p-6 bg-navy-800 rounded-xl border border-tech-blue/30 shadow-[0_0_20px_rgba(56,189,248,0.1)]">
+                                                <Zap className="mx-auto mb-3 text-tech-blue" />
+                                                <span className="text-sm font-bold text-tech-blue">Magic<br/>(Luck)</span>
+                                            </div>
+                                        </div>
+                                        <p className="text-center text-xs text-slate-500 mt-6">
+                                            "이성적 구조(Pro)를 통해 필연적 행운(Nan7)에 도달한다"
+                                        </p>
+                                    </div>
+                                </div>
+                            </RevealOnScroll>
+                        </div>
+                    </section>
+
+                    {/* Phase 2: Structure */}
+                    <section id="structure" className="py-24 relative bg-navy-900">
+                        <div className="absolute left-6 md:left-1/2 h-full w-px bg-gradient-to-b from-slate-800 via-slate-700 to-tech-blue/50 transform -translate-x-1/2 hidden md:block"></div>
+                        
+                        <div className="container mx-auto px-6 relative">
+                            <div className="text-center mb-16">
+                                <span className="text-tech-blue font-bold tracking-wider text-sm uppercase border border-tech-blue/30 px-3 py-1 rounded-full bg-tech-blue/5">Strategy</span>
+                                <h2 className="text-4xl font-bold mt-6">The Ascending Pathway</h2>
+                                <p className="text-slate-400 mt-4 font-light">컨셉트 A에 적용된 3단계 상승 프로세스</p>
+                            </div>
+
+                            <div className="max-w-4xl mx-auto space-y-8">
+                                <RevealOnScroll>
+                                    <StepCard 
+                                        number="01"
+                                        title="Foundation (Patent)"
+                                        desc="가장 낮은 곳에서 시작되는 견고한 기반. 딥 네이비 컬러의 첫 번째 블록은 흔들리지 않는 전문성과 원칙을 상징합니다."
+                                        icon={Anchor}
+                                    />
+                                </RevealOnScroll>
+
+                                <RevealOnScroll>
+                                    <div className="md:ml-12">
+                                        <StepCard 
+                                            number="02"
+                                            title="Process (Resource)"
+                                            desc="연결과 확장의 단계. 축적된 자원을 통해 상승 궤도를 그립니다. 구조적인 안정감을 주는 두 번째 블록입니다."
+                                            icon={Layers}
+                                        />
+                                    </div>
+                                </RevealOnScroll>
+
+                                <RevealOnScroll>
+                                    <div className="md:ml-24">
+                                        <StepCard 
+                                            number="03"
+                                            title="Transformation (Outcome)"
+                                            desc="마지막 도약. 구조화된 노력이 임계점을 넘어 행운(7)으로 전환되는 순간. 테크 블루 & 그린 그라디언트로 빛나는 결과물을 표현합니다."
+                                            icon={ArrowUpRight}
+                                            isLast={true}
+                                        />
+                                    </div>
+                                </RevealOnScroll>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Phase 3: Result & Brand System */}
+                    <section id="result" className="py-24 bg-navy-800 border-t border-white/5">
+                        <div className="container mx-auto px-6">
+                            <RevealOnScroll>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                                    {/* Brand System Showcase */}
+                                    <div>
+                                        <h2 className="text-3xl font-bold mb-8">Visual Identity System</h2>
+                                        
+                                        <div className="space-y-10">
+                                            {/* Color Palette - Updated to Blue/Green */}
+                                            <div>
+                                                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2"><div class="w-2 h-2 bg-tech-blue rounded-full"></div>Color Palette</h3>
+                                                <div className="flex gap-4">
+                                                    <div className="flex-1 h-28 bg-navy-900 rounded-xl flex flex-col justify-end p-4 border border-white/10 hover:border-tech-blue transition-colors cursor-pointer shadow-lg">
+                                                        <span className="text-xs text-white font-bold">Pro Navy</span>
+                                                        <span className="text-[10px] text-slate-400">#0F172A</span>
+                                                    </div>
+                                                    <div className="flex-1 h-28 bg-tech-blue rounded-xl flex flex-col justify-end p-4 hover:scale-105 transition-transform cursor-pointer shadow-[0_0_20px_rgba(56,189,248,0.3)]">
+                                                        <span className="text-xs text-navy-900 font-bold">Tech Blue</span>
+                                                        <span className="text-[10px] text-navy-800">#38BDF8</span>
+                                                    </div>
+                                                    <div className="flex-1 h-28 bg-tech-green rounded-xl flex flex-col justify-end p-4 hover:scale-105 transition-transform cursor-pointer shadow-[0_0_20px_rgba(52,211,153,0.3)]">
+                                                        <span className="text-xs text-navy-900 font-bold">Success Green</span>
+                                                        <span className="text-[10px] text-navy-800">#34D399</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Typography */}
+                                            <div>
+                                                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2"><div class="w-2 h-2 bg-slate-500 rounded-full"></div>Typography</h3>
+                                                <div className="p-8 border border-white/10 rounded-xl bg-navy-900 relative overflow-hidden">
+                                                    <div className="absolute top-0 right-0 w-20 h-20 bg-tech-blue/5 rounded-bl-full"></div>
+                                                    <div className="mb-2">
+                                                        <span className="text-4xl font-bold text-white tracking-tight">Nan73Pro</span>
+                                                    </div>
+                                                    <p className="text-slate-400 text-sm mt-4 font-light">
+                                                        Pretendard<br/>
+                                                        Modern, Logical, Trustworthy
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Final Mockup / Application */}
+                                    <div className="relative bg-gradient-to-br from-navy-900 to-navy-800 rounded-2xl p-8 shadow-2xl border border-white/10 flex flex-col justify-between overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-64 h-64 bg-tech-blue/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-tech-blue/20 transition-colors duration-500"></div>
+                                        
+                                        <div>
+                                            <div className="inline-block px-3 py-1 bg-tech-blue/10 border border-tech-blue/30 text-tech-blue text-xs font-bold rounded mb-6">
+                                                FINAL OUTPUT
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-white mb-2">Brand Application</h3>
+                                            <p className="text-slate-300 text-sm mb-12 font-light leading-relaxed">
+                                                명함, 웹사이트, 리포트 등 모든 접점에서<br/>'상승하는 전문성'을 일관되게 전달합니다.
+                                            </p>
+                                        </div>
+
+                                        {/* Mockup Graphics */}
+                                        <div className="grid grid-cols-2 gap-6 mt-auto">
+                                            <div className="bg-white p-5 rounded-lg shadow-lg transform rotate-[-2deg] hover:rotate-0 transition-transform duration-300 relative z-10">
+                                                <div className="flex justify-between items-start mb-10">
+                                                   <div className="w-8 h-8 bg-navy-900 rounded-sm relative overflow-hidden">
+                                                      <div className="absolute bottom-0 right-0 w-4 h-4 bg-tech-blue"></div>
+                                                   </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                  <div className="h-2 w-20 bg-slate-200 rounded"></div>
+                                                  <div className="h-1.5 w-12 bg-slate-100 rounded"></div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-navy-900 p-5 rounded-lg shadow-xl transform rotate-[3deg] hover:rotate-0 transition-transform duration-300 border-t-4 border-tech-blue relative z-0">
+                                                <div className="text-right text-white text-[10px] font-bold mb-10 tracking-widest opacity-50">CONSULTING REPORT</div>
+                                                <div className="h-16 w-full bg-white/5 rounded flex items-center justify-center border border-white/5">
+                                                    <TrendingUp className="text-tech-blue" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </RevealOnScroll>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer id="contact" className="bg-navy-900 py-12 border-t border-white/10 text-center md:text-left">
+                        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                            <div>
+                                <Logo />
+                                <p className="text-slate-500 text-sm mt-4">
+                                    © 2025 Nan73Pro. All rights reserved.
+                                </p>
+                            </div>
+                            <div className="text-center md:text-right">
+                                <p className="text-slate-400 mb-2 font-light">Ready for your own magic?</p>
+                                <a href="mailto:nan73pro@gmail.com" className="text-xl font-bold text-white hover:text-tech-blue transition-colors">
+                                    nan73pro@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Nan73ProHomepage />);
+    </script>
+</body>
+</html>
