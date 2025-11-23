@@ -367,10 +367,14 @@
             .btn-group { flex-direction: column; width: 100%; }
             .btn { width: 100%; }
             
-            /* [핵심 수정] 모바일에서는 무조건 1열로 강제 설정하여 한 화면에 하나씩 보이도록 함 */
+            /* [강제 수정] Grid 대신 Flex 사용으로 100% 세로 정렬 보장 */
             .brand-story-grid { 
-                grid-template-columns: 1fr !important; 
-                gap: 40px; /* 카드가 붙지 않도록 간격 유지 */
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 40px; 
+            }
+            .story-card {
+                width: 100% !important;
             }
 
             .integration-quote { font-size: 1.2rem; }
