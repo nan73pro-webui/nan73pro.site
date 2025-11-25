@@ -333,21 +333,17 @@
                                 
                                 {/* LEFT BLOCK: VISUAL IDENTITY */}
                                 <Reveal className="flex-1 w-full max-w-lg">
-                                    {/* justify-start to align from top */}
                                     <div className="glass-card p-6 md:p-10 rounded-2xl relative overflow-hidden group h-full flex flex-col justify-start">
                                         
                                         {/* Background Decor */}
                                         <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-iaan-nature/5 via-iaan-trust/5 to-iaan-sun/5"></div>
 
                                         <div className="relative z-10">
-                                            {/* Header Title: Aligned with Text (Indented) */}
-                                            {/* Icon w-12(3rem) + Gap 6(1.5rem) = 4.5rem padding left */}
                                             <h3 className="text-xl md:text-2xl font-bold mb-0 text-left pl-[4.5rem]">Visual Identity</h3>
                                             
-                                            {/* List Wrapper: mt-12 (Matched with Right) */}
                                             <div className="flex flex-col mt-12">
                                                 
-                                                {/* Green - Aligned with 01 using h-28 */}
+                                                {/* Green */}
                                                 <div className="w-full h-28 flex items-center gap-4 md:gap-6">
                                                     <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-iaan-nature/10 flex items-center justify-center shrink-0 border border-iaan-nature/20 shadow-[0_0_15px_rgba(52,211,153,0.2)]">
                                                         <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-iaan-nature"></div>
@@ -358,7 +354,7 @@
                                                     </div>
                                                 </div>
 
-                                                {/* Blue - Aligned with 02 using h-28 */}
+                                                {/* Blue */}
                                                 <div className="w-full h-28 flex items-center gap-4 md:gap-6">
                                                     <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-iaan-trust/10 flex items-center justify-center shrink-0 border border-iaan-trust/20 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
                                                         <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-iaan-trust"></div>
@@ -369,7 +365,7 @@
                                                     </div>
                                                 </div>
 
-                                                {/* Gold - Aligned with 03 using h-28 */}
+                                                {/* Gold */}
                                                 <div className="w-full h-28 flex items-center gap-4 md:gap-6">
                                                     <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-iaan-sun/10 flex items-center justify-center shrink-0 border border-iaan-sun/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]">
                                                         <div className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-iaan-sun"></div>
@@ -380,7 +376,7 @@
                                                     </div>
                                                 </div>
 
-                                                {/* Light of Harmony - Aligned with 04 using h-28 */}
+                                                {/* Light of Harmony */}
                                                 <div className="w-full h-28 flex items-center gap-4 md:gap-6">
                                                     <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg p-[1px] bg-gradient-to-b from-iaan-nature via-iaan-trust to-iaan-sun shadow-lg shrink-0">
                                                         <div className="w-full h-full bg-[#2C2A29] rounded-[7px] flex items-center justify-center">
@@ -389,7 +385,7 @@
                                                     </div>
                                                     <div>
                                                         <h3 className="text-lg md:text-xl font-bold text-white mb-1">Light of Harmony</h3>
-                                                        <p className="text-xs md:text-sm text-slate-400 break-keep">찬란한 휴식처(Nest)</p>
+                                                        <p className="text-xs md:text-sm text-slate-400 break-keep">찬란한 휴식처(Nest). 공간에 자연과 햇살을 담은 휴식처.</p>
                                                     </div>
                                                 </div>
 
@@ -407,17 +403,13 @@
                                         
                                         <h3 className="text-xl md:text-2xl font-bold mb-0 text-center">Dynamic Gradient Flow</h3>
                                         
-                                        {/* List Wrapper: mt-12 (Matched with Left) */}
+                                        {/* List Wrapper */}
                                         <div className="relative flex flex-col items-center mt-12">
                                             
-                                            {/* Connecting Line (Gradient) - Centered in h-28 rows. 
-                                                Center of h-28 (112px) is 56px. 
-                                                Start point: Center of 1st item (top-14). 
-                                                End point: Center of 4th item (bottom-14). 
-                                                Left: Center of circle (12/2 = 6 = 1.5rem) */}
-                                            <div className="absolute left-[1.5rem] -translate-x-1/2 top-14 bottom-14 w-1 bg-gradient-to-b from-iaan-nature via-iaan-trust to-iaan-sun rounded-full"></div>
+                                            {/* FIXED Vertical Line Alignment */}
+                                            <div className="absolute left-[1.75rem] md:left-[2rem] -translate-x-1/2 top-14 bottom-14 w-1 bg-gradient-to-b from-iaan-nature via-iaan-trust to-iaan-sun rounded-full"></div>
 
-                                            {/* Step 1 - Aligned with Nature Green */}
+                                            {/* Step 1 */}
                                             <div className="w-full h-28 flex items-center gap-4 md:gap-6 relative z-10 pl-2">
                                                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-navy-900 border-2 border-iaan-nature flex items-center justify-center font-bold text-iaan-nature shadow-[0_0_15px_rgba(52,211,153,0.3)] shrink-0 z-20">01</div>
                                                 <div className="flex-1 bg-white/5 p-3 rounded-lg border border-white/5 backdrop-blur-sm">
@@ -426,7 +418,7 @@
                                                 </div>
                                             </div>
 
-                                            {/* Step 2 - Aligned with Trust Blue */}
+                                            {/* Step 2 */}
                                             <div className="w-full h-28 flex items-center gap-4 md:gap-6 relative z-10 pl-2">
                                                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-navy-900 border-2 border-iaan-trust flex items-center justify-center font-bold text-iaan-trust shadow-[0_0_15px_rgba(56,189,248,0.3)] shrink-0 z-20">02</div>
                                                 <div className="flex-1 bg-white/5 p-3 rounded-lg border border-white/5 backdrop-blur-sm">
@@ -435,7 +427,7 @@
                                                 </div>
                                             </div>
 
-                                            {/* Step 3 - Aligned with Sunlight Gold */}
+                                            {/* Step 3 */}
                                             <div className="w-full h-28 flex items-center gap-4 md:gap-6 relative z-10 pl-2">
                                                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-navy-900 border-2 border-iaan-sun flex items-center justify-center font-bold text-iaan-sun shadow-[0_0_15px_rgba(251,191,36,0.3)] shrink-0 z-20">03</div>
                                                 <div className="flex-1 bg-white/5 p-3 rounded-lg border border-white/5 backdrop-blur-sm">
@@ -444,7 +436,7 @@
                                                 </div>
                                             </div>
 
-                                            {/* Step 4 - Aligned with Light of Harmony */}
+                                            {/* Step 4 */}
                                             <div className="w-full h-28 flex items-center gap-4 md:gap-6 relative z-10 pl-2">
                                                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-full p-[2px] bg-gradient-to-b from-iaan-nature via-iaan-trust to-iaan-sun shadow-[0_0_15px_rgba(255,255,255,0.2)] shrink-0 z-20">
                                                     <div className="w-full h-full bg-navy-900 rounded-full flex items-center justify-center">
