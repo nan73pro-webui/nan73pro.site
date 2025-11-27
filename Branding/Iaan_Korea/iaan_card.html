@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="이안코리아 임경원 부장 - 모바일 명함">
+    <meta property="og:description" content="Enclosure Solutions & Sunroom Consultant | 창을 접어 계절을 들이고, 공간을 펼쳐 쉼표를 더하다.">
+    <meta property="og:image" content="https://www.nan73pro.site/Branding/Iaan_Korea/iaan-profile-image.jpg">
     <title>이안코리아 - Enclosure Solutions</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -66,12 +69,12 @@
         .font-slogan {
             font-family: 'Gowun Batang', serif;
         }
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+       .glass-panel {
+  	  background: rgba(30, 41, 59, 0.85); /* 배경을 좀 더 진하게 */
+ 	   backdrop-filter: blur(5px);         /* 블러는 살짝만 (부하 대폭 감소) */
+  	  -webkit-backdrop-filter: blur(5px);
+ 	   border: 1px solid rgba(255, 255, 255, 0.08);
+	}
         .icon-btn:active {
             transform: scale(0.95);
         }
@@ -80,11 +83,11 @@
             filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
             transition: all 0.3s ease;
         }
-        .group:hover .icon-line {
-            stroke: #f59e0b !important;
-            filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.5));
-            transition: all 0.3s ease;
-        }
+        .group:hover .icon-path {
+ 	   stroke: url(#brand-gradient) !important;
+   	 /* filter: drop-shadow(...) 제거 */
+  	  transition: stroke 0.2s ease; /* 필요한 속성만 명시 */
+	}
     </style>
 </head>
 <body class="antialiased min-h-screen flex justify-center items-center bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
@@ -325,4 +328,3 @@ END:VCARD`;
     </script>
 </body>
 </html>
-
