@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IAAN KOREA - eCard Visual Identity</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            900: '#0B1120',
+                            800: '#1e293b',
+                        },
+                        iaan: {
+                            sun: '#f59e0b',    // Orange/Gold
+                            nature: '#34d399', // Green
+                            trust: '#38bdf8',  // Blue
+                            slate: '#1e293b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                        serif: ['Gowun Batang', 'serif'],
+                    },
+                    backgroundImage: {
+                        'hero-gradient': 'radial-gradient(circle at 50% 0%, #1e293b 0%, #0B1120 70%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { 
+            background-color: #0B1120; 
+            color: #f8fafc; 
+            overflow-x: hidden;
+            font-family: 'Pretendard', sans-serif;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .bg-grid {
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const Reveal = ({ children, className = "", delay = 0 }) => {
+            const [isVisible, setIsVisible] = useState(false);
+            const ref = useRef(null);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); }
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => { if (ref.current) observer.unobserve(ref.current); };
+            }, []);
+
+            return (
+                <div ref={ref} style={{ transitionDelay: `${delay}ms` }} className={`transition-all duration-1000 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"} ${className}`}>
+                    {children}
+                </div>
+            );
+        };
+
+        const DesignSystem = () => {
+            return (
+                <div className="min-h-screen bg-navy-900 text-slate-50 relative selection:bg-iaan-trust selection:text-navy-900">
+                    
+                    <div className="fixed inset-0 bg-grid pointer-events-none opacity-20"></div>
+                    <div className="fixed top-0 left-0 w-full h-full bg-hero-gradient z-0 pointer-events-none"></div>
+
+                    <div className="container mx-auto px-6 py-20 relative z-10">
+                        
+                        {/* Header Section */}
+                        <Reveal className="mb-16 md:mb-24 text-center">
+                            <span className="text-slate-500 font-bold tracking-widest text-xs uppercase border border-slate-700 px-3 py-1 rounded-full">
+                                IAAN KOREA
+                            </span>
+                            <h1 className="text-4xl md:text-6xl font-bold mt-6 text-white mb-4">
+                                eCard Visual Identity
+                            </h1>
+                            <p className="text-slate-400 max-w-2xl mx-auto">
+                                디지털 명함(Digital eCard)에 적용된 브랜드 아이덴티티 요소입니다.
+                            </p>
+                        </Reveal>
+
+                        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch justify-center max-w-7xl mx-auto">
+                            
+                            {/* LEFT BLOCK: COLOR PALETTE */}
+                            <Reveal className="flex-1 w-full" delay={0}>
+                                <div className="glass-card p-8 md:p-10 rounded-2xl h-full relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-iaan-nature/5 via-transparent to-transparent"></div>
+                                    
+                                    <div className="relative z-10">
+                                        <div className="flex items-center gap-3 mb-8">
+                                            <div className="w-8 h-1 bg-gradient-to-r from-iaan-nature via-iaan-sun to-iaan-trust rounded-full"></div>
+                                            <h2 className="text-2xl font-bold">Color Palette</h2>
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <div className="flex items-center gap-5 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+                                                <div className="w-16 h-16 rounded-lg bg-[#34d399] shadow-[0_0_15px_rgba(52,211,153,0.3)] shrink-0 flex items-center justify-center text-navy-900 font-bold text-xs">
+                                                    Nature
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-bold text-[#34d399]">#34d399</h3>
+                                                    <p className="text-sm text-slate-400">IAAN Nature Green</p>
+                                                    <p className="text-xs text-slate-500 mt-1">Inspiration, 친환경, 개방감</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-5 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+                                                <div className="w-16 h-16 rounded-lg bg-[#f59e0b] shadow-[0_0_15px_rgba(245,158,11,0.3)] shrink-0 flex items-center justify-center text-navy-900 font-bold text-xs">
+                                                    Sun
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-bold text-[#f59e0b]">#f59e0b</h3>
+                                                    <p className="text-sm text-slate-400">IAAN Sun Orange</p>
+                                                    <p className="text-xs text-slate-500 mt-1">Atmosphere, 햇살, 따스함</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-5 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+                                                <div className="w-16 h-16 rounded-lg bg-[#38bdf8] shadow-[0_0_15px_rgba(56,189,248,0.3)] shrink-0 flex items-center justify-center text-navy-900 font-bold text-xs">
+                                                    Trust
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-bold text-[#38bdf8]">#38bdf8</h3>
+                                                    <p className="text-sm text-slate-400">IAAN Trust Blue</p>
+                                                    <p className="text-xs text-slate-500 mt-1">Architecture, 기술, 신뢰</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-5 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+                                                <div className="w-16 h-16 rounded-lg bg-[#0B1120] border border-slate-700 shrink-0 flex items-center justify-center text-white font-bold text-xs">
+                                                    Navy
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-bold text-slate-300">#0B1120</h3>
+                                                    <p className="text-sm text-slate-400">Brand Base Color</p>
+                                                    <p className="text-xs text-slate-500 mt-1">Premium, 무게감, 몰입</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Reveal>
+
+                            {/* RIGHT BLOCK: TYPOGRAPHY */}
+                            <Reveal className="flex-1 w-full" delay={200}>
+                                <div className="glass-card p-8 md:p-10 rounded-2xl h-full relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-iaan-trust/5 via-transparent to-transparent"></div>
+
+                                    <div className="relative z-10">
+                                        <div className="flex items-center gap-3 mb-8">
+                                            <div className="w-8 h-1 bg-slate-500 rounded-full"></div>
+                                            <h2 className="text-2xl font-bold">Typography</h2>
+                                        </div>
+
+                                        <div className="space-y-8">
+                                            
+                                            {/* Font 1 */}
+                                            <div className="p-5 bg-white/5 rounded-xl border border-white/5">
+                                                <div className="flex justify-between items-end mb-3 border-b border-white/10 pb-2">
+                                                    <span className="text-iaan-sun font-bold text-sm tracking-wider uppercase">Point & Emotion</span>
+                                                    <span className="text-white text-xs">Gowun Batang</span>
+                                                </div>
+                                                <div className="font-serif text-3xl text-white mb-2">
+                                                    이안코리아
+                                                </div>
+                                                <p className="font-serif text-slate-300 text-lg leading-relaxed">
+                                                    {/* [수정] '공간'에 text-iaan-trust 적용 */}
+                                                    "창을 접어 <span className="text-iaan-nature">계절</span>을 들이고,<br/>
+                                                    <span className="text-iaan-trust">공간</span>을 펼쳐 <span className="text-iaan-sun">쉼표</span>를 더하다"
+                                                </p>
+                                                <p className="text-xs text-slate-500 mt-4 font-sans">
+                                                    * 사용처: 브랜드 슬로건, 감성적 메시지 전달
+                                                </p>
+                                            </div>
+
+                                            {/* Font 2 */}
+                                            <div className="p-5 bg-white/5 rounded-xl border border-white/5">
+                                                <div className="flex justify-between items-end mb-3 border-b border-white/10 pb-2">
+                                                    <span className="text-iaan-trust font-bold text-sm tracking-wider uppercase">Main System</span>
+                                                    <span className="text-white text-xs">Pretendard</span>
+                                                </div>
+                                                <div className="font-sans text-3xl font-bold text-white mb-2">
+                                                    IAAN KOREA
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <p className="font-sans font-bold text-slate-300 text-base">
+                                                        Bold: Enclosure Solutions
+                                                    </p>
+                                                    <p className="font-sans font-medium text-slate-400 text-base">
+                                                        Medium: Exterior Consultant
+                                                    </p>
+                                                    <p className="font-sans font-light text-slate-500 text-base">
+                                                        Light: 합법적 썬룸 시공 및 행정 대행
+                                                    </p>
+                                                </div>
+                                                <p className="text-xs text-slate-500 mt-4 font-sans">
+                                                    * 사용처: 본문, 정보 전달, 시스템 UI
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                        
+                                        <div className="mt-8 flex gap-2 opacity-50">
+                                            <span className="text-6xl font-serif text-white/10">Aa</span>
+                                            <span className="text-6xl font-sans font-bold text-white/10">Aa</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </Reveal>
+
+                        </div>
+
+                        <footer className="mt-20 text-center text-slate-600 text-xs">
+                            <p className="font-bold mb-2 text-lg inline-block text-transparent bg-clip-text bg-gradient-to-r from-iaan-nature via-iaan-trust to-iaan-sun">
+                                Nan73Pro.
+                            </p>
+                            <p>Derived from IAAN Digital eCard & Brand Story Assets</p>
+                        </footer>
+
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<DesignSystem />);
+    </script>
+</body>
+</html>
