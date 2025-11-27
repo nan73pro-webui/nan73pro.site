@@ -348,13 +348,10 @@
             const input = document.getElementById("passwordInput").value;
             const errorMsg = document.getElementById("errorMsg");
             
-            // 사용자가 입력한 값 앞에 임의의 소금(Salt)을 쳐서 인코딩합니다.
-            // 이렇게 하면 단순히 'angel77'을 찾는 사람 눈에는 비밀번호가 안 보입니다.
             const salt = "IAAN_PROJECT_"; 
             const combined = salt + input; 
             
-            // "IAAN_PROJECT_angel77"을 Base64로 변환한 값
-            // 소스 코드 상에서는 "SUFBTl9QUk9KRUNUX2FuZ2VsNzc=" 이 값만 보입니다.
+
             const target = "SUFBTl9QUk9KRUNUX2FuZ2VsNzc=";
 
             // 브라우저 내장 함수(btoa)로 인코딩하여 비교
@@ -377,4 +374,5 @@
         }
     </script>
 </body>
+
 </html>
