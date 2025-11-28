@@ -3,416 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium IP Visualization : 딸기 육묘장치</title>
+    <title>다중 보일러 스마트 난방 시스템 - 디지털 특허 브로슈어</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
-        :root {
-            --primary-green: #2ecc71;
-            --dark-green: #27ae60;
-            --point-red: #e74c3c;
-            --frame-color: #34495e;
-            --bg-color: #f4f6f7;
-        }
-
-        body {
-            font-family: 'Pretendard', system-ui, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            height: 100vh;
-            background: var(--bg-color);
-            overflow: hidden;
-        }
-
-        /* [왼쪽] 도면 영역 */
-        .visual-section {
-            flex: 1.5;
-            background: #fff;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-right: 1px solid #ddd;
-            overflow: hidden; /* 애니메이션 시 넘침 방지 */
-        }
-
-        /* 컨트롤 버튼 영역 */
-        .controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 10;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
         
-        .btn:hover { background: #f8f9fa; transform: translateY(-2px); }
-        .btn.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
-
-        .figure-label {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-weight: bold;
-            color: #7f8c8d;
-            background: rgba(255,255,255,0.8);
-            padding: 5px 10px;
-            border-radius: 5px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
 
-        /* SVG 및 애니메이션 설정 */
-        svg {
-            width: 80%;
-            height: auto;
-            max-height: 75vh;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 쫀득한 움직임 */
+        @keyframes flow {
+            0% { stroke-dashoffset: 20; }
+            100% { stroke-dashoffset: 0; }
         }
-
-        .patent-part {
-            fill: none;
-            stroke: var(--frame-color);
-            stroke-width: 2.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .flowing-pipe { 
+            stroke-dasharray: 5; 
+            animation: flow 1s linear infinite; 
         }
-
-        /* 분해 뷰(Exploded View)용 트랜스폼 */
-        .exploded #group-lid { transform: translateY(-60px); transition: transform 0.8s; }
-        .exploded #group-pot { transform: translateY(-30px); transition: transform 0.8s 0.1s; }
-        .exploded #group-frame { transform: scale(1.02); transition: transform 0.8s 0.2s; }
-        .exploded #group-bed { transform: translateY(40px); transition: transform 0.8s 0.3s; }
-
-        /* 부품 스타일 */
-        .part-bed { fill: #ecf0f1; stroke-width: 2; }
-        .part-pot { fill: #fff; stroke: var(--point-red); }
-        .part-lid { fill: none; stroke-width: 3; }
-
-        /* 활성화 효과 */
-        .patent-part.active {
-            stroke: var(--primary-green);
-            stroke-width: 4;
-            filter: drop-shadow(0 0 8px var(--primary-green));
-        }
-        .part-bed.active { fill: rgba(46, 204, 113, 0.15); }
-        .part-pot.active { fill: #ffcdd2; stroke: #c0392b; }
-
-        /* [오른쪽] 텍스트 영역 */
-        .text-section {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            background: #fdfdfd;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.02);
-        }
-
-        h2 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        
-        .claim-text {
-            line-height: 1.9;
-            font-size: 1.05rem;
-            color: #34495e;
-        }
-
-        .interactive {
-            cursor: pointer;
-            border-bottom: 2px dashed #bdc3c7;
-            transition: all 0.2s;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        .interactive:hover, .interactive.active {
-            background: var(--primary-green);
-            color: white;
-            border-radius: 4px;
-            border-bottom: 2px solid transparent;
-            padding: 0 4px;
-        }
-
-        /* === 팝업 모달 스타일 (고도화 핵심) === */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            backdrop-filter: blur(3px); /* 고급스러운 블러 처리 */
-        }
-
-        .modal-overlay.open { opacity: 1; visibility: visible; }
-
-        .modal-card {
-            background: white;
-            width: 90%;
-            max-width: 500px;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            transform: translateY(20px);
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .modal-overlay.open .modal-card { transform: translateY(0); }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .modal-title { font-size: 1.4rem; font-weight: bold; color: var(--dark-green); }
-        .modal-close { 
-            background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; 
-        }
-        .modal-close:hover { color: #333; }
-
-        .modal-body h4 { margin: 15px 0 5px 0; color: #555; font-size: 0.95rem; }
-        .modal-body p { margin: 0; color: #666; line-height: 1.6; font-size: 1rem; }
-        
-        .tech-tag {
-            display: inline-block;
-            background: #e8f5e9;
-            color: var(--dark-green);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
     </style>
 </head>
-<body>
+<body class="bg-orange-50 text-slate-800">
+    <div id="root"></div>
 
-    <div class="visual-section" id="visual-container">
-        <div class="figure-label">FIG. 4 (Interactive View)</div>
-        
-        <div class="controls">
-            <button class="btn" onclick="toggleExplode()" id="btn-explode">🔧 분해/조립 보기</button>
-        </div>
-        
-        <svg viewBox="0 0 500 600">
-            
-            <g id="group-bed">
-                <path id="part-111" class="patent-part" d="M 150 600 L 150 350 M 350 600 L 350 350" />
-                <path id="part-112" class="patent-part part-bed" d="M 130 250 L 160 350 L 340 350 L 370 250" />
-                <text x="130" y="500" fill="#999" font-size="12">111</text>
-                <text x="230" y="330" fill="#999" font-size="12">112 (베드)</text>
-            </g>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-            <g id="group-frame">
-                <path id="part-121" class="patent-part" d="M 140 450 L 140 300 M 360 450 L 360 300" />
-                <path id="part-122" class="patent-part" d="M 140 300 C 80 300, 80 200, 140 200 M 360 300 C 420 300, 420 200, 360 200" />
-                <path id="part-123" class="patent-part" d="M 140 200 L 140 100 M 360 200 L 360 100" />
-                <text x="50" y="250" fill="#999" font-size="12">122 (간섭회피)</text>
-            </g>
+        // --- Icons ---
+        const Sun = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
+        const Thermometer = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>;
+        const Activity = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>;
+        const Layers = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>;
+        const Play = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>;
+        const Pause = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>;
 
-            <g id="group-pot">
-                <rect id="part-A" class="patent-part part-pot" x="150" y="105" width="40" height="40" />
-                <rect class="patent-part part-pot" x="200" y="105" width="40" height="40" />
-                <rect class="patent-part part-pot" x="250" y="105" width="40" height="40" />
-                <rect class="patent-part part-pot" x="300" y="105" width="40" height="40" />
-                <text x="350" y="130" fill="#999" font-size="12">A (육묘포트)</text>
-            </g>
+        // --- Main Component ---
+        const GreenhouseSystem = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+            const [activeBoiler, setActiveBoiler] = useState(0); // 0: None, 1: Boiler1, 2: Boiler2, 3: Boiler3
+            const [isSimulating, setIsSimulating] = useState(false);
 
-            <g id="group-lid">
-                <path id="part-130" class="patent-part part-lid" d="M 120 100 Q 250 50 380 100" />
-                <path id="part-132" class="patent-part" d="M 250 75 L 250 85" stroke-width="1" />
-                <text x="230" y="60" fill="#999" font-size="12">130</text>
-            </g>
+            // Patent Info
+            const patentInfo = {
+                title: "다중 보일러를 이용한 비닐하우스의 난방시스템",
+                patentNumber: "10-2667124",
+                holder: "김근섭, 김옥형",
+                summary: "다수의 태양광 축열 보일러를 교차 가동하여 온도를 일정하게 유지하고, 이중 골조 공기층과 지중 매설 파이프로 난방 효율을 극대화한 시스템.",
+                keywords: ["다중 보일러 순환", "이중 골조 공기층", "지중 난방", "태양광 축열"]
+            };
 
-        </svg>
-    </div>
+            // Parts Data
+            const partsData = {
+                "10": { name: "다중 보일러 유닛", desc: "병렬 연결된 3개 이상의 전기 보일러 (10-1, 10-2, 10-3)" },
+                "11": { name: "전자변 & 순환라인", desc: "가동 중인 보일러만 개방하여 온수를 공급하는 제어 밸브" },
+                "20": { name: "이중 골조 프레임", desc: "내부(21)와 외부(22) 프레임 사이에 공기층(20a)을 형성하여 단열" },
+                "30": { name: "태양광 패널", desc: "외부 프레임 상단에 설치되어 보일러 축열 에너지원 공급" },
+                "U": { name: "지중 매설 파이프", desc: "하우스 외곽 땅속에 매설되어 한파 침투 및 결빙 방지" }
+            };
 
-    <div class="text-section">
-        <h2>🍓 고설재배용 딸기 육묘장치</h2>
-        <p style="color:#666; font-size:0.9rem;">등록번호: 10-2835875 | 발명자: 김근섭 외 1명</p>
-        <p style="font-size: 0.9rem; background: #eef; padding: 10px; border-radius: 5px;">
-            💡 <strong>Interactive Guide:</strong> 왼쪽 도면의 <span style="color: red; font-weight: bold;">'분해/조립' 버튼</span>을 누르거나, <span style="color: red; font-weight: bold;">밑줄 친 텍스트 및 도면 부품을 클릭</span>하여 상세 정보를 확인하세요.
-        </p>
+            // Simulation Logic
+            useEffect(() => {
+                let interval;
+                if (isSimulating) {
+                    interval = setInterval(() => {
+                        setActiveBoiler(prev => (prev % 3) + 1);
+                    }, 2000); // Change boiler every 2 seconds
+                } else {
+                    setActiveBoiler(0);
+                }
+                return () => clearInterval(interval);
+            }, [isSimulating]);
 
-        <div class="claim-text">
-            <strong>[청구항 1 핵심 요약]</strong><br><br>
-            본 발명은 지면으로부터 수직인 
-            <span class="interactive" data-id="part-111">지주프레임(111)</span>과 
-            그 위의 <span class="interactive" data-id="part-112">베드(112)</span>로 구성된 
-            고설재배부 상측에 설치됩니다.<br><br>
+            // --- SVG Diagram ---
+            const SchematicDiagram = () => {
+                return (
+                    <div className="relative w-full h-[450px] bg-slate-900 rounded-xl border border-slate-700 overflow-hidden flex flex-col items-center justify-center shadow-2xl">
+                        {/* Title & Control */}
+                        <div className="absolute top-4 left-4 z-10 bg-white/10 backdrop-blur px-3 py-1 rounded text-xs text-white border border-white/20">
+                            FIG. 1 System Configuration
+                        </div>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); setIsSimulating(!isSimulating); }}
+                            className={`absolute top-4 right-4 z-20 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 shadow-lg transition-all ${isSimulating ? 'bg-red-500 text-white animate-pulse' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
+                        >
+                            {isSimulating ? <><Pause size={14}/> 작동 중지</> : <><Play size={14}/> 순환 가동 시뮬레이션</>}
+                        </button>
 
-            핵심은 <span class="interactive" data-id="part-121">고정프레임(121)</span>에 연결되되, 
-            <strong>베드(112)의 재배 공간을 침범하지 않도록 바깥으로 휘어진</strong> 
-            <span class="interactive" data-id="part-122">호형프레임(122)</span>입니다.<br><br>
-            
-            이 구조 덕분에 상부의 <span class="interactive" data-id="part-123">수직프레임(123)</span>에 
-            <span class="interactive" data-id="part-A">육묘포트(A)</span>를 걸어두어도 
-            하부 작물의 성장을 방해하지 않으며, 최상단의 
-            <span class="interactive" data-id="part-130">뚜껑프레임(130)</span>이 
-            전체를 보호합니다.
-        </div>
-    </div>
+                        <svg viewBox="0 0 600 400" className="w-full h-full max-w-2xl">
+                            {/* Defs for gradients */}
+                            <defs>
+                                <linearGradient id="boilerGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stopColor="#475569" />
+                                    <stop offset="100%" stopColor="#1e293b" />
+                                </linearGradient>
+                                <linearGradient id="activeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stopColor="#ef4444" />
+                                    <stop offset="100%" stopColor="#991b1b" />
+                                </linearGradient>
+                            </defs>
 
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div class="modal-title" id="mTitle">부품 명칭</div>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <span class="tech-tag" id="mTag">핵심 구성요소</span>
-                <div id="mContent">
+                            {/* Background: Greenhouse Structure */}
+                            <path d="M50 350 L50 150 Q 300 0 550 150 L550 350" fill="none" stroke="#64748b" strokeWidth="2" strokeDasharray="5,5" opacity="0.5"/>
+                            <text x="500" y="340" className="text-[10px] fill-slate-500">Greenhouse</text>
+
+                            {/* 30: Solar Panel */}
+                            <rect x="250" y="40" width="100" height="20" fill="#3b82f6" opacity="0.8" transform="rotate(5 300 50)" />
+                            <text x="300" y="30" textAnchor="middle" className="text-[10px] fill-blue-400">30. 태양광패널</text>
+
+                            {/* Boilers (10-1, 10-2, 10-3) */}
+                            {[1, 2, 3].map((id, index) => {
+                                const xPos = 100 + (index * 150);
+                                const isActive = activeBoiler === id;
+                                return (
+                                    <g key={id} className="transition-all duration-500">
+                                        {/* Boiler Box */}
+                                        <rect 
+                                            x={xPos} y="150" width="100" height="80" rx="8" 
+                                            fill={isActive ? "url(#activeGradient)" : "url(#boilerGradient)"} 
+                                            stroke={isActive ? "#fca5a5" : "#94a3b8"} strokeWidth="2"
+                                            className={isActive ? "filter drop-shadow-[0_0_10px_rgba(239,68,68,0.6)]" : ""}
+                                        />
+                                        <text x={xPos + 50} y="195" textAnchor="middle" className="text-sm font-bold fill-white">
+                                            {isActive ? "가동 중" : `보일러 ${id}`}
+                                        </text>
+                                        
+                                        {/* Status Indicator */}
+                                        <circle cx={xPos + 85} cy="165" r="5" fill={isActive ? "#4ade80" : "#ef4444"} />
+
+                                        {/* Piping connection */}
+                                        <line x1={xPos + 50} y1="230" x2={xPos + 50} y2="280" stroke="#94a3b8" strokeWidth="4" />
+                                        
+                                        {/* Valve (11a) */}
+                                        <path d={`M${xPos+40} 250 L${xPos+60} 260 L${xPos+60} 250 L${xPos+40} 260 Z`} fill={isActive ? "#4ade80" : "#64748b"} />
+                                    </g>
+                                );
+                            })}
+
+                            {/* Main Circulation Line (A) */}
+                            {/* 1. Base Structure (Always visible) */}
+                            <rect x="80" y="280" width="440" height="60" rx="10" fill="#334155" stroke="#94a3b8" strokeWidth="2" />
+                            
+                            {/* 2. Flow Animation Overlay (Visible only when simulating) */}
+                            {/* 테두리 선에도 물이 흐르는 효과 추가 */}
+                            <rect 
+                                x="80" y="280" width="440" height="60" rx="10" 
+                                fill="none" 
+                                stroke="#fca5a5" 
+                                strokeWidth="3" 
+                                className={`transition-opacity duration-300 ${isSimulating ? "opacity-100 flowing-pipe" : "opacity-0"}`} 
+                            />
+                            
+                            <text x="300" y="315" textAnchor="middle" className="text-sm font-bold fill-slate-300">온수 순환 라인 (A)</text>
+                            
+                            {/* Water Flow Animation (Connections) */}
+                            {isSimulating && (
+                                <g>
+                                    {/* Flow from active boiler */}
+                                    <line 
+                                        x1={100 + ((activeBoiler-1) * 150) + 50} y1="230" 
+                                        x2={100 + ((activeBoiler-1) * 150) + 50} y2="280" 
+                                        stroke="#fca5a5" strokeWidth="2" className="flowing-pipe" 
+                                    />
+                                    {/* Horizontal Flow (Inside Line) */}
+                                    <line x1="100" y1="300" x2="500" y2="300" stroke="#fca5a5" strokeWidth="2" className="flowing-pipe" />
+                                </g>
+                            )}
+
+                            {/* Underground Pipe (U) - Special feature */}
+                            <path d="M520 300 L560 300 L560 380 L50 380 L50 300 L80 300" fill="none" stroke="#f59e0b" strokeWidth="3" strokeDasharray="4" opacity="0.7"/>
+                            <text x="300" y="390" textAnchor="middle" className="text-[10px] fill-amber-500 font-bold">지중 매설 파이프 (동결 방지)</text>
+
+                        </svg>
                     </div>
-            </div>
-        </div>
-    </div>
+                );
+            };
 
-    <script>
-        // 1. 특허 데이터베이스 (JSON 형식으로 관리하여 확장성 확보)
-        const patentData = {
-            "part-111": {
-                title: "지주프레임 (111)",
-                tag: "지지 구조",
-                desc: "지면으로부터 수직으로 설치되어 전체 하중을 지지하는 기본 프레임입니다. 2열로 배치되어 안정성을 확보합니다."
-            },
-            "part-112": {
-                title: "재배 베드 (112)",
-                tag: "기존 재배 공간",
-                desc: "딸기 등 작물이 실제로 심겨지는 공간입니다. 본 발명은 이 베드의 상부 공간을 활용하므로 추가적인 토지가 필요하지 않습니다."
-            },
-            "part-121": {
-                title: "고정프레임 (121)",
-                tag: "결합 수단",
-                desc: "지주프레임의 외측에 단단히 고정되어 육묘 장치를 지지하는 베이스 역할을 합니다. 클립이나 밴드로 체결됩니다."
-            },
-            "part-122": {
-                title: "호형프레임 (122)",
-                tag: "★ 핵심 기술 (Key Feature)",
-                desc: "<b>'베드에 간섭받지 아니하도록 외측으로 돌출 형성'</b>된 둥근(호형) 프레임입니다. <br>이 형상 덕분에 하부 베드에서 자라는 딸기의 잎이나 줄기를 건드리지 않고 상부 공간을 확보할 수 있습니다."
-            },
-            "part-123": {
-                title: "수직프레임 (123)",
-                tag: "육묘 공간 확보",
-                desc: "호형프레임 위로 연장되어 실제 육묘포트가 걸릴 높이를 제공합니다. 내측에 걸이대가 구비됩니다."
-            },
-            "part-A": {
-                title: "육묘포트 (A)",
-                tag: "생산성 증대",
-                desc: "어미묘로부터 나온 자묘를 받아 키우는 포트입니다. 베드 바로 위에 위치하여 작업 동선을 최소화하고 공기 순환을 돕습니다."
-            },
-            "part-130": {
-                title: "뚜껑프레임부 (130)",
-                tag: "환경 제어",
-                desc: "비닐이나 차광막을 씌울 수 있는 지붕 구조입니다. 중앙에 미스트 노즐(132)을 설치하여 습도 조절 및 방제가 가능합니다."
-            }
+            return (
+                <div className="min-h-screen bg-orange-50/50 font-sans text-slate-800">
+                    {/* Header */}
+                    <header className="bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-xl border-b-4 border-orange-800">
+                        <div className="max-w-6xl mx-auto px-4 py-10">
+                            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-bold backdrop-blur-sm border border-white/30">등록특허 {patentInfo.patentNumber}</span>
+                                        <span className="text-orange-100 text-xs">{patentInfo.holder}</span>
+                                    </div>
+                                    <h1 className="text-3xl md:text-4xl font-bold mb-2">{patentInfo.title}</h1>
+                                    <p className="text-orange-100 max-w-2xl leading-relaxed text-sm">
+                                        {patentInfo.summary}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap gap-2 justify-end">
+                                    {patentInfo.keywords.map((kw, i) => (
+                                        <span key={i} className="px-3 py-1 bg-black/20 rounded-full text-xs border border-white/10 backdrop-blur-md">#{kw}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Navigation */}
+                    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-orange-200 shadow-sm">
+                        <div className="max-w-6xl mx-auto px-4">
+                            <nav className="flex space-x-8 overflow-x-auto">
+                                {[
+                                    { id: 'overview', icon: <Thermometer size={18}/>, label: '기술 개요' },
+                                    { id: 'structure', icon: <Activity size={18}/>, label: '시스템 구조도' },
+                                    { id: 'logic', icon: <Sun size={18}/>, label: '순환 프로세스' },
+                                    { id: 'effect', icon: <Layers size={18}/>, label: '기대 효과' }
+                                ].map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`py-4 text-sm font-bold border-b-2 whitespace-nowrap transition-colors flex items-center gap-2
+                                            ${activeTab === tab.id ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-500 hover:text-slate-800'}
+                                        `}
+                                    >
+                                        {tab.icon} {tab.label}
+                                    </button>
+                                ))}
+                            </nav>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="max-w-6xl mx-auto px-4 py-8 animate-in">
+                        
+                        {/* TAB: OVERVIEW */}
+                        {activeTab === 'overview' && (
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                        <h3 className="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                            <Thermometer className="text-red-500" /> 기존 난방의 문제점
+                                        </h3>
+                                        <ul className="space-y-3 text-slate-600">
+                                            <li className="flex gap-3 items-start p-2 bg-slate-50 rounded">
+                                                <span className="text-red-500 font-bold mt-1">×</span>
+                                                <span>대형 보일러 단독 가동으로 온도 편차가 심하여 작물 생육 불균형 초래</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start p-2 bg-slate-50 rounded">
+                                                <span className="text-red-500 font-bold mt-1">×</span>
+                                                <span>하우스 외곽 지면이 얼어 한파가 내부로 침투 (냉해 발생)</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start p-2 bg-slate-50 rounded">
+                                                <span className="text-red-500 font-bold mt-1">×</span>
+                                                <span>단일 비닐 구조로 인한 열 손실 및 난방비 부담</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div className="bg-orange-50 p-6 rounded-2xl border border-orange-200">
+                                        <h3 className="text-xl font-bold text-orange-800 mb-4 flex items-center gap-2">
+                                            <Sun className="text-orange-600" /> 본 발명의 해결책
+                                        </h3>
+                                        <ul className="space-y-3 text-orange-900">
+                                            <li className="flex gap-3 items-start">
+                                                <span className="bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">1</span>
+                                                <span><strong>다중 보일러 순환:</strong> 여러 대의 소형 보일러를 교대로 가동하여 일정한 온도 유지 및 에너지 절감</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start">
+                                                <span className="bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">2</span>
+                                                <span><strong>이중 골조 공기층:</strong> 내부/외부 프레임 사이에 공기층(20a)을 형성하여 보온 효과 극대화</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start">
+                                                <span className="bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">3</span>
+                                                <span><strong>지중 온수 라인:</strong> 하우스 양 측면 땅속에 온수관을 매설하여 결빙 차단</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 flex flex-col justify-center items-center text-center">
+                                    <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6 text-orange-500 animate-pulse">
+                                        <Activity size={48} />
+                                    </div>
+                                    <h2 className="text-2xl font-bold mb-4 text-slate-800">"끊김 없는 정밀 난방"</h2>
+                                    <p className="text-slate-500 leading-relaxed mb-6">
+                                        하나가 멈추면, 이미 예열된 다음 보일러가 즉시 가동됩니다.<br/>
+                                        <span className="text-orange-600 font-bold">연속적 난방 프로세스</span>로 비닐하우스 내부 온도를 <br/>
+                                        항상 최적의 상태로 유지합니다.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: STRUCTURE */}
+                        {activeTab === 'structure' && (
+                            <div className="grid lg:grid-cols-3 gap-8">
+                                {/* Component List */}
+                                <div className="lg:col-span-1 space-y-4">
+                                    <h3 className="font-bold text-slate-700 flex items-center gap-2">
+                                        <Layers size={20}/> 주요 구성요소
+                                    </h3>
+                                    <div className="space-y-2">
+                                        {Object.entries(partsData).map(([key, part]) => (
+                                            <div key={key} className="p-4 rounded-xl border border-slate-200 bg-white hover:border-orange-300 transition-colors">
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span className="font-bold text-slate-800">{part.name}</span>
+                                                    <span className="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-mono">{key}</span>
+                                                </div>
+                                                <p className="text-xs text-slate-500">{part.desc}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="bg-slate-800 text-white p-4 rounded-xl text-xs mt-4">
+                                        * 도면의 <strong>'가동 시뮬레이션'</strong> 버튼을 눌러 보일러의 순차적 작동 방식을 확인하세요.
+                                    </div>
+                                </div>
+
+                                {/* Interactive Diagram */}
+                                <div className="lg:col-span-2">
+                                    <SchematicDiagram />
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: LOGIC (Process) */}
+                        {activeTab === 'logic' && (
+                            <div className="space-y-8">
+                                <h3 className="text-center font-bold text-xl text-slate-700 mb-8">보일러 순차 제어 알고리즘</h3>
+                                <div className="grid md:grid-cols-4 gap-4">
+                                    {[
+                                        { step: "1", title: "가동 (Run)", desc: "설정 온도 도달 시까지 전자변을 열고 온수 공급" },
+                                        { step: "2", title: "차단 (Stop)", desc: "설정 온도 이하로 떨어지면 가동 중지 및 전자변 폐쇄" },
+                                        { step: "3", title: "예열 (Preheat)", desc: "다음 가동을 위해 대기 상태에서 미리 예열 시작" },
+                                        { step: "4", title: "교대 (Switch)", desc: "이미 예열된 다음 보일러(Next)가 즉시 바통을 이어받아 가동" }
+                                    ].map((item, idx) => (
+                                        <div key={idx} className="bg-white p-6 rounded-xl border border-orange-100 shadow-sm relative overflow-hidden group hover:-translate-y-1 transition-transform">
+                                            <div className="absolute top-0 right-0 bg-orange-100 text-orange-600 px-3 py-1 rounded-bl-xl font-bold text-xs">Step {item.step}</div>
+                                            <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center mb-4 text-slate-600 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                                                <Activity size={20}/>
+                                            </div>
+                                            <h4 className="font-bold text-lg mb-2">{item.title}</h4>
+                                            <p className="text-sm text-slate-500">{item.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl flex items-start gap-4">
+                                    <div className="bg-white p-3 rounded-full text-blue-600 shadow-sm mt-1">
+                                        <Thermometer size={24}/>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-blue-900 text-lg">지능형 온도/시간 제어</h4>
+                                        <p className="text-blue-800 text-sm mt-1 leading-relaxed">
+                                            각 보일러에는 <strong>온도제어장치</strong>와 <strong>시간제어장치</strong>가 개별 부착되어 있습니다. 
+                                            데이터를 분석하여 최적의 타이밍에 가동/중지/예열을 반복하며, 
+                                            불필요한 전력 소모를 차단합니다.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: EFFECT */}
+                        {activeTab === 'effect' && (
+                            <div className="grid md:grid-cols-3 gap-6 animate-in">
+                                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                                    <div className="text-orange-500 mb-4">
+                                        <Sun size={32} />
+                                    </div>
+                                    <h3 className="font-bold text-lg text-slate-800 mb-2">에너지 효율 극대화</h3>
+                                    <p className="text-slate-600 text-sm">
+                                        태양광 패널을 통해 축열하고, 다중 보일러의 효율적 제어로 난방비를 획기적으로 절감합니다.
+                                    </p>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                                    <div className="text-blue-500 mb-4">
+                                        <Layers size={32} />
+                                    </div>
+                                    <h3 className="font-bold text-lg text-slate-800 mb-2">단열 및 내구성 향상</h3>
+                                    <p className="text-slate-600 text-sm">
+                                        이중 골조 사이의 공기층(Air Layer)이 자연 단열재 역할을 하며, 각파이프 구조로 비닐 고정력을 높였습니다.
+                                    </p>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                                    <div className="text-red-500 mb-4">
+                                        <Thermometer size={32} />
+                                    </div>
+                                    <h3 className="font-bold text-lg text-slate-800 mb-2">균일한 작물 생육</h3>
+                                    <p className="text-slate-600 text-sm">
+                                        지중 매설 파이프로 가장자리 냉해를 방지하고, 내부 온도를 일정하게 유지하여 작물이 고르게 성장합니다.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="bg-slate-900 text-slate-400 py-10 mt-12 text-center text-sm">
+                        <div className="max-w-6xl mx-auto px-4">
+                            <p className="mb-2">본 브로슈어는 '다중 보일러를 이용한 비닐하우스의 난방시스템' 특허 명세서(10-2667124)를 기반으로 제작되었습니다.</p>
+                            <p>&copy; 2025 Patent Visualization Assistant.</p>
+                        </div>
+                    </footer>
+                </div>
+            );
         };
 
-        // 2. 모달 제어 로직
-        const modal = document.getElementById('modalOverlay');
-        const mTitle = document.getElementById('mTitle');
-        const mTag = document.getElementById('mTag');
-        const mContent = document.getElementById('mContent');
-
-        function openModal(id) {
-            const data = patentData[id];
-            if (!data) return; // 데이터 없으면 무시
-
-            mTitle.innerText = data.title;
-            mTag.innerText = data.tag;
-            mContent.innerHTML = `
-                <h4>기능 및 역할</h4>
-                <p>${data.desc}</p>
-            `;
-            modal.classList.add('open');
-        }
-
-        function closeModal() {
-            modal.classList.remove('open');
-            // 하이라이트 초기화
-            document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
-        }
-
-        // 배경 클릭 시 닫기
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-
-        // 3. 인터랙션 이벤트 연결 (도면 & 텍스트)
-        
-        // 텍스트 링크 클릭 이벤트
-        document.querySelectorAll('.interactive').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const id = item.getAttribute('data-id');
-                highlightPart(id);
-                openModal(id);
-            });
-            // 호버 효과
-            item.addEventListener('mouseenter', () => highlightPart(item.getAttribute('data-id')));
-            item.addEventListener('mouseleave', () => removeHighlight());
-        });
-
-        // SVG 부품 클릭 이벤트
-        document.querySelectorAll('.patent-part').forEach(part => {
-            part.addEventListener('click', (e) => {
-                // 그룹 내부 path 클릭 시 상위 ID 찾기 등의 로직이 필요할 수 있음. 
-                // 여기서는 ID가 명확하므로 바로 사용.
-                const id = part.id; 
-                if(patentData[id]) openModal(id);
-            });
-            // 호버 효과
-            part.addEventListener('mouseenter', function() {
-                this.classList.add('active');
-            });
-            part.addEventListener('mouseleave', function() {
-                this.classList.remove('active');
-            });
-        });
-
-        // 하이라이트 함수
-        function highlightPart(id) {
-            const el = document.getElementById(id);
-            if (el) el.classList.add('active');
-        }
-
-        function removeHighlight() {
-            document.querySelectorAll('.patent-part').forEach(el => el.classList.remove('active'));
-        }
-
-        // 4. 분해/조립 애니메이션 토글
-        function toggleExplode() {
-            const container = document.getElementById('visual-container');
-            const btn = document.getElementById('btn-explode');
-            
-            container.classList.toggle('exploded');
-            
-            if (container.classList.contains('exploded')) {
-                btn.classList.add('active');
-                btn.innerText = "🔒 조립 상태로 복구";
-            } else {
-                btn.classList.remove('active');
-                btn.innerText = "🔧 분해/조립 보기";
-            }
-        }
-
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<GreenhouseSystem />);
     </script>
 </body>
 </html>
