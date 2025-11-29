@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nan73pro - Portfolio Section</title>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <style>
+        /* =========================================
+           0. Global Variables & Reset
+           ========================================= */
+        :root {
+            --bg-color: #0f172a;       /* Deep Navy */
+            --bg-secondary: #1e293b;   /* Lighter Navy */
+            --text-main: #f8fafc;      /* White */
+            --text-sub: #94a3b8;       /* Gray */
+            --accent-color: #38bdf8;   /* Tech Blue */
+            --accent-green: #34d399;   /* Success Green */
+            --gradient-text: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%);
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: var(--bg-secondary); /* 섹션 배경색으로 설정 */
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* 공통 레이아웃 클래스 */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px; /* 모바일 좌우 여백 */
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        /* 텍스트 강조 유틸리티 */
+        .highlight {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 버튼 스타일 (더보기 버튼용) */
+        .btn {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-main);
+        }
+        /* =========================================
+           4. Portfolio Section
+           ========================================= */
+        .portfolio-section {
+            padding: 100px 0;
+            background-color: var(--bg-secondary);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .pf-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 350px;
+        }
+        .pf-card:hover { transform: translateY(-5px); border-color: var(--accent-color); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        .pf-card:hover .pf-bg-code { opacity: 0.1; transform: scale(1.1); }
+
+        .pf-status {
+            display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 6px 12px; border-radius: 30px; margin-bottom: 20px; width: fit-content;
+        }
+        .pf-status.registered { background: rgba(56, 189, 248, 0.15); color: var(--accent-color); border: 1px solid rgba(56, 189, 248, 0.3); }
+        .pf-status.investment { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .pf-tags { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .pf-tags span { font-size: 0.8rem; color: #94a3b8; background: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 4px; }
+
+        .pf-content h3 { font-size: 1.3rem; color: var(--text-main); margin-bottom: 15px; line-height: 1.4; }
+        .pf-desc { font-size: 0.95rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 30px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .pf-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .pf-client { font-size: 0.85rem; color: #64748b; }
+        .pf-link { font-size: 0.9rem; color: var(--accent-color); font-weight: 600; transition: margin-right 0.3s; }
+        .pf-card:hover .pf-link { margin-right: 5px; }
+
+        .pf-bg-code {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(30deg, #0000 0%, #0000 49%, rgba(255,255,255,0.05) 50%, #0000 51%), linear-gradient(-30deg, #0000 0%, #0000 49%, rgba(255,255,255,0.05) 50%, #0000 51%);
+            background-size: 60px 60px; opacity: 0.03; z-index: 0; pointer-events: none; transition: all 0.5s ease;
+        }
+        
+        .more-btn-wrapper { text-align: center; margin-top: 20px; }
+        
+        @media (max-width: 900px) {
+            .portfolio-grid { grid-template-columns: 1fr; gap: 20px; }
+        }
+        .site-footer { 
+            background: #0f172a; 
+            padding: 40px 20px; 
+            border-top: 1px solid rgba(255,255,255,0.05); 
+            text-align: center; 
+        }
+        .footer-logo { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            margin-bottom: 15px; 
+            color: white;
+            display: inline-block; /* 링크를 포함하기 위해 인라인 블록으로 변경 */
+        }
+        .footer-logo .dot { color: var(--accent-color); }
+        .copyright { color: #64748b; font-size: 0.8rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <section id="portfolio" class="portfolio-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">아이디어, <span class="highlight">자산(Asset)</span>이 되다</h2>
+                <p class="section-subtitle">
+                    제품과 시스템을 명쾌한 권리로 전환한 성공 사례입니다.<br>
+                    특허등록으로 기본, 비즈니스 확장의 발판을 마련했습니다.
+                </p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="pf-card">
+                    <div class="pf-status registered">특허 등록 완료</div>
+                    <div class="pf-content">
+                        <div class="pf-tags">
+                            <span>#고설재배</span><span>#딸기</span><span>#육묘장치</span>
+                        </div>
+                        <h3>유휴공간을 활용한 고설재배용<br>딸기 육묘장치 특허화</h3>
+                        <p class="pf-desc">베드 간섭없는 공중부양 구조로 공간 효율 극대화, 병충해 예방, 작업 효율성, 우량 묘 생산 효과로 특허권리 확보.</p>
+                        <div class="pf-footer">
+                            <div class="pf-client">Client: P OOO</div>
+                            <a href="/PatentView/patent_brief_0001.html" target="_blank" class="pf-link">웹 리포트 보기 →</a>
+                        </div>
+                    </div>
+                    <div class="pf-bg-code"></div>
+                </div>
+                <div class="pf-card">
+                    <div class="pf-status registered">특허 등록 완료</div>
+                    <div class="pf-content">
+                        <div class="pf-tags">
+                            <span>#Intelligence</span><span>#빅데이터</span><span>#SaaS</span>
+                        </div>
+                        <h3>AI 기반 개인화 추천 엔진<br>데이터 처리 프로세스 설계</h3>
+                        <p class="pf-desc">추상적인 AI 학습 모델을 구체적인 데이터 전처리 과정(Pre-processing)으로 도식화하여 기술적 진보성 입증 성공.</p>
+                        <div class="pf-footer">
+                            <div class="pf-client">Client: A 테크랩</div>
+                            <a href="/PatentView/patent_brief_0002.html" target="_blank" class="pf-link">웹 리포트 보기 →</a>
+                        </div>
+                    </div>
+                    <div class="pf-bg-code"></div>
+                </div>
+                <div class="pf-card">
+                    <div class="pf-status registered">특허 등록 완료</div>
+                    <div class="pf-content">
+                        <div class="pf-tags">
+                            <span>#썬룸</span><span>#인테리어</span><span>#원터치</span>
+                        </div>
+                        <h3>방어 출원의 미심사 특허<br>결과 검증 및 최적화로 등록</h3>
+                        <p class="pf-desc">복잡한 제품 구조를 웹 시퀀스 다이어그램으로 시각화. 투자자 설득 자료로 활용 가능한 고퀄리티 명세서 제공.</p>
+                        <div class="pf-footer">
+                            <div class="pf-client">Client: C (주)OOOO</div>
+                            <a href="/PatentView/patent_brief_0003.html" target="_blank" class="pf-link">웹 리포트 보기 →</a>
+                        </div>
+                    </div>
+                    <div class="pf-bg-code"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <span style="color:white;">Nan</span><span style="color:#6AD7FF;">7</span><span style="color:#17C8C8;">3</span><span style="color:white;">Pro</span><span class="dot">.</span>
+            </div>
+            <p class="copyright">© 2025 nan73pro. All rights reserved. <br>Designed & Developed by The IP Developer.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
