@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>안전로프 걸이대 - 디지털 특허 브로슈어</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        .animate-in { animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        
+        /* Rope Animation */
+        @keyframes passThrough {
+            0% { transform: translateX(-150px); }
+            50% { transform: translateX(0px); }
+            100% { transform: translateX(150px); }
+        }
+        .hook-move { animation: passThrough 4s linear infinite; }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            45% { transform: rotate(0deg); }
+            55% { transform: rotate(90deg); } /* Spin as hook passes */
+            100% { transform: rotate(90deg); }
+        }
+        .spinner-move { animation: spin 4s linear infinite; }
+
+        /* Highlight Animation */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+        .animate-spin-slow { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-orange-50 text-slate-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- Icons ---
+        const Anchor = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>;
+        const Rotate = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>;
+        const Shield = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
+        const User = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+        const HardHat = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"/><path d="M10 16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><path d="M10 12a10 10 0 0 1 10-6.73V5a2 2 0 0 0-2-2h-2.18a3 3 0 0 0-5.64 0H8a2 2 0 0 0-2 2v.27A10 10 0 0 1 10 12Z"/></svg>;
+        const AlertTriangle = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>;
+        const ShieldCheck = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>;
+        const RotateCw = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>;
+
+        // *** Component Name Corrected to SafetyRopeSystem ***
+        const SafetyRopeSystem = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+            const [selectedPart, setSelectedPart] = useState(null);
+            const [isSimulating, setIsSimulating] = useState(false);
+
+            const patentInfo = {
+                number: "10-2370644",
+                title: "안전로프 걸이대",
+                englishTitle: "SAFETY ROPE HANGER",
+                summary: "작업자가 안전고리를 풀지 않고도 이동할 수 있도록, 지지봉 단부의 회전부재가 안전고리 통과 시 회전하여 로프의 지지 상태를 지속적으로 유지하는 안전 장치.",
+                desc: "작업자의 안전과 편의를 동시에 만족시키는 혁신적인 회전형 걸이대 시스템입니다.", // 추가된 설명 문구
+                keywords: ["추락방지", "회전부재", "작업효율증대", "자동통과"]
+            };
+
+            const partsData = {
+                "110": {
+                    id: "110",
+                    name: "고정판 (Fixing Plate)",
+                    desc: "벽면이나 구조물에 결합되는 베이스 판",
+                    detail: "다수의 결합공(110a)이 있어 볼트로 견고하게 고정되며, 후면에는 ㄷ자형 브라켓(111)이 결합될 수 있습니다."
+                },
+                "120": {
+                    id: "120",
+                    name: "이탈방지봉 (Upper Bar)",
+                    desc: "안전로프 상부 이탈 방지",
+                    detail: "고정판 상부에 돌출되어 로프가 과도하게 움직여 이탈하는 것을 물리적으로 차단합니다."
+                },
+                "130": {
+                    id: "130",
+                    name: "지지봉 (Support Bar)",
+                    desc: "안전로프 하중 지지 축",
+                    detail: "고정판 하부에 돌출되어 있으며, 끝단에 회전부재(140)가 결합되어 로프를 받쳐줍니다."
+                },
+                "140": {
+                    id: "140",
+                    name: "회전부재 (Rotating Star)",
+                    desc: "안전고리 통과용 회전 부품",
+                    detail: "3개 이상의 방사형 회전봉(142)으로 구성되어, 고리가 지나갈 때 회전하면서도 로프는 떨어뜨리지 않고 계속 지지합니다."
+                }
+            };
+
+            // Pass-through Simulation Component
+            const PassThroughSimulation = () => {
+                return (
+                    <div className="w-full bg-white rounded-xl overflow-hidden shadow-lg border border-orange-200 p-8 flex flex-col items-center animate-in">
+                        <div className="w-full flex justify-between items-center mb-8">
+                            <span className="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow">자동 통과 시뮬레이션</span>
+                            <span className="text-slate-400 text-xs">안전고리가 걸이대를 만날 때</span>
+                        </div>
+
+                        <div className="relative w-full max-w-lg h-[200px] bg-slate-100 rounded-lg border border-slate-300 flex items-center justify-center overflow-hidden">
+                            {/* Safety Rope (Background Line) */}
+                            <div className="absolute w-full h-1 bg-blue-500 top-1/2 transform -translate-y-1/2"></div>
+
+                            {/* The Hanger (Center) */}
+                            <div className="absolute z-10 flex flex-col items-center">
+                                {/* Support Rod */}
+                                <div className="w-4 h-24 bg-slate-600 rounded-t-lg"></div>
+                                {/* Spinner (Rotates) */}
+                                <div className="w-24 h-24 absolute top-[-12px] spinner-move origin-center flex items-center justify-center">
+                                    {/* 3 Spokes */}
+                                    <div className="absolute w-2 h-24 bg-orange-500 rounded-full"></div>
+                                    <div className="absolute w-2 h-24 bg-orange-500 rounded-full rotate-60"></div>
+                                    <div className="absolute w-2 h-24 bg-orange-500 rounded-full -rotate-60"></div>
+                                    {/* Center Hub */}
+                                    <div className="absolute w-6 h-6 bg-slate-800 rounded-full border-2 border-white z-20"></div>
+                                </div>
+                            </div>
+
+                            {/* The Moving Hook (User) */}
+                            <div className="absolute z-30 top-1/2 hook-move">
+                                {/* Carabiner Shape */}
+                                <div className="w-12 h-20 border-4 border-blue-600 rounded-full bg-white/20 -mt-12 flex items-center justify-center">
+                                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                                </div>
+                                <div className="absolute top-8 left-1/2 w-1 h-32 bg-slate-400 -translate-x-1/2"></div> {/* Rope to worker */}
+                                <div className="absolute top-40 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded">작업자</div>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 text-center max-w-md">
+                            <p className="text-slate-600 font-medium">
+                                "안전고리가 회전부재(140)를 밀면, 회전봉이 돌아가며 길을 열어줍니다.<br/>
+                                통과 후에는 다시 로프를 안정적으로 지지합니다."
+                            </p>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Structure Diagram SVG Component
+            const SchematicDiagram = () => {
+                const toggleSimulation = () => setIsSimulating(!isSimulating);
+                
+                return (
+                    <div className="relative w-full h-96 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex items-center justify-center shadow-2xl">
+                        <div className="absolute top-4 left-4 z-10 bg-white/10 backdrop-blur px-3 py-1 rounded text-xs text-white font-mono">
+                            FIG. 1 Perspective View
+                        </div>
+
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); toggleSimulation(); }}
+                            className={`absolute top-4 right-4 z-20 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 shadow-lg transition-all ${isSimulating ? 'bg-orange-500 text-white animate-pulse' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
+                        >
+                            {isSimulating ? "시뮬레이션 중..." : "안전고리 통과 테스트"}
+                        </button>
+
+                        <svg viewBox="0 0 400 300" className="w-full h-full max-w-lg">
+                            {/* Wall/Base */}
+                            <rect x="50" y="20" width="10" height="260" fill="#334155" />
+                            
+                            {/* 110: Fixing Plate */}
+                            <g onClick={() => setSelectedPart(partsData["110"])} className="cursor-pointer hover:opacity-80">
+                                <rect x="60" y="50" width="40" height="200" fill="#cbd5e1" stroke="#475569" strokeWidth="2"/>
+                                <circle cx="80" cy="80" r="5" fill="#94a3b8" />
+                                <circle cx="80" cy="150" r="5" fill="#94a3b8" />
+                                <circle cx="80" cy="220" r="5" fill="#94a3b8" />
+                                <text x="65" y="240" fontSize="10" fill="#64748b">110</text>
+                            </g>
+
+                            {/* 120: Upper Bar */}
+                            <g onClick={() => setSelectedPart(partsData["120"])} className="cursor-pointer hover:opacity-80">
+                                <rect x="100" y="70" width="80" height="15" fill="#94a3b8" stroke="#475569" />
+                                <text x="140" y="65" fontSize="10" fill="#94a3b8" textAnchor="middle">120. 이탈방지</text>
+                            </g>
+
+                            {/* 130: Support Bar (Main Shaft) */}
+                            <g onClick={() => setSelectedPart(partsData["130"])} className="cursor-pointer hover:opacity-80">
+                                <rect x="100" y="180" width="100" height="25" fill="#64748b" stroke="#334155" />
+                                <text x="150" y="220" fontSize="10" fill="#94a3b8" textAnchor="middle">130. 지지봉</text>
+                            </g>
+
+                            {/* 140: Rotating Member */}
+                            <g 
+                                onClick={() => setSelectedPart(partsData["140"])} 
+                                className="cursor-pointer"
+                                transform="translate(200, 192.5)" 
+                            >
+                                <g className={isSimulating ? "spin-action" : ""} style={{transformBox: 'fill-box', transformOrigin: 'center'}}>
+                                    {/* Hub */}
+                                    <circle cx="0" cy="0" r="15" fill="#e2e8f0" stroke="#1e293b" strokeWidth="2" />
+                                    {/* Spokes (Star Shape) */}
+                                    <line x1="0" y1="0" x2="0" y2="-60" stroke="#cbd5e1" strokeWidth="12" strokeLinecap="round" />
+                                    <line x1="0" y1="0" x2="52" y2="30" stroke="#cbd5e1" strokeWidth="12" strokeLinecap="round" />
+                                    <line x1="0" y1="0" x2="-52" y2="30" stroke="#cbd5e1" strokeWidth="12" strokeLinecap="round" />
+                                    {/* Center Bolt */}
+                                    <circle cx="0" cy="0" r="8" fill="#475569" />
+                                </g>
+                            </g>
+
+                            {/* Rope and Hook Simulation */}
+                            {isSimulating && (
+                                <g>
+                                    <path d="M-50 160 Q 200 190 450 160" stroke="#facc15" strokeWidth="4" fill="none" strokeDasharray="10 5" className="opacity-80" />
+                                    <g className="hook-move">
+                                        <path d="M160 150 C 160 130, 240 130, 240 150 C 240 170, 220 180, 200 180 C 180 180, 160 170, 160 150" 
+                                              fill="none" stroke="#ef4444" strokeWidth="5" />
+                                        <rect x="195" y="180" width="10" height="30" fill="#ef4444" />
+                                        <circle cx="200" cy="220" r="10" fill="none" stroke="#ef4444" strokeWidth="3" />
+                                    </g>
+                                </g>
+                            )}
+
+                             {/* Static Rope */}
+                             {!isSimulating && (
+                                <path d="M0 160 Q 200 190 400 160" stroke="#facc15" strokeWidth="4" fill="none" className="opacity-60" />
+                            )}
+
+                            {/* Selection Highlight */}
+                            {selectedPart && selectedPart.id === "140" && (
+                                <circle cx="200" cy="192.5" r="70" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="5" className="animate-spin-slow" />
+                            )}
+                        </svg>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-orange-50 font-sans text-slate-800 flex flex-col">
+                    {/* Header */}
+                    <header className="bg-white border-b-4 border-orange-500 shadow-sm sticky top-0 z-50">
+                        <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="bg-blue-600 text-white px-2 py-0.5 rounded text-xs font-bold">등록특허 {patentInfo.number}</span>
+                                    <span className="text-slate-500 text-xs">발명자: 이승{patentInfo.holder}</span>
+                                </div>
+                                <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{patentInfo.title}</h1>
+                                {/* 수정 1: 발명 설명 문구 추가 */}
+                                <p className="text-slate-500 text-sm mt-1 font-medium">{patentInfo.desc}</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold">#건설안전</span>
+                                <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold">#추락방지</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Navigation */}
+                    <div className="max-w-5xl mx-auto px-6 mt-6">
+                        <nav className="flex space-x-2 md:space-x-8 overflow-x-auto pb-2">
+                            {[
+                                { id: 'overview', label: '기술 개요', icon: <Shield size={18}/> },
+                                { id: 'structure', label: '구조 상세', icon: <Anchor size={18}/> },
+                                { id: 'simulation', label: '통과 원리', icon: <Rotate size={18}/> },
+                                { id: 'benefits', label: '현장 효과', icon: <User size={18}/> }
+                            ].map(tab => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-orange-600 text-white shadow-lg scale-105' : 'bg-white text-slate-500 hover:bg-orange-100'}`}
+                                >
+                                    {tab.icon} {tab.label}
+                                </button>
+                            ))}
+                        </nav>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="max-w-5xl mx-auto px-6 py-8 flex-grow w-full animate-in">
+                        {/* TAB 1: 기술 개요 */}
+                        {activeTab === 'overview' && (
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="bg-white p-8 rounded-2xl shadow-sm border border-orange-100">
+                                    <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                        <AlertTriangle className="text-red-500" /> 기존 현장의 문제점
+                                    </h3>
+                                    <p className="text-slate-600 leading-relaxed mb-4">
+                                        기존 고정형 걸이대는 로프가 처지는 것을 막아주지만, 작업자가 이동할 때마다 <strong>안전고리를 풀었다가 다시 걸어야 하는 치명적인 불편함</strong>이 있었습니다. 이 과정에서 작업자는 추락 위험에 노출됩니다.
+                                    </p>
+                                    <div className="bg-red-50 text-red-700 p-4 rounded-lg text-sm font-bold">
+                                        "안전고리를 푸는 순간, 생명줄이 끊어집니다."
+                                    </div>
+                                </div>
+                                <div className="bg-blue-600 p-8 rounded-2xl shadow-lg text-white relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 opacity-10 transform translate-x-10 -translate-y-10">
+                                        <Rotate size={150} />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                        <span className="text-yellow-400 text-2xl">✓</span> 본 발명의 혁신
+                                    </h3>
+                                    <p className="leading-relaxed opacity-90 mb-6">
+                                        걸이대에 <strong>회전부재(140)</strong>를 장착했습니다. 안전고리가 다가오면 자연스럽게 회전하며 길을 열어주고, 지나가면 다시 로프를 받쳐줍니다.
+                                    </p>
+                                    <ul className="space-y-2 text-sm font-medium">
+                                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-yellow-400 rounded-full"></div>멈춤 없는 연속 이동 가능</li>
+                                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-yellow-400 rounded-full"></div>안전고리 해제 불필요</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB 2: 구조 상세 */}
+                        {activeTab === 'structure' && (
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="bg-white p-6 rounded-2xl border border-slate-200">
+                                    <h3 className="text-lg font-bold text-slate-800 mb-4">주요 구성 요소 
+
+[Image of Perspective View]
+</h3>
+                                    <ul className="space-y-4">
+                                        <li className="flex items-start gap-4">
+                                            <div className="bg-orange-100 text-orange-600 w-8 h-8 rounded flex items-center justify-center font-bold text-sm shrink-0">1</div>
+                                            <div>
+                                                <strong className="block text-slate-800">고정판 (110)</strong>
+                                                <span className="text-slate-500 text-sm">벽면에 설치되는 베이스. 뒷면에는 'ㄷ'자 브라켓(111)이 있어 프레임에 끼움 고정도 가능합니다.</span>
+                                            </div>
+                                        </li>
+                                        <li className="flex items-start gap-4">
+                                            <div className="bg-orange-100 text-orange-600 w-8 h-8 rounded flex items-center justify-center font-bold text-sm shrink-0">2</div>
+                                            <div>
+                                                <strong className="block text-slate-800">지지봉 (130)</strong>
+                                                <span className="text-slate-500 text-sm">안전로프의 하중을 지지하는 핵심 축입니다.</span>
+                                            </div>
+                                        </li>
+                                        <li className="flex items-start gap-4">
+                                            <div className="bg-orange-100 text-orange-600 w-8 h-8 rounded flex items-center justify-center font-bold text-sm shrink-0">3</div>
+                                            <div>
+                                                <strong className="block text-slate-800">회전부재 (140)</strong>
+                                                <span className="text-slate-500 text-sm">방사형(별 모양)으로 뻗은 회전봉(142)들이 안전고리의 진행에 따라 회전하며 통과시킵니다.</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div className="bg-slate-100 rounded-2xl flex items-center justify-center p-8 border border-slate-200">
+                                    <div className="text-center">
+                                        <div className="text-6xl mb-4">⚙️</div>
+                                        <h4 className="font-bold text-slate-700">단순함의 미학</h4>
+                                        <p className="text-sm text-slate-500 mt-2">복잡한 센서나 동력 없이<br/>기계적 구조만으로 안전을 확보합니다.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB 3: 통과 원리 */}
+                        {activeTab === 'simulation' && <PassThroughSimulation />}
+
+                        {/* TAB 4: 현장 효과 */}
+                        {activeTab === 'benefits' && (
+                            <div className="grid md:grid-cols-3 gap-6 text-center">
+                                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-lg">
+                                    <div className="text-4xl mb-4">⚡</div>
+                                    <h3 className="font-bold text-lg mb-2">작업 효율 200%</h3>
+                                    <p className="text-sm text-slate-600">고리를 뺐다 끼웠다 하는 반복 작업 제거. 이동 시간 단축.</p>
+                                    [cite_start]<div className="bg-green-50 text-green-700 text-xs mt-3 px-2 py-1 rounded">생산성 UP [cite: 601]</div>
+                                </div>
+                                <div className="bg-white p-8 rounded-2xl border border-yellow-200 shadow-lg ring-1 ring-yellow-200">
+                                    <div className="text-4xl mb-4">🛡️</div>
+                                    <h3 className="font-bold text-lg mb-2">추락 사고 Zero</h3>
+                                    <p className="text-sm text-slate-600">안전로프와 분리되는 순간이 없어 상시 안전 확보.</p>
+                                    [cite_start]<div className="bg-green-50 text-green-700 text-xs mt-3 px-2 py-1 rounded">안전성 UP [cite: 601]</div>
+                                </div>
+                                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-lg">
+                                    <div className="text-4xl mb-4">🔧</div>
+                                    <h3 className="font-bold text-lg mb-2">간편한 설치</h3>
+                                    <p className="text-sm text-slate-600">기존 벽면이나 프레임에 볼트로 손쉽게 고정 가능.</p>
+                                    [cite_start]<div className="bg-green-50 text-green-700 text-xs mt-3 px-2 py-1 rounded">시공성 UP [cite: 659]</div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Footer: 배경색 통일, 여백 제거 */}
+                    <footer className="bg-orange-50 border-t border-orange-200 py-10 mt-12 text-center text-xs text-slate-500 w-full">
+                        <p>본 브로슈어는 '안전로프 걸이대' 특허 명세서(10-2370644)를 기반으로 제작되었습니다.</p>
+                        <p>&copy; 2025 Patent Visualization Assistant.</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<SafetyRopeSystem />);
+    </script>
+</body>
+</html>

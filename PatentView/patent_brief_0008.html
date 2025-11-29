@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>친환경 인조현무암 제조 기술 - 디지털 특허 브로슈어</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        
+        @keyframes fall {
+            0% { transform: translateY(-20px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .falling-particle { animation: fall 0.5s ease-out forwards; }
+
+        @keyframes fillUp {
+            from { height: 0; }
+            to { height: 100px; }
+        }
+        .filling-resin { animation: fillUp 2s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons ---
+        const Hammer = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25V7.86c0-.55-.45-1-1-1H16.14c-.85 0-1.65-.33-2.25-.93L12.64 4.64"/></svg>;
+        const Leaf = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.5 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>;
+        const Beaker = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg>;
+        const Layers = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>;
+        const Droplet = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-6-9-7-10-1 1-7 8-7 10a7 7 0 0 0 7 7z"/></svg>;
+
+        // --- Process Simulation Component ---
+        const ManufacturingProcess = () => {
+            const [step, setStep] = useState(0); // 0:Ready, 1:ReleaseAgent, 2:SprinkleRice, 3:PourResin, 4:Curing, 5:Washing
+
+            const stepsInfo = [
+                { title: "준비 (Ready)", desc: "상부가 개구된 판 형상의 성형틀 준비" },
+                { title: "1단계: 이형제 도포", desc: "성형틀 내부에 이형제를 발라 분리를 쉽게 함 (S-1)" },
+                { title: "2단계: 식물성재료 투입", desc: "가공된 식물성 재료(뻥튀기 등)를 빻아서 바닥에 뿌림 (S-2)" },
+                { title: "3단계: 원료 주입", desc: "수산화알루미늄이 포함된 인조현무암 겔(Gel) 원료 주입 (S-3)" },
+                { title: "4단계: 경화/탈형", desc: "상온에서 2~24시간 건조 후 성형틀에서 분리 (S-3, S-4)" },
+                { title: "5단계: 세척 (완성)", desc: "물로 씻어내면 식물성 재료가 녹아 사라지며 현무암 구멍이 생성됨 (S-5)" }
+            ];
+
+            const nextStep = () => setStep(prev => (prev + 1) % 6);
+            const reset = () => setStep(0);
+
+            return (
+                <div className="w-full bg-stone-900 rounded-xl overflow-hidden shadow-2xl border border-stone-700 flex flex-col items-center p-6 relative">
+                    {/* Control Panel */}
+                    <div className="absolute top-4 right-4 z-10 flex gap-2">
+                         <button 
+                            onClick={nextStep}
+                            className="bg-green-600 hover:bg-green-500 text-white px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1"
+                        >
+                            {step === 5 ? '처음으로' : '다음 단계 ▶'}
+                        </button>
+                    </div>
+
+                    <h3 className="text-stone-300 font-bold mb-6 text-lg w-full text-left border-b border-stone-700 pb-2 flex justify-between">
+                        <span>공정 시뮬레이션</span>
+                        <span className="text-green-400 text-sm">{stepsInfo[step].title}</span>
+                    </h3>
+
+                    {/* Visualization Area */}
+                    <div className="relative w-full h-[300px] bg-stone-800 rounded-lg flex items-center justify-center overflow-hidden border border-stone-600">
+                        <svg viewBox="0 0 400 300" className="w-full h-full">
+                            <defs>
+                                <linearGradient id="resinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stopColor="#57534e" />
+                                    <stop offset="100%" stopColor="#292524" />
+                                </linearGradient>
+                                <filter id="roughness">
+                                    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise" />
+                                    <feDiffuseLighting in="noise" lightingColor="white" surfaceScale="2">
+                                        <feDistantLight azimuth="45" elevation="60" />
+                                    </feDiffuseLighting>
+                                </filter>
+                            </defs>
+
+                            {/* MOLD (Always visible until step 4) */}
+                            {step < 4 && (
+                                <g transform="translate(100, 200)">
+                                    <path d="M0 0 L0 50 L200 50 L200 0" fill="none" stroke="#78716c" strokeWidth="4" />
+                                    <text x="100" y="70" textAnchor="middle" className="text-xs fill-stone-500">성형틀 (Mold)</text>
+                                </g>
+                            )}
+
+                            {/* STEP 1: Release Agent */}
+                            {step >= 1 && step < 4 && (
+                                <rect x="102" y="202" width="196" height="46" fill="#fef08a" opacity="0.3" rx="2"/>
+                            )}
+
+                            {/* STEP 2: Crushed Rice (Particles) */}
+                            {step >= 2 && step <= 4 && (
+                                <g transform="translate(100, 200)">
+                                    {/* Random particles representing crushed rice */}
+                                    {[...Array(20)].map((_, i) => (
+                                        <circle 
+                                            key={i}
+                                            cx={10 + Math.random() * 180} 
+                                            cy={45 - Math.random() * 10} 
+                                            r={2 + Math.random() * 3} 
+                                            fill="#fde047" 
+                                            className={step === 2 ? "falling-particle" : ""}
+                                        />
+                                    ))}
+                                </g>
+                            )}
+
+                            {/* STEP 3: Resin Pouring */}
+                            {step >= 3 && step <= 4 && (
+                                <g transform="translate(100, 150)">
+                                    {/* The Resin Block */}
+                                    <rect 
+                                        x="2" y={step === 3 ? 0 : 0} 
+                                        width="196" height="98" 
+                                        fill="url(#resinGradient)" 
+                                        className={step === 3 ? "filling-resin" : ""}
+                                    />
+                                    {/* Label */}
+                                    <text x="100" y="50" textAnchor="middle" className="text-xs fill-stone-300 font-bold opacity-80">인조현무암 원료 (Gel)</text>
+                                </g>
+                            )}
+
+                            {/* STEP 4: Demolding (Mold disappears, Block remains) */}
+                            {/* Handled by conditional rendering above */}
+
+                            {/* STEP 5: Washing & Final Product */}
+                            {step === 5 && (
+                                <g transform="translate(100, 150)">
+                                    {/* Water Stream Animation */}
+                                    <g opacity="0.5">
+                                        {[...Array(5)].map((_, i) => (
+                                            <line key={i} x1={20 + i*40} y1="-50" x2={20 + i*40} y2="120" stroke="#3b82f6" strokeWidth="2" strokeDasharray="5,5">
+                                                <animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.5s" repeatCount="indefinite" />
+                                            </line>
+                                        ))}
+                                    </g>
+
+                                    {/* Final Stone Block */}
+                                    <rect x="0" y="0" width="200" height="100" fill="url(#resinGradient)" rx="2" />
+                                    
+                                    {/* The Holes (Where rice was) - Only at the bottom surface (which becomes top face usually) or top depending on perspective. 
+                                        Patent says sprinkle rice -> pour resin. So holes are on the BOTTOM. 
+                                        Let's flip the stone to show the result.
+                                    */}
+                                    <g transform="translate(0, 0)"> 
+                                        {/* Simulating the surface with holes */}
+                                        {[...Array(25)].map((_, i) => (
+                                            <circle 
+                                                key={i}
+                                                cx={10 + Math.random() * 180} 
+                                                cy={80 + Math.random() * 15} 
+                                                r={3 + Math.random() * 4} 
+                                                fill="#1c1917" 
+                                                stroke="#44403c"
+                                                strokeWidth="1"
+                                            />
+                                        ))}
+                                    </g>
+                                    
+                                    <text x="100" y="-20" textAnchor="middle" className="text-sm fill-green-400 font-bold">세척 후 다공성 표면 완성</text>
+                                    <text x="230" y="90" className="text-xs fill-stone-400">▲ 바닥면 (표면)</text>
+                                    <text x="230" y="20" className="text-xs fill-stone-400">▲ 윗면 (내부/방수)</text>
+                                </g>
+                            )}
+                        </svg>
+                    </div>
+                    
+                    <p className="mt-4 text-stone-400 text-sm text-center bg-stone-800/50 p-3 rounded-lg w-full">
+                        {stepsInfo[step].desc}
+                    </p>
+                </div>
+            );
+        };
+
+        // --- Main Component ---
+        const BasaltBrochure = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+
+            // Patent Info
+            const patentInfo = {
+                title: "인조현무암의 제조방법",
+                patentNumber: "10-2489154",
+                holder: "이남승",
+                summary: "천연 식물성 재료(뻥튀기 등)를 활용하여 자연스러운 현무암 질감을 구현하고, 내부 밀실 구조로 방수성을 확보한 혁신적인 인조석 제조 기술.",
+                keywords: ["친환경 공법", "뻥튀기 활용", "완벽 방수", "고강도"]
+            };
+
+            return (
+                <div className="min-h-screen bg-stone-100 font-sans text-stone-800 flex flex-col">
+                    {/* Header */}
+                    <header className="bg-stone-900 text-stone-200 border-b-4 border-green-600 shadow-xl">
+                        <div className="max-w-6xl mx-auto px-6 py-12">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                                <div>
+                                    <div className="flex gap-2 mb-3">
+                                        <span className="bg-green-700 text-white px-2 py-0.5 rounded text-xs font-bold shadow-sm">등록특허 {patentInfo.patentNumber}</span>
+                                        <span className="text-stone-500 text-xs flex items-center gap-1">발명자: {patentInfo.holder}</span>
+                                    </div>
+                                    <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight text-white">{patentInfo.title}</h1>
+                                    <p className="text-stone-400 font-light text-lg max-w-2xl leading-relaxed">{patentInfo.summary}</p>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {patentInfo.keywords.map((kw, i) => (
+                                        <span key={i} className="px-3 py-1 bg-stone-800 border border-stone-700 rounded-full text-xs text-stone-300">#{kw}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Navigation */}
+                    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-stone-200 shadow-sm">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <nav className="flex space-x-8 overflow-x-auto">
+                                {[
+                                    { id: 'overview', label: '기술 개요', icon: <Layers size={18}/> },
+                                    { id: 'process', label: '제조 공정 시뮬레이션', icon: <Hammer size={18}/> },
+                                    { id: 'material', label: '핵심 원료', icon: <Beaker size={18}/> },
+                                    { id: 'effect', label: '차별화 효과', icon: <Leaf size={18}/> }
+                                ].map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`py-4 text-sm font-bold border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
+                                            activeTab === tab.id 
+                                            ? 'border-green-600 text-green-700' 
+                                            : 'border-transparent text-stone-500 hover:text-stone-800'
+                                        }`}
+                                    >
+                                        {tab.icon} {tab.label}
+                                    </button>
+                                ))}
+                            </nav>
+                        </div>
+                    </div>
+
+                    {/* Content Area */}
+                    <main className="max-w-6xl mx-auto px-6 py-10 flex-grow animate-in">
+                        
+                        {/* TAB: OVERVIEW */}
+                        {activeTab === 'overview' && (
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-stone-200">
+                                        <h3 className="text-xl font-bold text-stone-800 mb-6 flex items-center gap-2">
+                                            <span className="w-2 h-8 bg-red-500 rounded-full"></span>
+                                            기존 천연/인조 현무암의 한계
+                                        </h3>
+                                        <ul className="space-y-4 text-stone-600">
+                                            <li className="flex gap-4 items-start">
+                                                <div className="w-6 h-6 rounded-full bg-red-100 text-red-500 flex items-center justify-center font-bold text-xs mt-0.5">✕</div>
+                                                <div>
+                                                    <strong className="block text-stone-800">높은 투수성 (물 빠짐)</strong>
+                                                    천연 현무암은 구멍이 뚫려 있어 물이 그대로 통과됨. 실내 바닥재나 방수가 필요한 벽체로 부적합.
+                                                </div>
+                                            </li>
+                                            <li className="flex gap-4 items-start">
+                                                <div className="w-6 h-6 rounded-full bg-red-100 text-red-500 flex items-center justify-center font-bold text-xs mt-0.5">✕</div>
+                                                <div>
+                                                    <strong className="block text-stone-800">환경 파괴 및 고비용</strong>
+                                                    무분별한 채취로 인한 자연 훼손 및 공급 부족으로 가격 상승.
+                                                </div>
+                                            </li>
+                                            <li className="flex gap-4 items-start">
+                                                <div className="w-6 h-6 rounded-full bg-red-100 text-red-500 flex items-center justify-center font-bold text-xs mt-0.5">✕</div>
+                                                <div>
+                                                    <strong className="block text-stone-800">인조석의 부자연스러움</strong>
+                                                    기존 몰드 방식은 표면 질감이 인위적이고 단순 반복되어 미관상 떨어짐.
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div className="bg-stone-800 p-8 rounded-2xl text-stone-200 border border-stone-700">
+                                        <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                            <span className="w-2 h-8 bg-green-500 rounded-full"></span>
+                                            본 발명의 혁신 포인트
+                                        </h3>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="bg-stone-700/50 p-4 rounded-xl">
+                                                <div className="text-green-400 font-bold mb-1">천연 재료 활용</div>
+                                                <p className="text-xs text-stone-400">뻥튀기(쌀튀밥)를 이용하여 자연스러운 다공 표면 연출</p>
+                                            </div>
+                                            <div className="bg-stone-700/50 p-4 rounded-xl">
+                                                <div className="text-green-400 font-bold mb-1">선택적 다공성</div>
+                                                <p className="text-xs text-stone-400">표면에만 구멍이 있고 내부는 막혀있어 방수 완벽 해결</p>
+                                            </div>
+                                            <div className="bg-stone-700/50 p-4 rounded-xl">
+                                                <div className="text-green-400 font-bold mb-1">우수한 내구성</div>
+                                                <p className="text-xs text-stone-400">수산화알루미늄 및 무기안료 사용으로 강도와 색상 유지</p>
+                                            </div>
+                                            <div className="bg-stone-700/50 p-4 rounded-xl">
+                                                <div className="text-green-400 font-bold mb-1">경제성</div>
+                                                <p className="text-xs text-stone-400">단순한 공정과 저렴한 재료로 대량 생산 가능</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex flex-col justify-center items-center bg-stone-200 rounded-2xl p-8 shadow-inner text-center">
+                                    <div className="w-32 h-32 bg-stone-300 rounded-full flex items-center justify-center mb-6 shadow-lg border-4 border-stone-100">
+                                        <span className="text-6xl">🍿</span>
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-stone-700 mb-2">"뻥튀기의 마법"</h2>
+                                    <p className="text-stone-500 leading-relaxed max-w-sm mx-auto">
+                                        우리가 먹는 <strong>뻥튀기</strong>가 인조석의 구멍을 만드는 핵심 재료가 됩니다.<br/>
+                                        물에 녹아 사라지며 자연스러운 돌의 숨구멍을 남깁니다.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: PROCESS (Simulation) */}
+                        {activeTab === 'process' && (
+                            <div className="space-y-8">
+                                <div className="flex justify-between items-end mb-4">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-stone-800">단계별 제조 공정</h3>
+                                        <p className="text-stone-500 text-sm">우측 상단의 버튼을 눌러 공정을 진행해보세요.</p>
+                                    </div>
+                                </div>
+                                
+                                <ManufacturingProcess />
+
+                                <div className="bg-white p-6 rounded-xl border-l-4 border-stone-500 shadow-sm mt-8">
+                                    <h4 className="font-bold text-stone-800 mb-2">💡 왜 '바닥'에 뿌릴까요?</h4>
+                                    <p className="text-stone-600 text-sm leading-relaxed">
+                                        성형틀 바닥에 식물성 재료를 뿌리고 원료를 부으면, 
+                                        <strong>제품의 한쪽 면(바닥면)에만 구멍이 생깁니다.</strong><br/>
+                                        반대로 제품의 뒷면(윗면)은 매끄럽고 꽉 채워진 상태가 되어, 
+                                        시공 시 벽체나 바닥에 부착하면 <strong>물은 통과하지 못하면서 현무암의 외관은 완벽히 유지</strong>합니다.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: MATERIAL */}
+                        {activeTab === 'material' && (
+                            <div className="grid md:grid-cols-3 gap-6">
+                                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:border-green-400 transition-colors group">
+                                    <div className="w-12 h-12 bg-green-100 text-green-600 rounded-lg flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">🌾</div>
+                                    <h3 className="font-bold text-lg text-stone-800 mb-2">천연 식물성 재료</h3>
+                                    <p className="text-sm text-stone-500 mb-2 font-mono bg-stone-50 inline-block px-2 py-0.5 rounded">뻥튀기, 쌀튀밥 등</p>
+                                    <p className="text-sm text-stone-600 leading-relaxed">
+                                        물에 쉽게 녹는 성질을 이용하여 '희생 주형' 역할을 합니다. 
+                                        불규칙하게 빻아서 뿌리면 인위적이지 않은 자연스러운 기공을 만듭니다.
+                                    </p>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:border-stone-400 transition-colors group">
+                                    <div className="w-12 h-12 bg-stone-100 text-stone-600 rounded-lg flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">🧪</div>
+                                    <h3 className="font-bold text-lg text-stone-800 mb-2">수산화알루미늄</h3>
+                                    <p className="text-sm text-stone-500 mb-2 font-mono bg-stone-50 inline-block px-2 py-0.5 rounded">Al(OH)₃</p>
+                                    <p className="text-sm text-stone-600 leading-relaxed">
+                                        인조석의 내구성과 질감을 결정하는 주원료입니다. 
+                                        천연석과 유사한 무게감과 단단함을 제공합니다.
+                                    </p>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:border-stone-400 transition-colors group">
+                                    <div className="w-12 h-12 bg-stone-100 text-stone-600 rounded-lg flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">🎨</div>
+                                    <h3 className="font-bold text-lg text-stone-800 mb-2">무기안료</h3>
+                                    <p className="text-sm text-stone-500 mb-2 font-mono bg-stone-50 inline-block px-2 py-0.5 rounded">Inorganic Pigments</p>
+                                    <p className="text-sm text-stone-600 leading-relaxed">
+                                        유기안료 대신 사용하여 자외선에 의한 탈색을 방지합니다. 
+                                        현무암 특유의 회흑색 및 다양한 색상 연출이 가능합니다.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: EFFECT */}
+                        {activeTab === 'effect' && (
+                            <div className="space-y-8 animate-in">
+                                <div className="grid md:grid-cols-2 gap-8 items-center">
+                                    <div className="relative h-64 bg-stone-800 rounded-2xl overflow-hidden shadow-lg border-4 border-stone-700">
+                                        {/* Visualizing Waterproof Effect */}
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-48 h-32 bg-stone-600 rounded relative">
+                                                {/* Top: Porous */}
+                                                <div className="absolute top-0 w-full h-1/2 flex gap-1 flex-wrap p-2">
+                                                    {[...Array(10)].map((_,i) => <div key={i} className="w-2 h-2 bg-stone-800 rounded-full"></div>)}
+                                                </div>
+                                                {/* Bottom: Solid */}
+                                                <div className="absolute bottom-0 w-full h-1/2 bg-stone-600 border-t border-stone-500/30 flex items-center justify-center">
+                                                    <span className="text-[10px] text-stone-400">Solid Layer (Waterproof)</span>
+                                                </div>
+                                                
+                                                {/* Water droplets bouncing off */}
+                                                <div className="absolute -right-4 top-1/2 w-8 h-8 flex items-center">
+                                                    <Droplet className="text-blue-400 -rotate-90 animate-pulse" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="absolute bottom-4 left-4 bg-black/50 px-3 py-1 rounded text-xs text-white">
+                                            비투수성 구조 (Cross-section)
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="space-y-4">
+                                        <h3 className="text-2xl font-bold text-stone-800">건축 자재로서의 무한한 가능성</h3>
+                                        <p className="text-stone-600 leading-relaxed">
+                                            천연 현무암은 물을 흡수하여 실내 바닥이나 외벽 마감재로 쓸 때 누수 문제가 발생할 수 있습니다.
+                                            하지만 본 발명의 인조현무암은 <strong>표면만 현무암이고, 뒷면은 단단한 방수층</strong>입니다.
+                                        </p>
+                                        <ul className="space-y-2 mt-4">
+                                            <li className="flex items-center gap-2 text-stone-700 font-medium">
+                                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                실내 인테리어 (아트월, 바닥재)
+                                            </li>
+                                            <li className="flex items-center gap-2 text-stone-700 font-medium">
+                                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                건물 외벽 마감 (누수 걱정 없음)
+                                            </li>
+                                            <li className="flex items-center gap-2 text-stone-700 font-medium">
+                                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                조경 시설물 및 도로 포장
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="bg-stone-900 text-stone-500 py-10 mt-12 text-center text-xs">
+                        <div className="max-w-6xl mx-auto px-6">
+                            <p className="mb-2">본 브로슈어는 '인조현무암의 제조방법' 특허 명세서(10-2489154)를 기반으로 제작되었습니다.</p>
+                            <p>&copy; 2025 Patent Visualization Assistant.</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<BasaltBrochure />);
+    </script>
+</body>
+</html>
