@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 블렌딩 레몬차 - 디지털 특허 브로슈어</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-yellow-50 text-stone-800">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+        const Cup = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a11 11 0 0 0-10-10H5a4 4 0 0 0-4 4v2"/><path d="M5 21v-2a11 11 0 0 1 10-10h2a4 4 0 0 1 4 4v2"/><path d="M15 3v18"/><path d="M9 3v18"/></svg>;
+        const Citrus = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/><path d="M2 12h20"/><path d="m4.93 4.93 14.14 14.14"/><path d="m19.07 4.93-14.14 14.14"/></svg>;
+        const Clock = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+        const Star = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+
+        const LemonTeaPatent = () => {
+            const [activeTab, setActiveTab] = useState('recipe');
+
+            const patentInfo = {
+                title: "유자를 더한 레몬차 조성물",
+                patentNumber: "10-1277466",
+                holder: "이혜진",
+                summary: "레몬 슬라이스에 레몬즙과 유자즙을 최적 비율로 혼합하여, 레몬의 신맛은 줄이고 유자의 풍미와 영양(비타민C)을 더한 맛과 향이 뛰어난 레몬차 제조법.",
+                keywords: ["유자 블렌딩", "6mm 슬라이스", "최적 숙성", "비타민C 강화"]
+            };
+
+            const RecipeChart = () => (
+                <div className="flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-sm border border-yellow-200">
+                    <h3 className="font-bold text-lg mb-6 text-yellow-800">특허받은 배합 비율 (중량비)</h3>
+                    <div className="w-full max-w-md space-y-4">
+                        {/* Bar 1: Main Ingredients */}
+                        <div>
+                            <div className="flex justify-between text-xs font-bold text-stone-500 mb-1">
+                                <span>레몬 슬라이스 (Solid)</span>
+                                <span>액상 (Liquid)</span>
+                            </div>
+                            <div className="flex h-8 rounded-full overflow-hidden">
+                                <div className="bg-yellow-400 w-[85%] flex items-center justify-center text-xs font-bold text-yellow-900 shadow-inner">10 (레몬육)</div>
+                                <div className="bg-blue-400 w-[15%] flex items-center justify-center text-xs font-bold text-white shadow-inner">1.5~2 (즙)</div>
+                            </div>
+                        </div>
+
+                        {/* Bar 2: Liquid Composition */}
+                        <div className="pl-8 border-l-2 border-dashed border-stone-300">
+                            <div className="text-xs font-bold text-stone-500 mb-1">액상재료 상세 (Juice Mix)</div>
+                            <div className="flex h-6 rounded-full overflow-hidden">
+                                <div className="bg-yellow-200 w-[66%] flex items-center justify-center text-[10px] text-yellow-800">레몬즙 (2)</div>
+                                <div className="bg-orange-300 w-[34%] flex items-center justify-center text-[10px] text-white">유자즙 (1)</div>
+                            </div>
+                        </div>
+
+                        {/* Bar 3: Sugar */}
+                        <div>
+                            <div className="flex justify-between text-xs font-bold text-stone-500 mb-1">
+                                <span>전체 혼합물</span>
+                                <span>설탕 (Sugar)</span>
+                            </div>
+                            <div className="flex h-8 rounded-full overflow-hidden">
+                                <div className="bg-stone-200 w-[50%] flex items-center justify-center text-xs font-bold text-stone-600">혼합재료 (1)</div>
+                                <div className="bg-stone-400 w-[50%] flex items-center justify-center text-xs font-bold text-white">설탕 (1~1.2)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen font-sans bg-yellow-50 text-stone-800">
+                    <header className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-lg">
+                        <div className="max-w-5xl mx-auto px-4 py-8">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <span className="bg-white/20 backdrop-blur px-2 py-0.5 rounded text-xs font-bold mb-2 inline-block">등록특허 {patentInfo.patentNumber}</span>
+                                    <h1 className="text-3xl font-bold mb-2 text-shadow">{patentInfo.title}</h1>
+                                    <p className="text-yellow-50 max-w-xl text-sm">{patentInfo.summary}</p>
+                                </div>
+                                <Citrus size={48} className="text-white opacity-80 animate-pulse"/>
+                            </div>
+                        </div>
+                    </header>
+
+                    <nav className="bg-white border-b border-yellow-200 sticky top-0 z-50">
+                        <div className="max-w-5xl mx-auto px-4 flex gap-8">
+                            {[
+                                { id: 'recipe', label: '황금 레시피', icon: <Citrus size={18}/> },
+                                { id: 'process', label: '제조 공정', icon: <Clock size={18}/> },
+                                { id: 'effect', label: '관능 평가', icon: <Star size={18}/> }
+                            ].map(tab => (
+                                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                                    className={`py-4 text-sm font-bold flex items-center gap-2 border-b-2 transition-colors ${activeTab === tab.id ? 'border-orange-500 text-orange-600' : 'border-transparent text-stone-400'}`}>
+                                    {tab.icon} {tab.label}
+                                </button>
+                            ))}
+                        </div>
+                    </nav>
+
+                    <main className="max-w-5xl mx-auto px-4 py-8 animate-in">
+                        {activeTab === 'recipe' && (
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                                        <h3 className="text-xl font-bold text-stone-700 mb-4 flex items-center gap-2">
+                                            💡 핵심 아이디어
+                                        </h3>
+                                        <p className="text-stone-600 leading-relaxed mb-4">
+                                            기존 레몬차는 너무 시거나, 인공 비타민C 첨가로 뒷맛이 텁텁했습니다. 
+                                            본 발명은 <span className="text-orange-500 font-bold">"유자"</span>를 블렌딩하여 이를 해결했습니다.
+                                        </p>
+                                        <ul className="space-y-2 text-sm">
+                                            <li className="flex items-center gap-2">
+                                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                <strong>레몬 두께 6mm:</strong> 형태 유지 및 시각적 미려함 확보 (너무 얇으면 흐물거림)
+                                            </li>
+                                            <li className="flex items-center gap-2">
+                                                <span className="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>
+                                                <strong>유자즙 첨가:</strong> 천연 비타민C 보강 및 감칠맛 증대
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-orange-50 p-6 rounded-2xl border border-orange-100">
+                                        <h3 className="font-bold text-orange-800 mb-2">맛의 비밀: 액상 베이스</h3>
+                                        <p className="text-sm text-orange-700">
+                                            레몬즙(알맹이만) : 유자즙(껍질째) = <strong>2 : 1</strong><br/>
+                                            유자의 껍질까지 착즙하여 영양소와 향을 극대화합니다.
+                                        </p>
+                                    </div>
+                                </div>
+                                <RecipeChart />
+                            </div>
+                        )}
+
+                        {activeTab === 'process' && (
+                            <div className="space-y-4">
+                                <h3 className="text-center font-bold text-xl text-stone-700 mb-6">Premium Brewing Process</h3>
+                                <div className="relative border-l-2 border-yellow-300 ml-4 md:ml-6 space-y-8 py-2">
+                                    {[
+                                        { step: "Step 1", title: "꼼꼼한 세척", desc: "자연세제 → 소금 문지르기 → 식초물 침지 → 소주 세척 → 열수/냉수 마무리의 5단계 세척으로 왁스 완전 제거" },
+                                        { step: "Step 2", title: "재료 준비", desc: "레몬은 6mm 반달 슬라이스. 액상재료는 레몬즙과 유자즙을 2:1로 배합" },
+                                        { step: "Step 3", title: "혼합 및 당절임", desc: "레몬재료와 액상재료를 10:1.5 비율로 섞고, 동량의 설탕 투입" },
+                                        { step: "Step 4", title: "저온 숙성", desc: "그늘진 상온에서 2~3주간 숙성. (2주 미만: 맛 겉돔 / 3주 초과: 신맛 과다)" }
+                                    ].map((proc, idx) => (
+                                        <div key={idx} className="relative pl-8">
+                                            <div className="absolute -left-[9px] top-0 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white shadow"></div>
+                                            <div className="bg-white p-5 rounded-xl shadow-sm border border-stone-100">
+                                                <div className="text-xs font-bold text-orange-400 mb-1">{proc.step}</div>
+                                                <h4 className="font-bold text-lg mb-2 text-stone-800">{proc.title}</h4>
+                                                <p className="text-sm text-stone-600">{proc.desc}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'effect' && (
+                            <div className="bg-white p-8 rounded-2xl shadow-sm border border-stone-100">
+                                <h3 className="font-bold text-xl mb-6 text-center">관능 검사 결과 (50명 대상, 10점 만점)</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                    {[
+                                        { label: "향 (Aroma)", score: 9.1, color: "text-yellow-600" },
+                                        { label: "맛 (Taste)", score: 9.5, color: "text-orange-600" },
+                                        { label: "외관 (Visual)", score: 9.2, color: "text-green-600" },
+                                        { label: "종합 선호도", score: 9.1, color: "text-stone-800" }
+                                    ].map((item, idx) => (
+                                        <div key={idx} className="p-4 bg-stone-50 rounded-xl">
+                                            <div className={`text-3xl font-bold mb-2 ${item.color}`}>{item.score}</div>
+                                            <div className="text-sm text-stone-500 font-medium">{item.label}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-center text-xs text-stone-400 mt-6">
+                                    * 비교예(일반 레몬차) 대비 모든 항목에서 1점 이상 높은 평가 획득
+                                </p>
+                            </div>
+                        )}
+                    </main>
+
+                    <footer className="bg-stone-800 text-stone-400 py-8 mt-12 text-center text-sm">
+                        <p>본 페이지는 등록특허 10-1277466호 명세서를 기반으로 제작되었습니다.</p>
+                        <p>&copy; 2025 Patent Visualization Assistant.</p>
+
+                    </footer>
+                </div>
+            );
+        };
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<LemonTeaPatent />);
+    </script>
+</body>
+</html>

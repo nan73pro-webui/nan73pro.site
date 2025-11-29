@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스마트 목재 결합 시스템 - 디지털 특허 브로슈어</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Wood Texture Effect */
+        .wood-texture {
+            background-color: #d4b08c;
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px);
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-stone-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Icons
+        const Tree = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19v-9"/><path d="M7 14c-2.5 0-4-1.5-4-4 0-4 4-5 4-5 0-3 3-5 5-5s5 2 5 5c0 0 4 1 4 5 0 2.5-1.5 4-4 4h-10Z"/><path d="m10 19-2 3"/><path d="m14 19 2 3"/></svg>;
+        const Hammer = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25V7.86c0-.55-.45-1-1-1H16.14c-.85 0-1.65-.33-2.25-.93L12.64 4.64"/></svg>;
+        const Maximize = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>;
+        const CheckCircle = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+
+        const WoodJoint = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+            const [isCompressed, setIsCompressed] = useState(false);
+
+            const patentInfo = {
+                title: "목재판의 결합구조",
+                number: "10-2020669",
+                holder: "김진호",
+                summary: "결합돌기에 '방지홀'을 형성하여 목재의 수축/팽창에 유연하게 대응하고, 자체 탄성력으로 결합력을 극대화한 친환경 무나사 조립 시스템.",
+                keywords: ["방지홀 기술", "무나사 조립", "크랙 방지", "탄성 결합"]
+            };
+
+            // Simulation Component
+            const JointSimulation = () => {
+                return (
+                    <div className="bg-white p-8 rounded-xl shadow-lg border border-amber-200 flex flex-col items-center animate-in">
+                        <div className="flex justify-between w-full mb-6 items-center">
+                            <span className="bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow">결합 시뮬레이션</span>
+                            <button 
+                                onClick={() => setIsCompressed(!isCompressed)}
+                                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${isCompressed ? 'bg-green-600 text-white shadow-md' : 'bg-stone-200 text-stone-600 hover:bg-stone-300'}`}
+                            >
+                                {isCompressed ? "결합 완료 (압축됨)" : "결합 전 (클릭)"}
+                            </button>
+                        </div>
+                        
+                        <div className="relative w-full max-w-sm h-64 flex items-center justify-center bg-stone-50 rounded-lg border border-stone-200 overflow-hidden">
+                            {/* Plate 1 (Female - Base) */}
+                            <div className="absolute w-48 h-48 border-4 border-stone-400 rounded-lg flex items-center justify-center wood-texture z-10 shadow-sm">
+                                {/* Slot */}
+                                <div className="w-10 h-24 bg-stone-800/10 border-2 border-dashed border-stone-500 rounded"></div>
+                            </div>
+                            
+                            {/* Plate 2 (Male - Insert) */}
+                            <div 
+                                className={`absolute h-20 bg-amber-700 rounded-lg flex items-center justify-center transition-all duration-700 ease-in-out z-20 shadow-xl wood-texture border border-amber-900 cursor-pointer
+                                    ${isCompressed ? 'w-10 translate-x-0' : 'w-32 translate-x-40'}`}
+                                onClick={() => setIsCompressed(!isCompressed)}
+                            >
+                                {/* The "Prevention Hole" (Elastic Part) */}
+                                <div className={`h-[70%] bg-stone-50 rounded-full transition-all duration-700 border border-stone-300 ${isCompressed ? 'w-1.5 scale-y-110' : 'w-3'}`}></div>
+                            </div>
+
+                            {isCompressed && (
+                                <div className="absolute top-4 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold animate-bounce border border-green-200">
+                                    ▼ 탄성 압축! (꽉 낌)
+                                </div>
+                            )}
+                        </div>
+                        <p className="mt-6 text-stone-500 text-sm text-center max-w-md">
+                            결합돌기 중앙의 <strong>'방지홀(21a)'</strong>이 스프링처럼 수축하며 빈틈없이 꽉 잡아줍니다.<br/>
+                            계절 변화(습도/온도)에 따른 목재의 변형도 이 공간이 흡수합니다.
+                        </p>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-stone-50 font-sans text-stone-800 flex flex-col">
+                    {/* Header */}
+                    <header className="bg-gradient-to-r from-amber-700 to-amber-900 text-white shadow-xl border-b-4 border-amber-600">
+                        <div className="max-w-5xl mx-auto px-4 py-10">
+                            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-bold backdrop-blur-sm border border-white/30">등록특허 {patentInfo.number}</span>
+                                        <span className="text-amber-100 text-xs flex items-center gap-1"><Tree size={12}/> {patentInfo.holder}</span>
+                                    </div>
+                                    <h1 className="text-2xl md:text-3xl font-bold mb-2 tracking-tight">{patentInfo.title}</h1>
+                                    <p className="text-amber-100 max-w-2xl leading-relaxed text-sm md:text-base font-light">
+                                        {patentInfo.summary}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap gap-2 justify-end">
+                                    {patentInfo.keywords.map((kw, i) => (
+                                        <span key={i} className="px-3 py-1 bg-black/20 rounded-full text-xs border border-white/10 backdrop-blur-md">#{kw}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Navigation */}
+                    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-stone-200 shadow-sm">
+                        <div className="max-w-5xl mx-auto px-4">
+                            <nav className="flex space-x-8 overflow-x-auto">
+                                {[
+                                    { id: 'overview', icon: <Maximize size={16}/>, label: '기술 개요' },
+                                    { id: 'structure', icon: <Tree size={16}/>, label: '구조 상세' },
+                                    { id: 'simulation', icon: <Hammer size={16}/>, label: '작동 원리' },
+                                    { id: 'effect', icon: <CheckCircle size={16}/>, label: '기대 효과' }
+                                ].map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`py-4 text-sm font-bold border-b-2 whitespace-nowrap transition-colors flex items-center gap-2
+                                            ${activeTab === tab.id ? 'border-amber-600 text-amber-700' : 'border-transparent text-stone-500 hover:text-stone-800'}
+                                        `}
+                                    >
+                                        {tab.icon} {tab.label}
+                                    </button>
+                                ))}
+                            </nav>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="max-w-5xl mx-auto px-4 py-8 animate-in flex-grow">
+                        
+                        {/* TAB: OVERVIEW */}
+                        {activeTab === 'overview' && (
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                                    <h3 className="text-xl font-bold text-stone-700 mb-4 flex items-center gap-2">
+                                        <span className="text-red-500 font-bold">!</span> 기존 목재 결합의 한계
+                                    </h3>
+                                    <ul className="space-y-3 text-stone-600 text-sm">
+                                        <li className="flex gap-3 items-start p-2 bg-stone-50 rounded">
+                                            <span className="text-red-400 font-bold">×</span>
+                                            <span>습도 변화에 따른 목재 팽창으로 <strong>갈라짐(Crack)</strong> 발생</span>
+                                        </li>
+                                        <li className="flex gap-3 items-start p-2 bg-stone-50 rounded">
+                                            <span className="text-red-400 font-bold">×</span>
+                                            <span>수축 시 결합 부위가 헐거워져 구조적 안정성 저하</span>
+                                        </li>
+                                        <li className="flex gap-3 items-start p-2 bg-stone-50 rounded">
+                                            <span className="text-red-400 font-bold">×</span>
+                                            <span>나사, 못 사용으로 인한 미관 손상 및 목재 손상</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
+                                    <h3 className="text-xl font-bold text-amber-800 mb-4 flex items-center gap-2">
+                                        <CheckCircle className="text-amber-600" /> 본 발명의 솔루션
+                                    </h3>
+                                    <ul className="space-y-3 text-amber-900 text-sm">
+                                        <li className="flex gap-3 items-start">
+                                            <span className="bg-amber-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5">1</span>
+                                            <span><strong>방지홀(Hole):</strong> 목재가 숨 쉴 수 있는 공간을 제공하여 변형 흡수</span>
+                                        </li>
+                                        <li className="flex gap-3 items-start">
+                                            <span className="bg-amber-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5">2</span>
+                                            <span><strong>탄성 결합:</strong> 돌기 자체의 탄성으로 접착제 없이도 강력 고정</span>
+                                        </li>
+                                        <li className="flex gap-3 items-start">
+                                            <span className="bg-amber-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-0.5">3</span>
+                                            <span><strong>친환경성:</strong> 금속 부품 최소화로 안전하고 미려한 외관 완성</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: STRUCTURE */}
+                        {activeTab === 'structure' && (
+                            <div className="grid lg:grid-cols-2 gap-8 animate-in">
+                                <div className="bg-white p-8 rounded-2xl shadow-sm border border-stone-200">
+                                    <h3 className="font-bold text-xl mb-6 text-amber-800 flex items-center gap-2">
+                                        <Tree size={20}/> 핵심 구성요소: 이중 방지홀
+                                    </h3>
+                                    <div className="space-y-6">
+                                        <div className="p-4 bg-stone-50 rounded-xl border border-stone-100">
+                                            <strong className="block text-amber-700 mb-1">1. 제1 방지홀 (21a-1)</strong>
+                                            <p className="text-sm text-stone-600">결합홈 두께에 맞춘 직선형 홀. 결합 시 눌리면서 마찰력을 증대시키는 1차 탄성 구간.</p>
+                                        </div>
+                                        <div className="p-4 bg-stone-50 rounded-xl border border-stone-100">
+                                            <strong className="block text-amber-700 mb-1">2. 제2 방지홀 (21a-2)</strong>
+                                            <p className="text-sm text-stone-600">안쪽에 더 넓게 확장된 호형(Arc) 홀. 공기 순환을 돕고 목재의 최대 팽창을 흡수하는 완충지대 역할.</p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-6 p-4 bg-amber-100 rounded-xl text-sm text-amber-900 border border-amber-200">
+                                        💡 <strong>Key Point:</strong> 제2 방지홀이 더 넓게 설계된 것이 핵심입니다. 이 공간이 숨구멍 역할을 하여 목재의 수명을 획기적으로 늘립니다.
+                                    </div>
+                                </div>
+                                <div className="bg-stone-800 text-white p-8 rounded-2xl flex flex-col justify-center items-center text-center">
+                                    <div className="w-32 h-32 bg-stone-700 rounded-full flex items-center justify-center mb-6">
+                                        <span className="text-4xl">🪵</span>
+                                    </div>
+                                    <h4 className="text-xl font-bold mb-2">자연을 닮은 기술</h4>
+                                    <p className="text-stone-400 text-sm">나무의 성질을 거스르지 않고,<br/>그대로 받아들이는 설계 미학</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: SIMULATION */}
+                        {activeTab === 'simulation' && <JointSimulation />}
+
+                        {/* TAB: EFFECT */}
+                        {activeTab === 'effect' && (
+                            <div className="grid md:grid-cols-3 gap-6 animate-in">
+                                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-all">
+                                    <div className="text-amber-600 mb-4 text-3xl">🛡️</div>
+                                    <h3 className="font-bold text-lg text-stone-800 mb-2">내구성 향상</h3>
+                                    <p className="text-stone-600 text-sm">크랙 및 뒤틀림을 방지하여 가구 및 구조물의 수명을 연장합니다.</p>
+                                </div>
+                                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-all">
+                                    <div className="text-green-600 mb-4 text-3xl">🌿</div>
+                                    <h3 className="font-bold text-lg text-stone-800 mb-2">친환경 조립</h3>
+                                    <p className="text-stone-600 text-sm">접착제나 금속 나사 없이도 견고한 결합이 가능합니다.</p>
+                                </div>
+                                <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-all">
+                                    <div className="text-blue-600 mb-4 text-3xl">🔧</div>
+                                    <h3 className="font-bold text-lg text-stone-800 mb-2">유지보수 용이</h3>
+                                    <p className="text-stone-600 text-sm">분해와 재조립이 간편하여 부품 교체 및 이동이 쉽습니다.</p>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="bg-stone-800 text-stone-400 py-8 mt-12 text-center text-sm">
+                        <div className="max-w-5xl mx-auto px-4">
+                            <p className="mb-2">본 브로슈어는 '목재판의 결합구조' 특허 명세서(10-2020669)를 기반으로 제작되었습니다.</p>
+                            <p>&copy; 2025 Patent Visualization Assistant.</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<WoodJoint />);
+    </script>
+</body>
+</html>

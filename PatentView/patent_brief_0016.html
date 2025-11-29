@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 입체 핀홀 안경 - 디지털 특허 브로슈어</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @keyframes beam { 
+            0% { opacity: 0; transform: translateX(-10px); } 
+            50% { opacity: 1; } 
+            100% { opacity: 0; transform: translateX(10px); } 
+        }
+        .light-beam { animation: beam 2s infinite; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        
+        // Icons
+        const Sun = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>;
+        const Layers = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>;
+        const ShieldCheck = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>;
+
+        const StereoscopicGlasses = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+            const [simulationOn, setSimulationOn] = useState(true);
+
+            const patentInfo = {
+                title: "입체적 교차 빗살 핀홀 안경",
+                patentNumber: "10-2096537",
+                holder: "황두원",
+                summary: "가로 및 세로 빗살을 단순 평면이 아닌 '기울어진 경사면(Slanted)'으로 설계하여, 눈부심을 유발하는 반사광을 차단하고 돋보기 효과를 극대화한 입체 구조 핀홀 안경.",
+                keywords: ["경사면 빗살", "눈부심 차단", "입체 교차", "돋보기 효과"]
+            };
+
+            const RayTrace = () => (
+                <div className="relative w-full h-64 bg-slate-900 rounded-xl overflow-hidden flex items-center justify-center border border-slate-700 shadow-inner">
+                    <svg viewBox="0 0 400 200" className="w-full h-full">
+                        <defs>
+                            <linearGradient id="beamGrad" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stopColor="#fbbf24" stopOpacity="0" />
+                                <stop offset="50%" stopColor="#fbbf24" stopOpacity="0.8" />
+                                <stop offset="100%" stopColor="#fbbf24" stopOpacity="0" />
+                            </linearGradient>
+                        </defs>
+
+                        {/* Eye */}
+                        <path d="M350 100 Q 370 70 390 100 Q 370 130 350 100" fill="#fff" opacity="0.8" />
+                        <circle cx="370" cy="100" r="5" fill="#000" />
+
+                        {/* Slanted Bars */}
+                        <g transform="translate(150, 50)">
+                            {[0, 1, 2, 3, 4].map(i => (
+                                <path key={i} d={`M0 ${i*30} L20 ${i*30} L30 ${i*30+20} L10 ${i*30+20} Z`} fill="#475569" stroke="#94a3b8" />
+                            ))}
+                            <text x="15" y="-10" textAnchor="middle" fill="#94a3b8" className="text-xs">경사 빗살</text>
+                        </g>
+
+                        {/* Light Rays */}
+                        {simulationOn && (
+                            <>
+                                {/* Blocked Glare */}
+                                <line x1="0" y1="60" x2="150" y2="60" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5" className="opacity-50" />
+                                <path d="M150 60 L100 100" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5" className="opacity-30" />
+                                <text x="80" y="55" fill="#ef4444" className="text-xs">반사광 차단</text>
+
+                                {/* Direct Light */}
+                                <rect x="0" y="85" width="370" height="4" fill="url(#beamGrad)" className="light-beam" />
+                                <text x="80" y="110" fill="#fbbf24" className="text-xs">필요한 빛 통과</text>
+                            </>
+                        )}
+                    </svg>
+                    <button 
+                        onClick={() => setSimulationOn(!simulationOn)}
+                        className="absolute bottom-4 right-4 bg-slate-700 text-white px-3 py-1 rounded text-xs hover:bg-slate-600 transition"
+                    >
+                        {simulationOn ? "광선 시뮬레이션 끄기" : "광선 시뮬레이션 켜기"}
+                    </button>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+                    <header className="bg-slate-800 text-white border-b-4 border-blue-500 shadow-xl">
+                        <div className="max-w-4xl mx-auto px-4 py-8">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="bg-blue-500 px-2 py-0.5 rounded text-xs font-bold">등록특허 {patentInfo.patentNumber}</span>
+                                <span className="text-slate-400 text-xs">{patentInfo.holder}</span>
+                            </div>
+                            <h1 className="text-3xl font-bold mb-3">{patentInfo.title}</h1>
+                            <p className="text-slate-300 text-sm max-w-xl">{patentInfo.summary}</p>
+                        </div>
+                    </header>
+
+                    <nav className="bg-white sticky top-0 z-50 border-b border-slate-200 shadow-sm">
+                        <div className="max-w-4xl mx-auto px-4 flex gap-6 overflow-x-auto">
+                            {[
+                                { id: 'overview', label: '핵심 원리', icon: <Layers size={18}/> },
+                                { id: 'structure', label: '3D 입체 구조', icon: <Sun size={18}/> },
+                                { id: 'benefit', label: '눈부심 방지', icon: <ShieldCheck size={18}/> }
+                            ].map(tab => (
+                                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                                    className={`py-4 text-sm font-bold flex items-center gap-2 border-b-2 transition-colors ${activeTab === tab.id ? 'border-blue-600 text-blue-800' : 'border-transparent text-slate-500'}`}>
+                                    {tab.icon} {tab.label}
+                                </button>
+                            ))}
+                        </div>
+                    </nav>
+
+                    <main className="max-w-4xl mx-auto px-4 py-8 animate-in">
+                        {activeTab === 'overview' && (
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <h3 className="text-xl font-bold text-slate-800">단순 구멍이 아닙니다.<br/>"블라인드" 입니다.</h3>
+                                    <p className="text-sm leading-relaxed text-slate-600">
+                                        기존의 평면 핀홀 안경은 빛을 그대로 반사하여 눈부심을 유발했습니다. 본 발명은 <strong>가로/세로 빗살을 비스듬하게 기울여(Slanted)</strong> 마치 창문의 블라인드처럼 불필요한 반사광을 차단합니다.
+                                    </p>
+                                    <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-800">
+                                        <strong>💡 면도날 원리:</strong> 3개의 면도날이 겹쳐진 틈으로 글자를 보면 또렷해지는 현상에서 착안하여 개발되었습니다.
+                                    </div>
+                                </div>
+                                <RayTrace />
+                            </div>
+                        )}
+
+                        {activeTab === 'structure' && (
+                            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                                <h3 className="text-lg font-bold text-slate-800 mb-6">입체적 교차 구조 (Stereoscopic Intersection)</h3>
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    <div className="space-y-4">
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center font-bold text-slate-500">1</div>
+                                            <div>
+                                                <h4 className="font-bold text-sm">경사면 형성 (Slope)</h4>
+                                                <p className="text-xs text-slate-500">빗살에 소정의 기울기를 주어 평행사변형이나 사다리꼴 단면을 형성합니다.</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center font-bold text-slate-500">2</div>
+                                            <div>
+                                                <h4 className="font-bold text-sm">내측단 두께 강화</h4>
+                                                <p className="text-xs text-slate-500">눈에 가까운 안쪽 빗살을 더 두껍게 하여 빛 차단 효과를 높이고 시야를 눈동자 중심으로 확산시킵니다.</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center font-bold text-slate-500">3</div>
+                                            <div>
+                                                <h4 className="font-bold text-sm">단차 설계</h4>
+                                                <p className="text-xs text-slate-500">가로 빗살을 사용자의 코 방향으로 기울어지게 단차를 주어 돋보기 효과를 강화했습니다.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="h-48 bg-slate-50 border border-slate-200 rounded flex items-center justify-center">
+                                        <p className="text-xs text-slate-400">도면 2, 3의 입체 구조 시각화 영역</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'benefit' && (
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:border-blue-400 transition">
+                                    <h3 className="font-bold text-slate-800 mb-2">☀️ 눈부심 완벽 차단</h3>
+                                    <p className="text-sm text-slate-600">
+                                        경사면 구조가 반사광을 굴절/흡수하여, TV나 스마트폰 같은 발광체를 볼 때 보안경 대용으로 탁월합니다.
+                                    </p>
+                                </div>
+                                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:border-blue-400 transition">
+                                    <h3 className="font-bold text-slate-800 mb-2">🔍 강력한 돋보기 효과</h3>
+                                    <p className="text-sm text-slate-600">
+                                        단순 구멍보다 깊이감 있는 빗살 틈(Slit) 구조가 상을 더욱 또렷하게 맺히게 하여 노안 교정에 효과적입니다.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    <footer className="bg-slate-800 text-slate-400 py-8 mt-8 text-center text-sm">
+                        <p>본 페이지는 등록특허 10-2096537호 명세서를 기반으로 제작되었습니다.</p>
+                        <p>&copy; 2025 Patent Visualization Assistant</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<StereoscopicGlasses />);
+    </script>
+</body>
+</html>

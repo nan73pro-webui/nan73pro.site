@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>누진 다초점 핀홀 안경 - 디지털 특허 브로슈어</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-indigo-50 text-slate-800">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const Eye = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>;
+        const Grid = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>;
+        const ZoomIn = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>;
+
+        const PinholeGlasses = () => {
+            const [activeTab, setActiveTab] = useState('concept');
+            const [viewMode, setViewMode] = useState('variable'); // 'standard' or 'variable'
+
+            const patentInfo = {
+                title: "중심부와 가장자리가 다른 핀홀 구조",
+                patentNumber: "10-2115621",
+                holder: "황두원",
+                summary: "가로/세로 빗살을 상하 대칭형(장구 장단 모양)으로 설계하여, 핀홀의 크기가 중심부에서는 크고 가장자리로 갈수록 작아지게 만든 구조. 시야 확보와 선명도를 동시에 잡았습니다.",
+                keywords: ["가변 핀홀", "누진 다초점 효과", "상하대칭형 빗살", "시야 확대"]
+            };
+
+            const PinholeVisualizer = () => {
+                const rows = 9;
+                const cols = 9;
+                const holes = [];
+                
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const dist = Math.sqrt(Math.pow(r - 4, 2) + Math.pow(c - 4, 2));
+                        let size;
+                        if (viewMode === 'variable') {
+                            size = Math.max(2, 6 - dist * 0.8); 
+                        } else {
+                            size = 4;
+                        }
+
+                        holes.push(
+                            <rect 
+                                key={`${r}-${c}`}
+                                x={c * 10 + (10 - size)/2} 
+                                y={r * 10 + (10 - size)/2} 
+                                width={size} 
+                                height={size} 
+                                fill="white" 
+                                className="transition-all duration-500 ease-in-out"
+                            />
+                        );
+                    }
+                }
+
+                return (
+                    <div className="flex flex-col items-center">
+                        <div className="relative w-64 h-64 bg-black rounded-full overflow-hidden flex flex-col items-center justify-center border-4 border-slate-700 shadow-2xl">
+                            <svg viewBox="0 0 90 90" className="w-full h-full opacity-90">
+                                {holes}
+                            </svg>
+                            <div className="absolute inset-0 bg-indigo-500 mix-blend-overlay opacity-20 pointer-events-none"></div>
+                        </div>
+                        <div className="mt-4 flex gap-4">
+                            <button onClick={() => setViewMode('standard')} className={`px-4 py-2 rounded-full text-xs font-bold transition-colors ${viewMode === 'standard' ? 'bg-slate-800 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                                일반 핀홀 안경
+                            </button>
+                            <button onClick={() => setViewMode('variable')} className={`px-4 py-2 rounded-full text-xs font-bold transition-colors ${viewMode === 'variable' ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-700'}`}>
+                                본 발명 (가변형)
+                            </button>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-indigo-50 font-sans text-slate-800">
+                    <header className="bg-slate-900 text-white border-b-4 border-indigo-500 shadow-lg">
+                        <div className="max-w-4xl mx-auto px-4 py-8">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="bg-indigo-500 px-2 py-0.5 rounded text-xs font-bold">등록특허 {patentInfo.patentNumber}</span>
+                                <span className="text-slate-400 text-xs">{patentInfo.holder}</span>
+                            </div>
+                            <h1 className="text-3xl font-bold mb-3">{patentInfo.title}</h1>
+                            <p className="text-slate-400 text-sm max-w-xl">{patentInfo.summary}</p>
+                        </div>
+                    </header>
+
+                    <nav className="bg-white sticky top-0 z-50 border-b border-indigo-100 shadow-sm">
+                        <div className="max-w-4xl mx-auto px-4 flex gap-6 overflow-x-auto">
+                            {[
+                                { id: 'concept', label: '기술 시각화', icon: <Eye size={18}/> },
+                                { id: 'structure', label: '빗살 구조 원리', icon: <Grid size={18}/> },
+                                { id: 'benefit', label: '차별화된 효과', icon: <ZoomIn size={18}/> }
+                            ].map(tab => (
+                                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                                    className={`py-4 text-sm font-bold flex items-center gap-2 border-b-2 transition-colors ${activeTab === tab.id ? 'border-indigo-600 text-indigo-800' : 'border-transparent text-slate-500'}`}>
+                                    {tab.icon} {tab.label}
+                                </button>
+                            ))}
+                        </div>
+                    </nav>
+
+                    <main className="max-w-4xl mx-auto px-4 py-8 animate-in">
+                        {activeTab === 'concept' && (
+                            <div className="grid md:grid-cols-2 gap-8 items-center">
+                                <PinholeVisualizer />
+                                <div className="space-y-6">
+                                    <h3 className="text-xl font-bold text-indigo-900">
+                                        {viewMode === 'variable' ? "🎯 누진 다초점 효과" : "⚫ 기존 핀홀의 한계"}
+                                    </h3>
+                                    <p className="text-sm leading-relaxed text-slate-600">
+                                        {viewMode === 'variable' 
+                                            ? "중심부는 구멍이 넓어 시야가 밝고 넓습니다. 반면 가장자리는 구멍이 좁아져 초점이 더욱 또렷하게 맺힙니다. 이는 마치 누진 다초점 렌즈와 같은 효과를 냅니다." 
+                                            : "구멍 크기가 일정하면, 구멍이 작을 경우 너무 어둡고 시야가 좁아지며, 구멍이 클 경우 상이 흐릿해지는 딜레마가 있습니다."}
+                                    </p>
+                                    <div className="bg-white p-4 rounded-xl border border-indigo-100 shadow-sm">
+                                        <h4 className="font-bold text-sm mb-2 text-slate-700">구역별 특징</h4>
+                                        <ul className="text-xs space-y-2 text-slate-500">
+                                            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-indigo-500"></span> <strong>중심부 (Wide):</strong> 밝고 넓은 시야 (멀리 볼 때 유리)</li>
+                                            <li className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-slate-400"></span> <strong>가장자리 (Sharp):</strong> 좁지만 선명한 초점 (작은 글씨 볼 때 유리)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'structure' && (
+                            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                                <h3 className="text-lg font-bold text-slate-800 mb-4">⏳ 상하대칭형 빗살 (Hourglass Shape)</h3>
+                                <div className="flex flex-col md:flex-row gap-8 items-center">
+                                    <div className="w-full md:w-1/2">
+                                        <svg viewBox="0 0 200 100" className="w-full border border-slate-200 rounded bg-slate-50">
+                                            <path d="M20 20 L180 45 L180 55 L20 80 Z" fill="#94a3b8" opacity="0.5" />
+                                            <text x="100" y="55" textAnchor="middle" className="text-xs font-bold fill-slate-700">빗살 (Comb)</text>
+                                            <text x="20" y="95" className="text-[10px] fill-slate-500">끝부분: 넓음</text>
+                                            <text x="180" y="95" textAnchor="end" className="text-[10px] fill-slate-500">중심: 좁음</text>
+                                        </svg>
+                                    </div>
+                                    <div className="w-full md:w-1/2 text-sm text-slate-600">
+                                        <p className="mb-4">
+                                            핀홀을 형성하는 가로/세로 빗살의 폭이 일정하지 않습니다. 
+                                            <strong>끝부분은 넓고 중심부로 갈수록 폭이 좁아지는 상하대칭형 구조</strong>를 가집니다.
+                                        </p>
+                                        <p>
+                                            이 빗살들이 교차하면서 자연스럽게 중심부에는 큰 구멍이, 가장자리에는 작은 구멍이 만들어지는 입체 구조가 형성됩니다.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'benefit' && (
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="bg-white p-6 rounded-2xl border-l-4 border-indigo-500 shadow-sm">
+                                    <h3 className="font-bold text-indigo-900 mb-2">자연스러운 눈 운동 유도</h3>
+                                    <p className="text-sm text-slate-600">
+                                        가장자리의 좁은 구멍을 통해 선명한 상을 보려고 할 때, 사용자는 자연스럽게 눈을 치켜뜨거나 내리깔고, 옆으로 흘겨보는 동작을 하게 됩니다. 이는 강제적인 눈 운동 효과를 가져옵니다.
+                                    </p>
+                                </div>
+                                <div className="bg-white p-6 rounded-2xl border-l-4 border-blue-500 shadow-sm">
+                                    <h3 className="font-bold text-blue-900 mb-2">두 마리 토끼를 잡다</h3>
+                                    <p className="text-sm text-slate-600">
+                                        기존 핀홀 안경은 선명도(작은 구멍)와 밝기(큰 구멍) 사이에서 타협해야 했습니다. 본 발명은 위치에 따라 구멍 크기를 달리하여 이 문제를 동시에 해결했습니다.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    <footer className="bg-slate-900 text-slate-500 py-8 mt-8 text-center text-sm">
+                        <p>본 페이지는 등록특허 10-2115621호 명세서를 기반으로 제작되었습니다.</p>
+                        <p>&copy; 2025 Patent Visualization Assistant</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<PinholeGlasses />);
+    </script>
+</body>
+</html>
