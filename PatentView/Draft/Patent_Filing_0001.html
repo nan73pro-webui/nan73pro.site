@@ -1,1 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여드름성 피부용 화장품 - 디지털 특허 브로슈어</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <style>
+        /* 폰트 설정 (Noto Sans KR & Pretendard) */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        
+        /* 커스텀 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+        
+        /* 물방울 효과 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons (Lucide React Style) ---
+        const Leaf = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.5 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>;
+        const Droplet = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-7.406-2.122-3.8-3.068-5.266-3.118-5.345a.496.496 0 0 0-.882.001C11.882 2.373 10.976 3.75 8.954 7.227 6.69 11.233 5 13.56 5 15a7 7 0 0 0 7 7Z"/></svg>;
+        const Beaker = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg>;
+        const HeartPulse = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>;
+        const CheckCircle = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+        const ShieldCheck = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>;
+        const Thermometer = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>;
+        const Sparkles = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 5h4"/><path d="M3 9h4"/></svg>;
+        const LockKeyhole = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>;
+
+        // --- Main Component ---
+        const CosmeticPatent = () => {
+            // --- LOGIN STATE ---
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [passwordInput, setPasswordInput] = useState('');
+            const [loginError, setLoginError] = useState('');
+
+            // --- ORIGINAL STATE ---
+            const [activeTab, setActiveTab] = useState('overview');
+            const [selectedPhase, setSelectedPhase] = useState(null);
+
+            // --- LOGIN HANDLER ---
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if (passwordInput === 'angel77') {
+                    setIsLoggedIn(true);
+                } else {
+                    setLoginError('비밀번호가 올바르지 않습니다.');
+                }
+            };
+
+            // Patent Info
+            const patentInfo = {
+                title: "여드름성 피부용 화장품 및 제조방법",
+                englishTitle: "Cosmetic for acne-prone skin",
+                patentNumber: "출원서 기반", 
+                holder: "복영옥",
+                summary: "정제수를 최소화하고 티트리잎수와 녹차수를 베이스로 사용하며, 액정 유화(Liquid Crystal) 기술로 님(Neem) 오일 등 천연 항균 성분을 안정화하여 피부 자극을 최소화한 트러블 케어 조성물.",
+                keywords: ["티트리베이스", "액정유화시스템", "Water-Free", "항균항염"]
+            };
+
+            // Phases Data
+            const phases = {
+                "A": {
+                    id: "A", name: "수상재료 (Water Phase)", temp: "75~80℃",
+                    desc: "Water-Free 베이스 & 항균",
+                    ingredients: [
+                        { name: "티트리잎수", ratio: "30.13%", note: "항균, 항염, 피지조절" },
+                        { name: "녹차수", ratio: "20%", note: "피부진정, 수렴, 항산화" },
+                        { name: "식물성 방부 복합체", ratio: "3%", note: "천연 방부 시스템" },
+                        { name: "천연 킬레이트제", ratio: "0.02%", note: "금속이온봉쇄, 변색방지" }
+                    ],
+                    color: "bg-emerald-100 text-emerald-800 border-emerald-200"
+                },
+                "B": {
+                    id: "B", name: "점증/보습 (Thickener)", temp: "상온 용해",
+                    desc: "속보습 및 제형 안정화",
+                    ingredients: [
+                        { name: "글리세린", ratio: "5%", note: "점증제 분산용 보습제" },
+                        { name: "천연 검증 복합체", ratio: "0.3%", note: "점증제, 제형 안정화" },
+                        { name: "저분자 히알루론산", ratio: "0.1%", note: "속보습, 수분보유력 강화" }
+                    ],
+                    color: "bg-blue-50 text-blue-700 border-blue-200"
+                },
+                "C": {
+                    id: "C", name: "유상재료 (Oil Phase)", temp: "75~80℃",
+                    desc: "액정 유화 & 항균 오일",
+                    ingredients: [
+                        { name: "MCT 오일", ratio: "9%", note: "가벼운 사용감의 베이스" },
+                        { name: "액정 유화 복합체", ratio: "5.5%", note: "라멜라 구조 형성, 장벽강화" },
+                        { name: "시어버터", ratio: "6.3%", note: "고보습, 피부 연화" },
+                        { name: "님(Neem) 오일", ratio: "0.5%", note: "강력한 항균/항진균 작용" },
+                        { name: "블랙커민씨 오일", ratio: "1.5%", note: "항염, 트러블 케어 특화" }
+                    ],
+                    color: "bg-amber-50 text-amber-700 border-amber-200"
+                },
+                "D": {
+                    id: "D", name: "첨가재료 (Extracts)", temp: "50~55℃",
+                    desc: "진정 및 활력 (열변성 방지)",
+                    ingredients: [
+                        { name: "당귀/인삼 추출물", ratio: "2%", note: "피부 활력, 혈행 개선" },
+                        { name: "퉁퉁마디/갈대 추출물", ratio: "2%", note: "자극 완화, 붉은기 진정" },
+                        { name: "프로폴리스 추출물", ratio: "0.2%", note: "항염, 면역력 강화" }
+                    ],
+                    color: "bg-teal-50 text-teal-700 border-teal-200"
+                },
+                "E": {
+                    id: "E", name: "pH 조절 (Buffer)", temp: "상온",
+                    desc: "약산성 조절",
+                    ingredients: [
+                        { name: "정제수", ratio: "1%", note: "구연산 용해 용매" },
+                        { name: "구연산", ratio: "0.1%", note: "pH 조절 (약산성)" }
+                    ],
+                    color: "bg-purple-50 text-purple-700 border-purple-200"
+                },
+                "F": {
+                    id: "F", name: "후첨 (Aroma/Functional)", temp: "45℃ 이하",
+                    desc: "향취 및 항균 보조",
+                    ingredients: [
+                        { name: "천연 유래 항균제", ratio: "0.25%", note: "보존력 강화" },
+                        { name: "티트리잎 오일", ratio: "0.1%", note: "국소 트러블 케어" },
+                        { name: "라벤더/타임잎 오일", ratio: "각 0.1%", note: "진정, 강한 항균 작용" }
+                    ],
+                    color: "bg-slate-100 text-slate-600 border-slate-200"
+                }
+            };
+
+            // Evaluation Data
+            const scores = [
+                { label: "KAGS 등급 개선", score: 9.5, max: 10, note: "3.5 → 1.2 (대폭 감소)" },
+                { label: "농포 개수 감소율", score: 7.5, max: 10, note: "75% 감소 (4주 후)" },
+                { label: "홍반 지수 감소율", score: 3.0, max: 10, note: "30% 감소 (4주 후)" },
+                { label: "사용감 만족도", score: 9.2, max: 10, note: "끈적임 없음" },
+            ];
+
+            // --- RENDER LOGIN SCREEN IF NOT AUTHENTICATED ---
+            if (!isLoggedIn) {
+                return (
+                    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
+                        <div className="bg-white rounded-2xl shadow-xl border border-stone-100 p-8 w-full max-w-sm animate-in">
+                            <div className="flex justify-center mb-6">
+                                <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600">
+                                    <LockKeyhole size={32} />
+                                </div>
+                            </div>
+                            <h2 className="text-xl font-bold text-center text-stone-800 mb-2">보안 문서 접근</h2>
+                            <p className="text-stone-500 text-sm text-center mb-6">관계자 외 열람이 제한된 문서입니다.<br/>비밀번호를 입력해주세요.</p>
+                            
+                            <form onSubmit={handleLogin} className="space-y-4">
+                                <div>
+                                    <input 
+                                        type="password" 
+                                        value={passwordInput}
+                                        onChange={(e) => {
+                                            setPasswordInput(e.target.value);
+                                            setLoginError('');
+                                        }}
+                                        className="w-full px-4 py-3 rounded-lg border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                                        placeholder="비밀번호 입력"
+                                        autoFocus
+                                    />
+                                    {loginError && <p className="text-red-500 text-xs mt-2 text-center font-medium">{loginError}</p>}
+                                </div>
+                                <button 
+                                    type="submit"
+                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow-md transition-colors"
+                                >
+                                    문서 열람하기
+                                </button>
+                            </form>
+                            <p className="text-center text-xs text-stone-300 mt-6">
+                                SECURE DOCUMENT VIEWER &copy; 2025
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            // --- ORIGINAL BROCHURE CONTENT ---
+            return (
+                <div className="min-h-screen bg-stone-50 font-sans text-stone-800 animate-in">
+                    {/* Header */}
+                    <header className="bg-gradient-to-r from-emerald-500 to-teal-700 text-white shadow-xl border-b-4 border-emerald-800">
+                        <div className="max-w-5xl mx-auto px-4 py-10">
+                            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-bold backdrop-blur-sm border border-white/30">특허기술</span>
+                                        <span className="text-emerald-100 text-xs flex items-center gap-1"><Leaf size={12}/> 발명자: {patentInfo.holder}</span>
+                                    </div>
+                                    <h1 className="text-2xl md:text-3xl font-bold mb-2 tracking-tight">{patentInfo.title}</h1>
+                                    <p className="text-emerald-100 max-w-2xl leading-relaxed text-sm md:text-base font-light">
+                                        {patentInfo.summary}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap gap-2 justify-end">
+                                    {patentInfo.keywords.map((kw, i) => (
+                                        <span key={i} className="px-3 py-1 bg-white/10 rounded-full text-xs border border-white/20 backdrop-blur-md shadow-sm">#{kw}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Navigation */}
+                    <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-stone-200 shadow-sm">
+                        <div className="max-w-5xl mx-auto px-4">
+                            <nav className="flex space-x-8 overflow-x-auto">
+                                {[
+                                    { id: 'overview', icon: <Sparkles size={16}/>, label: '발명 개요' },
+                                    { id: 'ingredients', icon: <Beaker size={16}/>, label: '핵심 조성물' },
+                                    { id: 'process', icon: <Droplet size={16}/>, label: '제조 공정' },
+                                    { id: 'effect', icon: <HeartPulse size={16}/>, label: '임상 결과' }
+                                ].map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`py-4 text-sm font-bold border-b-2 whitespace-nowrap transition-colors flex items-center gap-2
+                                            ${activeTab === tab.id ? 'border-emerald-500 text-emerald-600' : 'border-transparent text-stone-500 hover:text-stone-800'}
+                                        `}
+                                    >
+                                        {tab.icon} {tab.label}
+                                    </button>
+                                ))}
+                            </nav>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <main className="max-w-5xl mx-auto px-4 py-8 animate-in">
+                        
+                        {/* TAB: OVERVIEW */}
+                        {activeTab === 'overview' && (
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                                        <h3 className="text-xl font-bold text-stone-700 mb-4 flex items-center gap-2">
+                                            <ShieldCheck className="text-stone-400" /> 기존 제품의 문제점
+                                        </h3>
+                                        <ul className="space-y-3 text-stone-600">
+                                            <li className="flex gap-3 items-start p-2 hover:bg-stone-50 rounded transition">
+                                                <span className="text-red-400 font-bold mt-1">×</span>
+                                                <span><strong>정제수 기반:</strong> 단순 용매(물)가 50% 이상으로 베이스 효능 부족</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start p-2 hover:bg-stone-50 rounded transition">
+                                                <span className="text-red-400 font-bold mt-1">×</span>
+                                                <span><strong>항균 오일 안정화 난해:</strong> 님(Neem) 오일 등의 특이취 및 산화 문제</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start p-2 hover:bg-stone-50 rounded transition">
+                                                <span className="text-red-400 font-bold mt-1">×</span>
+                                                <span><strong>피부 건조 유발:</strong> 알코올/살리실산 과다 사용으로 장벽 손상</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 shadow-sm">
+                                        <h3 className="text-xl font-bold text-emerald-800 mb-4 flex items-center gap-2">
+                                            <Leaf className="text-emerald-600" /> 본 발명의 해결책
+                                        </h3>
+                                        <ul className="space-y-3 text-emerald-900">
+                                            <li className="flex gap-3 items-start p-2 bg-white/50 rounded shadow-sm">
+                                                <CheckCircle size={18} className="mt-1 text-emerald-500"/>
+                                                <span><strong>Water-Free 베이스:</strong> 티트리잎수(30%)+녹차수(20%)로 항염 효과</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start p-2 bg-white/50 rounded shadow-sm">
+                                                <CheckCircle size={18} className="mt-1 text-emerald-500"/>
+                                                <span><strong>액정 유화 시스템:</strong> 라멜라 구조로 난용성 오일 포집 & 이취 마스킹</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start p-2 bg-white/50 rounded shadow-sm">
+                                                <CheckCircle size={18} className="mt-1 text-emerald-500"/>
+                                                <span><strong>다단계 온도 제어:</strong> 열에 약한 추출물/에센셜 오일을 저온 투입</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white p-8 rounded-2xl shadow-lg flex flex-col justify-center items-center text-center border border-stone-100 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100 rounded-full filter blur-3xl opacity-50"></div>
+                                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-100 rounded-full filter blur-3xl opacity-50"></div>
+                                    
+                                    <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-6 text-emerald-500 border border-emerald-100 floating">
+                                        <Droplet size={48} />
+                                    </div>
+                                    <h2 className="text-2xl font-bold mb-4 text-stone-800">"여드름, 물부터 바꿨습니다"</h2>
+                                    <p className="text-stone-500 leading-relaxed mb-6">
+                                        피부 진정을 위한 티트리 & 녹차 베이스<br/>
+                                        <span className="text-emerald-600 font-bold border-b border-emerald-300">액정 유화 기술</span>로 완성한<br/>
+                                        자극 없는 고기능성 트러블 케어
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: INGREDIENTS (Composition) */}
+                        {activeTab === 'ingredients' && (
+                            <div className="grid lg:grid-cols-3 gap-6 animate-in">
+                                {/* Left: Phase List */}
+                                <div className="lg:col-span-1 space-y-3">
+                                    <h3 className="font-bold text-stone-700 flex items-center gap-2 mb-4">
+                                        <Beaker size={20}/> 제조 상(Phase) 구성
+                                    </h3>
+                                    {Object.values(phases).map((phase) => (
+                                        <button
+                                            key={phase.id}
+                                            onClick={() => setSelectedPhase(phase)}
+                                            className={`w-full text-left p-4 rounded-xl border transition-all flex justify-between items-center group
+                                                ${selectedPhase?.id === phase.id 
+                                                    ? 'bg-stone-800 text-white border-stone-800 shadow-md' 
+                                                    : 'bg-white border-stone-200 hover:border-emerald-300 hover:bg-emerald-50'}
+                                            `}
+                                        >
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className={`text-xs font-bold px-2 py-0.5 rounded ${selectedPhase?.id === phase.id ? 'bg-emerald-500 text-white' : 'bg-stone-200 text-stone-600'}`}>
+                                                        Phase {phase.id}
+                                                    </span>
+                                                    <span className="font-bold">{phase.name}</span>
+                                                </div>
+                                                <div className={`text-xs ${selectedPhase?.id === phase.id ? 'text-stone-400' : 'text-stone-500'}`}>{phase.desc}</div>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Right: Detail View */}
+                                <div className="lg:col-span-2">
+                                    <div className="bg-white h-full p-6 rounded-2xl shadow-sm border border-stone-200 flex flex-col">
+                                        {selectedPhase ? (
+                                            <div className="animate-in h-full">
+                                                <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 border ${selectedPhase.color.replace('text', 'border').replace('bg', 'bg-opacity-10')}`}>
+                                                    Phase {selectedPhase.id} 조성물
+                                                </div>
+                                                <h3 className="text-2xl font-bold text-stone-800 mb-2">{selectedPhase.name}</h3>
+                                                <p className="text-stone-500 mb-6 flex items-center gap-2">
+                                                    <Thermometer size={16}/> 공정 온도: <span className="font-bold text-emerald-600">{selectedPhase.temp}</span>
+                                                </p>
+                                                
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {selectedPhase.ingredients.map((ing, idx) => (
+                                                        <div key={idx} className="p-4 rounded-xl bg-stone-50 border border-stone-100 hover:shadow-sm transition">
+                                                            <div className="flex justify-between items-end mb-1">
+                                                                <span className="font-bold text-stone-700">{ing.name}</span>
+                                                                <span className="text-lg font-bold text-emerald-600">{ing.ratio}</span>
+                                                            </div>
+                                                            <div className="text-xs text-stone-500">{ing.note}</div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="h-full flex flex-col items-center justify-center text-stone-400 gap-4 py-12">
+                                                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center">
+                                                    <Beaker size={32} />
+                                                </div>
+                                                <p>좌측(휴대폰은 위쪽)의 제조 단계(Phase)를 선택하여<br/>상세 배합비를 확인하세요.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* TAB: PROCESS */}
+                        {activeTab === 'process' && (
+                            <div className="space-y-8 animate-in">
+                                <div className="relative border-l-4 border-emerald-200 ml-4 md:ml-8 space-y-12 py-4">
+                                    {[
+                                        { step: "1", title: "수상 용해 (Base)", detail: "티트리잎수와 녹차수(A상)를 75~80℃로 가온 용해하고, 점증제(B상)를 분산하여 혼합.", icon: "💧" },
+                                        { step: "2", title: "액정 유화 (Emulsification)", detail: "C상(유상)을 75~80℃에서 용해 후 투입. 액정 유화 복합체로 님오일 등을 라멜라 구조로 포집 (10~15분 유화).", icon: "🌪️", highlight: true },
+                                        { step: "3", title: "추출물 후첨 (Cooling I)", detail: "50~55℃로 냉각 후 D상(당귀/인삼/프로폴리스) 투입. 고온에 의한 유효성분 파괴 방지.", icon: "🌿" },
+                                        { step: "4", title: "pH 조절 및 향취 (Cooling II)", detail: "pH를 약산성(5.0~6.0)으로 조절(E상) 후, 45℃ 이하에서 에센셜 오일(F상) 투입하여 마무리.", icon: "⚗️" }
+                                    ].map((proc, idx) => (
+                                        <div key={idx} className="relative pl-8 md:pl-12">
+                                            {/* Dot on Timeline */}
+                                            <div className={`absolute -left-[14px] top-0 w-6 h-6 rounded-full border-4 border-white shadow-sm flex items-center justify-center text-xs font-bold
+                                                ${proc.highlight ? 'bg-emerald-500 text-white w-8 h-8 -left-[18px]' : 'bg-stone-300 text-white'}
+                                            `}>
+                                                {proc.highlight ? "★" : idx + 1}
+                                            </div>
+                                            
+                                            {/* Content Card */}
+                                            <div className={`p-6 rounded-2xl border transition-all hover:translate-x-1
+                                                ${proc.highlight ? 'bg-emerald-50 border-emerald-200 shadow-md' : 'bg-white border-stone-200 shadow-sm'}
+                                            `}>
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <span className="text-2xl">{proc.icon}</span>
+                                                    <h3 className={`text-lg font-bold ${proc.highlight ? 'text-emerald-800' : 'text-stone-800'}`}>{proc.title}</h3>
+                                                </div>
+                                                <p className="text-stone-600 text-sm leading-relaxed">{proc.detail}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-center text-xs text-stone-400">
+                                    * 액정 유화 시스템은 피부 지질과 유사한 구조를 형성하여 흡수율과 장벽 강화 효과를 높입니다.
+                                </p>
+                            </div>
+                        )}
+
+                        {/* TAB: EFFECT (Evaluation) */}
+                        {activeTab === 'effect' && (
+                            <div className="grid md:grid-cols-2 gap-8 animate-in">
+                                <div className="bg-white p-8 rounded-2xl shadow-sm border border-stone-200">
+                                    <h3 className="font-bold text-xl text-stone-800 mb-6 flex items-center gap-2">
+                                        <CheckCircle className="text-emerald-500"/> 임상 평가 결과 (4주)
+                                    </h3>
+                                    <p className="text-sm text-stone-500 mb-6">
+                                        성인 남녀 20명 대상, 한국형 여드름 중증도(KAGS) 및 안면 분석
+                                    </p>
+                                    
+                                    <div className="space-y-6">
+                                        {scores.map((item, idx) => (
+                                            <div key={idx}>
+                                                <div className="flex justify-between text-sm font-bold mb-1">
+                                                    <span className="text-stone-700">{item.label}</span>
+                                                    <div className="text-right">
+                                                        <span className="text-emerald-600 text-lg">{item.score === 3.0 ? "30%" : item.score === 7.5 ? "75%" : item.score}</span>
+                                                        {item.max === 10 && item.score > 8 && <span className="text-stone-400 text-xs font-normal"> / 10</span>}
+                                                    </div>
+                                                </div>
+                                                {/* Progress Bar Logic for Percentage or Score */}
+                                                <div className="w-full bg-stone-100 rounded-full h-3 overflow-hidden">
+                                                    <div 
+                                                        className="bg-gradient-to-r from-emerald-400 to-emerald-600 h-full rounded-full transition-all duration-1000 ease-out" 
+                                                        style={{width: `${(item.score / item.max) * 100}%`}}
+                                                    ></div>
+                                                </div>
+                                                <div className="text-xs text-stone-400 mt-1">{item.note}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="grid gap-6">
+                                    <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 flex flex-col justify-center items-center text-center">
+                                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-sm mb-4">
+                                            <Leaf size={32}/>
+                                        </div>
+                                        <h3 className="font-bold text-emerald-800 text-lg mb-2">항균 및 피지 조절</h3>
+                                        <p className="text-emerald-700 text-sm">
+                                            님(Neem) 오일과 블랙커민씨 오일의<br/>시너지로 여드름 균 억제
+                                        </p>
+                                    </div>
+                                    <div className="bg-teal-50 p-6 rounded-2xl border border-teal-100 flex flex-col justify-center items-center text-center">
+                                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-teal-600 shadow-sm mb-4">
+                                            <ShieldCheck size={32}/>
+                                        </div>
+                                        <h3 className="font-bold text-teal-800 text-lg mb-2">손상된 장벽 복구</h3>
+                                        <p className="text-teal-700 text-sm">
+                                            액정 유화의 라멜라 구조가<br/>피부 보호막 형성 및 속건조 해결
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="bg-slate-800 text-slate-400 py-8 mt-12">
+                        <div className="max-w-5xl mx-auto px-4 text-center text-sm">
+                            <p className="mb-2">본 페이지는 '여드름성 피부용 화장품 및 그 제조방법'의 명세서를 바탕으로 제작되었습니다.</p>
+                            <p>&copy; 2025 Patent Visualization Assistant.</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<CosmeticPatent />);
+    </script>
+</body>
+</html>
