@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="특허 선행기술조사 전략 가이드: 단순 매뉴얼을 넘어선 R&D 전략의 핵심">
+    <title>Nan73Pro - 특허 선행기술조사 전략</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0f172a', 800: '#1e293b' },
+                        tech: { blue: '#38bdf8', green: '#34d399', purple: '#a78bfa' }
+                    },
+                    fontFamily: { sans: ['Pretendard', 'sans-serif'] },
+                    backgroundImage: {
+                        'hero-gradient': 'radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%)',
+                        'text-gradient': 'linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        html { scroll-behavior: smooth; }
+        .bg-grid-pattern {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        /* 아이콘 컴포넌트 */
+        const IconBase = ({ size = 24, className = "", children }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const Search = (p) => <IconBase {...p}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></IconBase>;
+        const Scale = (p) => <IconBase {...p}><path d="M16 3h5v5"></path><path d="M8 3H3v5"></path><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"></path><path d="M12 22v-8.3a4 4 0 0 0 1.172-2.872L21 3"></path></IconBase>; 
+        const Target = (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></IconBase>;
+        const BookOpen = (p) => <IconBase {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></IconBase>;
+        const MapPin = (p) => <IconBase {...p}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></IconBase>;
+
+        /* 스크롤 애니메이션 */
+        const RevealOnScroll = ({ children }) => {
+            const [isVisible, setIsVisible] = useState(false);
+            const ref = useRef(null);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); }
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => { if (ref.current) observer.unobserve(ref.current); };
+            }, []);
+
+            return (
+                <div ref={ref} className={`transition-all duration-1000 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+                    {children}
+                </div>
+            );
+        };
+
+        /* 로고 */
+        const Logo = () => {
+             const scrollToTop = (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            return (
+                <a href="#" onClick={scrollToTop} className="flex items-center gap-2 cursor-pointer group">
+                    <div className="relative w-8 h-8 flex items-end justify-center">
+                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
+                        <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
+                        <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold text-white leading-none">Nan7<span className="text-tech-blue font-light">3</span>Pro</span>
+                    </div>
+                </a>
+            );
+        };
+
+        /* 메인 섹션들 */
+
+        const Hero = () => (
+            <header className="relative pt-32 pb-20 px-6 overflow-hidden flex items-center justify-center text-center bg-hero-gradient min-h-[60vh]">
+                <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-50 pointer-events-none"></div>
+                <div className="container mx-auto relative z-10">
+                    <RevealOnScroll>
+                        <div className="max-w-4xl mx-auto">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tech-blue/10 border border-tech-blue/20 text-tech-blue text-xs font-bold uppercase mb-8">
+                                <Search size={14} />
+                                IP Strategy Framework
+                            </div>
+                            <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-8">
+                                특허 선행기술조사<br />
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400">단순 매뉴얼을 넘어선 전략</span>
+                            </h1>
+                            <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10 font-light">
+                                특허 검색은 권리 확보와 침해 회피라는 이중적 목적을 가집니다. <br/>
+                                심사관과 변리사의 관점에서 '어떻게 사고'하고 '어떻게 분석'해야 할까요?
+                            </p>
+                            <div className="flex flex-wrap justify-center gap-4">
+                                <a href="#legal" className="bg-navy-800/50 backdrop-blur border border-slate-700 px-6 py-3 rounded-xl hover:border-tech-blue transition-colors flex items-center gap-2">
+                                    <Scale className="text-tech-blue" />
+                                    <span className="text-white text-sm font-bold">핵심 법적 요건</span>
+                                </a>
+                                <a href="#strategy" className="bg-navy-800/50 backdrop-blur border border-slate-700 px-6 py-3 rounded-xl hover:border-tech-blue transition-colors flex items-center gap-2">
+                                    <Target className="text-tech-blue" />
+                                    <span className="text-white text-sm font-bold">검색 전략</span>
+                                </a>
+                                <a href="#analysis" className="bg-navy-800/50 backdrop-blur border border-slate-700 px-6 py-3 rounded-xl hover:border-tech-blue transition-colors flex items-center gap-2">
+                                    <BookOpen className="text-tech-blue" />
+                                    <span className="text-white text-sm font-bold">분석 프레임워크</span>
+                                </a>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </header>
+        );
+
+        const SectionLegal = () => (
+            <section id="legal" className="py-24 bg-navy-900 border-y border-white/5">
+                <div className="container mx-auto px-6">
+                    <RevealOnScroll>
+                        <div className="mb-12 text-center">
+                            <h2 className="text-3xl font-bold text-white mb-4">핵심 법적 요건: 신규성 vs 진보성</h2>
+                            <p className="text-slate-400">특허 등록을 결정짓는 두 가지 거대한 산을 이해해야 합니다.</p>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                            <div className="p-8 bg-navy-800 rounded-2xl border border-white/10 hover:border-tech-blue transition-all group">
+                                <div className="text-tech-blue font-bold text-xl mb-4 flex items-center gap-2">
+                                    1. 신규성 (Novelty)
+                                </div>
+                                <blockquote className="border-l-4 border-tech-blue pl-4 text-slate-300 italic mb-6">
+                                    "세상에 없던 새로운 것인가?"
+                                </blockquote>
+                                <ul className="space-y-4 text-sm text-slate-400">
+                                    <li className="flex gap-3">
+                                        <div className="min-w-[4px] h-[4px] bg-tech-blue rounded-full mt-2"></div>
+                                        <span><strong>판단 기준:</strong> 1:1 비교 (내 발명 vs 단 하나의 선행문헌)</span>
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <div className="min-w-[4px] h-[4px] bg-tech-blue rounded-full mt-2"></div>
+                                        <span><strong>특징:</strong> 구성의 사소한 차이는 '실질적 동일성'으로 보아 신규성이 부정될 수 있습니다.</span>
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <div className="min-w-[4px] h-[4px] bg-tech-blue rounded-full mt-2"></div>
+                                        <span><strong>전략:</strong> "탐색 및 파괴 (Search & Destroy)"</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div className="p-8 bg-navy-800 rounded-2xl border border-white/10 hover:border-tech-green transition-all group">
+                                <div className="text-tech-green font-bold text-xl mb-4 flex items-center gap-2">
+                                    2. 진보성 (Inventive Step)
+                                </div>
+                                <blockquote className="border-l-4 border-tech-green pl-4 text-slate-300 italic mb-6">
+                                    "새롭더라도, 쉽게 만들 수 없는 것인가?"
+                                </blockquote>
+                                <ul className="space-y-4 text-sm text-slate-400">
+                                    <li className="flex gap-3">
+                                        <div className="min-w-[4px] h-[4px] bg-tech-green rounded-full mt-2"></div>
+                                        <span><strong>판단 기준:</strong> 다(多)요소 조합 (여러 선행문헌의 결합)</span>
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <div className="min-w-[4px] h-[4px] bg-tech-green rounded-full mt-2"></div>
+                                        <span><strong>핵심:</strong> '통상의 기술자(POSA)'가 쉽게 발명할 수 있다면 거절됩니다.</span>
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <div className="min-w-[4px] h-[4px] bg-tech-green rounded-full mt-2"></div>
+                                        <span><strong>전략:</strong> "탐험 및 조합 (Explore & Combine)"</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        const SectionStrategy = () => (
+            <section id="strategy" className="py-24 bg-navy-800 relative">
+                <div className="absolute top-0 right-0 w-full h-full bg-grid-pattern opacity-30 pointer-events-none"></div>
+                <div className="container mx-auto px-6 relative z-10">
+                    <RevealOnScroll>
+                        <div className="mb-12 border-l-4 border-tech-purple pl-6">
+                            <h2 className="text-3xl font-bold text-white">검색 전략 및 핵심 도구</h2>
+                        </div>
+
+                        <div className="space-y-8">
+                            <div className="bg-navy-900 p-6 rounded-xl border border-slate-700">
+                                <h3 className="text-lg font-bold text-white mb-3">1단계: 전략적 키워드 및 분류 코드 확보</h3>
+                                <p className="text-slate-400 text-sm mb-4">
+                                    발명을 '목적-구성-효과'로 분해하고, 언어의 한계를 극복하기 위해 '특허 분류 코드(IPC/CPC)'를 확보해야 합니다.
+                                </p>
+                                <div className="bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-lg text-xs text-yellow-400">
+                                    ※ Tip: 가장 유사한 선행 특허 1~2개를 찾아 해당 문헌의 코드를 '역추적'하는 것이 실용적입니다.
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="bg-navy-900 p-6 rounded-xl border border-slate-700">
+                                    <div className="text-tech-blue font-bold mb-2">KIPRIS (한국)</div>
+                                    <p className="text-slate-400 text-sm">
+                                        스마트 검색, 문장 검색 등 활용이 용이합니다. <br/>
+                                        <span className="text-red-400">주의:</span> 'NOT' 연산자(*!) 사용 시 주의해야 합니다. (예: '카페인 없는 커피' 검색 시 '카페인 제거' 문헌까지 제외될 위험)
+                                    </p>
+                                </div>
+                                <div className="bg-navy-900 p-6 rounded-xl border border-slate-700">
+                                    <div className="text-tech-green font-bold mb-2">Google Patents (글로벌)</div>
+                                    <p className="text-slate-400 text-sm">
+                                        신규성은 전 세계 기준이므로 필수입니다. <br/>
+                                        논문 등 '비특허문헌(NPL)'까지 동시 검색하고 자동 번역을 제공하여 매우 강력합니다.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        const SectionAnalysis = () => (
+            <section id="analysis" className="py-24 bg-navy-900">
+                <div className="container mx-auto px-6">
+                    <RevealOnScroll>
+                        <div className="grid lg:grid-cols-3 gap-12">
+                            <div className="lg:col-span-1 space-y-6">
+                                <h2 className="text-3xl font-bold text-white">결과 분석 및 자가 진단</h2>
+                                <div className="p-6 bg-navy-800 rounded-xl border border-tech-blue/30">
+                                    <h3 className="text-tech-blue font-bold mb-2">권리는 '청구범위'에 있다</h3>
+                                    <p className="text-slate-400 text-sm leading-relaxed">
+                                        특허의 법적 권리 범위는 초록(Abstract)이 아닌, 오직 <strong>'특허청구범위(Claims)'</strong>에 의해서만 결정됩니다.<br/><br/>
+                                        분석은 내 발명의 청구항과 선행기술의 청구항을 구성요소별로 비교하는 작업입니다.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="lg:col-span-2">
+                                <h3 className="text-xl font-bold text-white mb-6">진보성 자가 진단 (심사관 5단계 방식)</h3>
+                                <div className="space-y-4">
+                                    {[
+                                        { step: "1", text: "내 발명(A+B+C)을 확정합니다." },
+                                        { step: "2", text: "가장 유사한 '주(主) 선행발명'(예: A+B+D)을 선택합니다." },
+                                        { step: "3", text: "두 발명의 공통점(A, B)과 차이점(C vs D)을 명확히 분리합니다." },
+                                        { step: "4", text: "차이점을 극복하는 것이 '용이'했는지 판단합니다." },
+                                        { step: "5", text: "결합의 동기, 구성의 곤란성, 효과의 현저성을 종합 고려합니다." }
+                                    ].map((item, idx) => (
+                                        <div key={idx} className="flex items-center gap-4 p-4 bg-navy-800 rounded-lg border border-slate-700 hover:border-tech-green transition-colors">
+                                            <div className="w-8 h-8 rounded-full bg-navy-900 border border-tech-green text-tech-green flex items-center justify-center font-bold text-sm shrink-0">
+                                                {item.step}
+                                            </div>
+                                            <div className="text-slate-300 text-sm">{item.text}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        const Conclusion = () => (
+            <section className="py-20 bg-gradient-to-br from-navy-800 to-navy-900 border-t border-white/5 text-center">
+                <div className="container mx-auto px-6">
+                    <RevealOnScroll>
+                        <MapPin size={48} className="text-tech-blue mx-auto mb-6" />
+                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">최종 결론: R&D 전략으로의 연결</h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
+                            선행기술조사는 단순한 등록 여부 확인이 아닙니다. <br/>
+                            경쟁사가 집중하는 기술을 파악하고, 아직 특허가 없는 <strong>'공백 기술(White Space)'</strong>을 찾아내는 <strong>'특허맵(Patent Map)'</strong>을 그려보세요.<br/>
+                            이는 R&D 방향을 설정하는 핵심 전략 나침반이 됩니다.
+                        </p>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        const App = () => {
+            return (
+                <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
+                    <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
+                        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                            <Logo />
+                            <div className="flex items-center gap-8">
+                                <div className="hidden md:flex gap-6 text-sm font-medium text-slate-300">
+                                    <a href="#legal" className="hover:text-tech-blue transition-colors">법적요건</a>
+                                    <a href="#strategy" className="hover:text-tech-blue transition-colors">검색전략</a>
+                                    <a href="#analysis" className="hover:text-tech-blue transition-colors">분석방법</a>
+                                </div>
+                                <button className="bg-tech-blue text-navy-900 px-5 py-2 rounded-lg text-sm font-bold hover:bg-sky-400 transition shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+                                    <a href="../index.html#contact">Contact Us</a>
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <main>
+                        <Hero />
+                        <SectionLegal />
+                        <SectionStrategy />
+                        <SectionAnalysis />
+                        <Conclusion />
+                    </main>
+
+                    <footer className="bg-navy-900 py-12 border-t border-white/10 text-center">
+                        <div className="mb-8 flex justify-center items-center gap-4 text-slate-400 text-sm">
+                            <a href="patent_info_0005.html" className="hover:text-tech-blue transition-colors">← 이전글</a>
+                            <span className="text-slate-600">｜</span>
+                            <a href="patent_info_0007.html" className="hover:text-tech-blue transition-colors">다음글 →</a>
+                        </div>
+                        <p className="text-2xl mb-5 font-bold text-white">
+                            Nan<span style={{color: '#6AD7FF'}}>7</span><span style={{color: '#17C8C8'}}>3</span>Pro.
+                        </p>
+                        <p className="text-slate-500 text-sm">© 2025 Nan73Pro. All Rights Reserved.</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

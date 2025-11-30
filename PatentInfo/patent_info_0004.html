@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="특허출원의 첫걸음! 특허고객번호(출원인코드) 온라인 신청 완벽 가이드">
+    <title>Nan73Pro - 특허고객번호 신청 가이드</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0f172a', 800: '#1e293b' },
+                        tech: { blue: '#38bdf8', green: '#34d399' }
+                    },
+                    fontFamily: { sans: ['Pretendard', 'sans-serif'] },
+                    backgroundImage: {
+                        'hero-gradient': 'radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%)',
+                        'text-gradient': 'linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        html { scroll-behavior: smooth; } /* 부드러운 스크롤 */
+        .bg-grid-pattern {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // --- 아이콘 컴포넌트 ---
+        const IconBase = ({ size = 24, className = "", children }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const Shield = (p) => <IconBase {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></IconBase>;
+        const CheckCircle = (p) => <IconBase {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></IconBase>;
+        const Key = (p) => <IconBase {...p}><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></IconBase>;
+        const AlertTriangle = (p) => <IconBase {...p}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></IconBase>;
+
+        // --- 스크롤 애니메이션 ---
+        const RevealOnScroll = ({ children }) => {
+            const [isVisible, setIsVisible] = useState(false);
+            const ref = useRef(null);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); }
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => { if (ref.current) observer.unobserve(ref.current); };
+            }, []);
+
+            return (
+                <div ref={ref} className={`transition-all duration-1000 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+                    {children}
+                </div>
+            );
+        };
+
+        // --- 로고 ---
+        const Logo = () => {
+            const scrollToTop = (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            return (
+                <a href="#" onClick={scrollToTop} className="flex items-center gap-2 cursor-pointer group">
+                    <div className="relative w-8 h-8 flex items-end justify-center">
+                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
+                        <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
+                        <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold text-white leading-none">Nan7<span className="text-tech-blue font-light">3</span>Pro</span>
+                    </div>
+                </a>
+            );
+        };
+
+        // --- 메인 컴포넌트들 ---
+        const Hero = () => (
+            <header className="relative pt-32 pb-20 px-6 overflow-hidden flex items-center justify-center text-center bg-hero-gradient min-h-[60vh]">
+                <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-50 pointer-events-none"></div>
+                <div className="container mx-auto relative z-10">
+                    <RevealOnScroll>
+                        <div className="max-w-4xl mx-auto">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tech-blue/10 border border-tech-blue/20 text-tech-blue text-xs font-bold uppercase mb-8">
+                                <Shield size={14} />
+                                Start Your Patent Journey
+                            </div>
+                            <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-8">
+                                특허 출원의 첫걸음!<br />
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400">특허고객번호 온라인 신청 가이드</span>
+                            </h1>
+                            <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10 font-light">
+                                나만의 기술로 특허를, 혹은 멋진 브랜드로 상표를 등록하고 싶으신가요?
+                                위대한 여정의 가장 첫 번째 단계, '특허고객번호' 발급부터 시작해보세요.
+                            </p>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </header>
+        );
+
+        // ID 추가: preparation
+        const IntroAndPrep = () => (
+            <section id="preparation" className="py-24 bg-navy-900 border-y border-white/5">
+                <div className="container mx-auto px-6">
+                    <RevealOnScroll>
+                        <div className="grid lg:grid-cols-2 gap-12">
+                            <div className="space-y-6">
+                                <div className="mb-6 border-l-4 border-tech-blue pl-6">
+                                    <h2 className="text-3xl font-bold text-white">특허고객번호란?</h2>
+                                    <p className="text-slate-400 mt-2 text-sm">특허청에서 사용하는 나만의 고유 식별 번호(ID)입니다.</p>
+                                </div>
+                                <div className="bg-navy-800 p-8 rounded-2xl border border-white/10">
+                                    <ul className="space-y-4">
+                                        <li className="flex items-start gap-3 text-slate-300">
+                                            <CheckCircle size={18} className="text-tech-blue mt-1 shrink-0" />
+                                            <div><strong className="text-white">필수:</strong> 출원, 수수료 납부, 등록증 수령 등 모든 절차에 사용됩니다.</div>
+                                        </li>
+                                        <li className="flex items-start gap-3 text-slate-300">
+                                            <CheckCircle size={18} className="text-tech-blue mt-1 shrink-0" />
+                                            <div><strong className="text-white">평생 사용:</strong> 한 번 발급받으면 평생 사용할 수 있습니다.</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="bg-navy-800 p-8 rounded-2xl border border-tech-blue/30 relative overflow-hidden flex flex-col justify-center">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-tech-blue/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                                <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2 relative z-10">
+                                    <Key className="text-tech-green" />
+                                    시작 전 준비물
+                                </h3>
+                                <div className="p-6 bg-navy-900/80 rounded-xl border border-slate-700 relative z-10">
+                                    <div className="text-tech-blue font-bold text-lg mb-2">공동인증서 (구 공인인증서)</div>
+                                    <p className="text-slate-400 text-sm">
+                                        PC에 <strong>범용 공동인증서</strong>(은행, 증권사 발급)가 있어야 본인 확인이 가능합니다.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        // ID 추가: process
+        const StepProcess = () => {
+            const steps = [
+                { id: "STEP 1", title: "'특허로' 접속하기", desc: "검색창에 '특허로'를 검색하거나 www.patent.go.kr로 접속합니다.", highlight: false },
+                { id: "STEP 2", title: "신청 메뉴 찾아가기", desc: "상단 메뉴 [사용자 등록/변경] > [특허고객번호부여신청]을 클릭합니다.", highlight: false },
+                { id: "STEP 3", title: "본인 인증하기", desc: "신청자 유형(내국인/법인) 선택 후 공동인증서로 인증을 완료합니다.", highlight: false },
+                { id: "STEP 4", title: "신청서 작성 (중요 Tip!)", desc: "필수 정보(*)를 입력합니다. '행정정보 공동이용'에 반드시 [동의]해야 제출 서류(등본 등)가 생략됩니다.", highlight: true },
+                { id: "STEP 5", title: "최종 신청 및 승인", desc: "신청 후 5~30분 내외로 승인 문자가 도착하면 완료입니다.", highlight: false }
+            ];
+
+            return (
+                <section id="process" className="py-24 bg-navy-800 relative">
+                    <div className="absolute top-0 right-0 w-full h-full bg-grid-pattern opacity-30 pointer-events-none"></div>
+                    <div className="container mx-auto px-6 relative z-10">
+                        <RevealOnScroll>
+                            <div className="mb-12 border-l-4 border-tech-green pl-6">
+                                <h2 className="text-3xl font-bold text-white">5단계 신청 프로세스</h2>
+                            </div>
+                            <div className="space-y-6">
+                                {steps.map((step, idx) => (
+                                    <div key={idx} className={`relative p-6 rounded-xl border transition-colors ${step.highlight ? 'bg-navy-900 border-yellow-500/50 shadow-[0_0_15px_rgba(234,179,8,0.1)]' : 'bg-navy-900 border-slate-700'}`}>
+                                        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                                            <div className={`shrink-0 px-3 py-1 rounded text-xs font-bold ${step.highlight ? 'bg-yellow-500/20 text-yellow-400' : 'bg-tech-blue/20 text-tech-blue'}`}>
+                                                {step.id}
+                                            </div>
+                                            <div className="flex-1">
+                                                <h3 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                                                    {step.title}
+                                                    {step.highlight && <span className="text-[10px] bg-yellow-500 text-navy-900 px-2 py-0.5 rounded-full font-bold">꿀팁</span>}
+                                                </h3>
+                                                <p className="text-slate-400 text-sm">{step.desc}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </RevealOnScroll>
+                    </div>
+                </section>
+            );
+        };
+
+        // ID 추가: check
+        const FinalCheck = () => (
+            <section id="check" className="py-24 bg-navy-900 border-t border-white/5">
+                <div className="container mx-auto px-6">
+                    <RevealOnScroll>
+                        <div className="bg-gradient-to-r from-navy-800 to-navy-900 p-8 md:p-12 rounded-3xl border border-tech-blue/20 text-center relative overflow-hidden">
+                            <AlertTriangle size={48} className="text-tech-blue mx-auto mb-6" />
+                            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">마지막 체크포인트</h2>
+                            <div className="max-w-3xl mx-auto space-y-6 text-left bg-navy-900/50 p-6 rounded-xl border border-white/10">
+                                <p className="text-slate-300 leading-relaxed">
+                                    <strong className="text-white text-lg block mb-2">특허고객번호 ≠ 전자출원 인증서</strong>
+                                    특허고객번호는 '회원가입'과 같습니다. 실제 출원을 하려면 <strong>'전자출원 SW'</strong>를 설치하고 <strong>'특허용 인증서'</strong>를 별도로 발급받아야 합니다.
+                                </p>
+                            </div>
+                            <div className="mt-10">
+                                <a href="https://www.patent.go.kr" target="_blank" className="inline-block bg-tech-blue text-navy-900 px-8 py-3 rounded-full font-bold hover:bg-sky-400 transition">
+                                    특허로 바로가기
+                                </a>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        const App = () => {
+            return (
+                <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
+                    <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
+                        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                            <Logo />
+                            <div className="flex items-center gap-8">
+                                <div className="hidden md:flex gap-6 text-sm font-medium text-slate-300">
+                                    {/* href 수정됨 */}
+                                    <a href="#preparation" className="hover:text-tech-blue transition-colors">준비물</a>
+                                    <a href="#process" className="hover:text-tech-blue transition-colors">절차</a>
+                                    <a href="#check" className="hover:text-tech-blue transition-colors">주의사항</a>
+                                </div>
+                                <button className="bg-tech-blue text-navy-900 px-5 py-2 rounded-lg text-sm font-bold hover:bg-sky-400 transition shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+                                    <a href="../index.html#contact">Contact Us</a>
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <main>
+                        <Hero />
+                        <IntroAndPrep />
+                        <StepProcess />
+                        <FinalCheck />
+                    </main>
+
+                    <footer className="bg-navy-900 py-12 border-t border-white/10 text-center">
+                        <div className="mb-8 flex justify-center items-center gap-4 text-slate-400 text-sm">
+                            <a href="patent_info_0003.html" className="hover:text-tech-blue transition-colors">← 이전글</a>
+                            <span className="text-slate-600">｜</span>
+                            <a href="patent_info_0005.html" className="hover:text-tech-blue transition-colors">다음글 →</a>
+                        </div>
+                        <p className="text-2xl mb-5 font-bold text-white">
+                            Nan<span style={{color: '#6AD7FF'}}>7</span><span style={{color: '#17C8C8'}}>3</span>Pro.
+                        </p>
+                        <p className="text-slate-500 text-sm">© 2025 Nan73Pro. All Rights Reserved.</p>
+                    </footer>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

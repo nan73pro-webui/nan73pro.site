@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="특허로 전자출원 실전 가이드: 웹 제출부터 수수료 납부까지">
+    <title>Nan73Pro - 전자출원 실전 가이드</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0f172a', 800: '#1e293b', 700: '#334155' },
+                        tech: { blue: '#38bdf8', green: '#34d399', purple: '#a78bfa', yellow: '#facc15' }
+                    },
+                    fontFamily: { sans: ['Pretendard', 'sans-serif'] },
+                    backgroundImage: {
+                        'hero-gradient': 'radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%)',
+                        'card-gradient': 'linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        html { scroll-behavior: smooth; }
+        .bg-grid-pattern {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .step-line {
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -40px;
+            width: 2px;
+            background: #334155;
+            z-index: 0;
+        }
+        .last-step .step-line { display: none; }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        /* 아이콘 컴포넌트 */
+        const IconBase = ({ size = 24, className = "", children }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const LoginIcon = (p) => <IconBase {...p}><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></IconBase>;
+        const FileText = (p) => <IconBase {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IconBase>;
+        const CheckCircle = (p) => <IconBase {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></IconBase>;
+        const CreditCard = (p) => <IconBase {...p}><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></IconBase>;
+        const Monitor = (p) => <IconBase {...p}><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></IconBase>;
+        const ArrowRight = (p) => <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></IconBase>;
+
+        /* 스크롤 애니메이션 */
+        const RevealOnScroll = ({ children }) => {
+            const [isVisible, setIsVisible] = useState(false);
+            const ref = useRef(null);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); }
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => { if (ref.current) observer.unobserve(ref.current); };
+            }, []);
+
+            return (
+                <div ref={ref} className={`transition-all duration-1000 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+                    {children}
+                </div>
+            );
+        };
+
+        /* 로고 */
+        const Logo = () => {
+             const scrollToTop = (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            return (
+                <a href="#" onClick={scrollToTop} className="flex items-center gap-2 cursor-pointer group">
+                    <div className="relative w-8 h-8 flex items-end justify-center">
+                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
+                        <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
+                        <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold text-white leading-none">Nan7<span className="text-tech-blue font-light">3</span>Pro</span>
+                    </div>
+                </a>
+            );
+        };
+
+        const Hero = () => (
+            <header className="relative pt-32 pb-20 px-6 overflow-hidden flex items-center justify-center text-center bg-hero-gradient min-h-[50vh]">
+                <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-50 pointer-events-none"></div>
+                <div className="container mx-auto relative z-10">
+                    <RevealOnScroll>
+                        <div className="max-w-4xl mx-auto">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tech-blue/10 border border-tech-blue/20 text-tech-blue text-xs font-bold uppercase mb-8">
+                                <Monitor size={14} />
+                                Electronic Application Guide
+                            </div>
+                            <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-8">
+                                특허로 전자출원<br />
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400">웹 제출 완벽 공략</span>
+                            </h1>
+                            <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10 font-light">
+                                설치 없이 웹에서 바로 제출하는 방법입니다. <br/>
+                                로그인부터 수수료 감면, 최종 납부까지 한 번에 정리해 드립니다.
+                            </p>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </header>
+        );
+
+        /* 단계별 섹션 */
+        const StepSection = () => {
+            const steps = [
+                {
+                    title: "접속 및 로그인",
+                    icon: <LoginIcon className="text-tech-blue" />,
+                    content: [
+                        { text: "특허로(patent.go.kr) 접속 후 상단 '로그인' → '공동인증서' 클릭 " },
+                        { text: "PC에 등록된 공동인증서 비밀번호 입력 " },
+                        { text: "로그인 성공 시 상단에 '이름과 출원인코드' 확인 " }
+                    ]
+                },
+                {
+                    title: "서류 작성 페이지 이동",
+                    icon: <Monitor className="text-tech-green" />,
+                    content: [
+                        { text: "My특허로 하단 '출원현황: 웹에서 서류 제출하기' → '특허' 클릭 " },
+                        { text: "출원절차서류 선택 후 '특허출원서' 클릭 " },
+                        { text: "별도 소프트웨어 설치 없이 웹에서 바로 작성 가능 " },
+                        { text: "상단 '특허출원서_특허출원' 및 하단 '출원인 정보' 확인 " }
+                    ]
+                },
+                {
+                    title: "명세서 첨부 및 필수 설정",
+                    icon: <FileText className="text-tech-purple" />,
+                    content: [
+                        { text: "'발명의 명칭'에서 첨부형식을 '한글, MS-Word'로 선택 " },
+                        { text: "※ Tip: '양식/예제 다운로드'에서 템플릿을 받아 작성하면 편리 " },
+                        { text: "중요: '발명자 추가' 클릭 후 출원인과 동일인으로 설정 (70% 감면 조건) " },
+                        { text: "'심사청구' 선택 (특허 등록 여부 확인 시 필수) " },
+                        { text: "'수수료' 항목: 면제감면대상 → 수수료 감면 → '개인출원' 선택 → '적용' " }
+                    ]
+                },
+                {
+                    title: "제출 및 결과 확인",
+                    icon: <CheckCircle className="text-yellow-400" />,
+                    content: [
+                        { text: "상단 '미리보기'로 검토 후 '작성완료 및 서명' 클릭하여 제출 " },
+                        { text: "제출 결과 확인: My특허로 → '제출결과조회' " },
+                        { text: "접수번호, 출원번호 확인 및 접수증 PDF 저장/인쇄 " }
+                    ]
+                }
+            ];
+
+            return (
+                <section id="step" className="py-20 bg-navy-900">
+                    <div className="container mx-auto px-6 max-w-4xl">
+                        <RevealOnScroll>
+                            <h2 className="text-3xl font-bold text-white mb-16 text-center">Step-by-Step 진행 가이드</h2>
+                            <div className="space-y-0 relative pl-4">
+                                {steps.map((step, idx) => (
+                                    <div key={idx} className={`relative pl-12 pb-16 group ${idx === steps.length - 1 ? 'last-step' : ''}`}>
+                                        {/* 연결선 */}
+                                        <div className="step-line group-hover:bg-slate-600 transition-colors"></div>
+                                        
+                                        {/* 아이콘 원 */}
+                                        <div className="absolute left-0 top-0 w-10 h-10 rounded-full bg-navy-800 border-2 border-slate-700 flex items-center justify-center z-10 group-hover:border-tech-blue transition-colors shadow-lg">
+                                            {step.icon}
+                                        </div>
+
+                                        {/* 컨텐츠 카드 */}
+                                        <div className="bg-navy-800/50 backdrop-blur border border-white/5 rounded-2xl p-6 hover:border-white/20 transition-all">
+                                            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                                <span className="text-tech-blue/50 text-sm font-mono">0{idx + 1}.</span>
+                                                {step.title}
+                                            </h3>
+                                            <ul className="space-y-3">
+                                                {step.content.map((item, i) => (
+                                                    <li key={i} className="flex items-start gap-3 text-slate-300 text-sm leading-relaxed">
+                                                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0"></div>
+                                                        <span>{item.text}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </RevealOnScroll>
+                    </div>
+                </section>
+            );
+        };
+
+        /* 수수료 납부 섹션 */
+        const PaymentSection = () => (
+            <section id="payment" className="py-20 bg-navy-800 border-t border-white/5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-full h-full bg-grid-pattern opacity-30 pointer-events-none"></div>
+                <div className="container mx-auto px-6 relative z-10">
+                    <RevealOnScroll>
+                        <div className="max-w-4xl mx-auto">
+                            <div className="flex items-center gap-3 mb-8">
+                                <CreditCard className="text-tech-green" size={32} />
+                                <h2 className="text-3xl font-bold text-white">수수료 납부 (Final Step)</h2>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-8 mb-8">
+                                <div className="bg-navy-900 p-8 rounded-2xl border border-slate-700">
+                                    <h3 className="text-lg font-bold text-white mb-4">추천: 온라인 납부 시스템</h3>
+                                    <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                                        은행 방문은 번거롭습니다. 특허로 시스템을 이용하세요. 
+                                    </p>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-2 text-sm text-slate-300 bg-navy-800 p-3 rounded-lg border border-slate-700">
+                                            <span className="text-tech-green font-bold">1</span> 상단 메뉴 '수수료관리' → '수수료납부'
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm text-slate-300 bg-navy-800 p-3 rounded-lg border border-slate-700">
+                                            <span className="text-tech-green font-bold">2</span> '온라인납부' 클릭 후 금액 확인
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm text-slate-300 bg-navy-800 p-3 rounded-lg border border-slate-700">
+                                            <span className="text-tech-green font-bold">3</span> 카드/휴대폰/이체로 결제 
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-gradient-to-br from-red-900/20 to-navy-900 p-8 rounded-2xl border border-red-500/20">
+                                    <h3 className="text-lg font-bold text-red-400 mb-4 flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                        납부 기한을 놓쳤다면?
+                                    </h3>
+                                    <div className="text-slate-300 text-sm space-y-4">
+                                        <p>
+                                            걱정하지 마세요. 납부 기한(출원일 다음날)을 넘겨도 <strong>'보정서'</strong>를 통해 다시 납부할 기회가 주어집니다. 
+                                        </p>
+                                        <div className="bg-red-500/10 p-4 rounded-lg border border-red-500/20 text-xs text-red-200">
+                                            <strong className="block mb-1">💡 Tip: 알림 설정</strong>
+                                            출원 시 휴대폰 통지를 설정해두면 보정 통지 등을 문자로 받아볼 수 있어 안전합니다. 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        const Footer = () => (
+                    <footer className="bg-navy-900 py-12 border-t border-white/10 text-center">
+                        <div className="mb-8 flex justify-center items-center gap-4 text-slate-400 text-sm">
+                            <a href="patent_info_0007.html" className="hover:text-tech-blue transition-colors">← 이전글</a>
+                        </div>
+                        <p className="text-2xl mb-5 font-bold text-white">
+                            Nan<span style={{color: '#6AD7FF'}}>7</span><span style={{color: '#17C8C8'}}>3</span>Pro.
+                        </p>
+                        <p className="text-slate-500 text-sm">© 2025 Nan73Pro. All Rights Reserved.</p>
+                    </footer>
+        );
+
+        const App = () => {
+            return (
+                <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
+                    <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
+                        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                            <Logo />
+                            <div className="flex items-center gap-8">
+                                <div className="hidden md:flex gap-6 text-sm font-medium text-slate-300">
+                                    <a href="#step" className="hover:text-tech-blue transition-colors">진행가이드</a>
+                                    <a href="#payment" className="hover:text-tech-blue transition-colors">수수료납부</a>
+                                </div>
+                                <button className="bg-tech-blue text-navy-900 px-5 py-2 rounded-lg text-sm font-bold hover:bg-sky-400 transition shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+                                    <a href="../index.html#contact">Contact Us</a>
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <main>
+                        <Hero />
+                        <StepSection />
+                        <PaymentSection />
+                    </main>
+
+                    <Footer />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
