@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="대한민국 특허법 - Nan73Pro Style Edition">
+    <meta name="description" content="대한민국 상표법 - Nan73Pro Style Edition">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="특허법 (Patent Act) - Nan73Pro">
-    <title>특허법 (Patent Act) - Nan73Pro Style</title>
+    <meta property="og:title" content="상표법 - Nan73Pro">
+    <title>상표법(Trademark Act) - Nan73Pro Style</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -22,7 +22,7 @@
                     },
                     backgroundImage: {
                         'hero-gradient': 'radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%)',
-                        'text-gradient': 'linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%)',
+                        'text-gradient': 'linear-gradient(135deg, #34d399 0%, #38bdf8 50%, #818cf8 100%)', // 상표법은 그린/블루 톤으로 변경
                     }
                 }
             }
@@ -42,7 +42,7 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         html { scroll-behavior: smooth; }
         .text-gradient {
-            background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%);
+            background: linear-gradient(135deg, #34d399 0%, #38bdf8 50%, #818cf8 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .bg-grid-pattern {
@@ -52,7 +52,7 @@
         }
         .article-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(52, 211, 153, 0.2);
         }
     </style>
 </head>
@@ -88,97 +88,86 @@
             );
         };
 
-        // --- 법령 데이터 ---
+        // --- 상표법 데이터 (법률 제21134호 반영) ---
         const lawData = [
             {
                 id: "chapter-1",
                 title: "제1장 총칙",
-                desc: "특허법의 목적과 정의, 대리인 등 절차의 기본 원칙",
+                desc: "상표법의 목적과 정의, 등록 자격",
                 color: "text-tech-blue",
                 articles: [
-                    { id: "art-1", title: "제1조(목적)", content: "이 법은 발명을 보호·장려하고 그 이용을 도모함으로써 기술의 발전을 촉진하여 산업발전에 이바지함을 목적으로 한다." },
-                    { id: "art-2", title: "제2조(정의)", content: "'발명'이란 자연법칙을 이용한 기술적 사상의 창작으로서 고도(高度)한 것을 말한다. '특허발명'이란 특허를 받은 발명을 말한다." },
-                    { id: "art-3", title: "제3조(미성년자 등의 행위능력)", content: "미성년자, 피한정후견인 또는 피성년후견인은 법정대리인에 의하지 아니하면 특허에 관한 절차를 밟을 수 없다." },
-                    { id: "art-28-3", title: "제28조의3(전자문서에 의한 절차)", content: "특허에 관한 절차를 밟는 자는 전자문서화하여 정보통신망을 이용해 제출할 수 있다." }
+                    { id: "art-1", title: "제1조(목적)", content: "이 법은 상표를 보호함으로써 상표 사용자의 업무상 신용 유지를 도모하여 산업발전에 이바지하고 수요자의 이익을 보호함을 목적으로 한다." },
+                    { id: "art-2", title: "제2조(정의)", content: "'상표'란 자기의 상품과 타인의 상품을 식별하기 위하여 사용하는 표장(標章)을 말한다. 기호, 문자, 도형, 소리, 냄새 등 모든 표시를 포함한다." },
+                    { id: "art-3", title: "제3조(상표등록을 받을 수 있는 자)", content: "국내에서 상표를 사용하는 자 또는 사용하려는 자는 자기의 상표를 등록받을 수 있다." }
                 ]
             },
             {
                 id: "chapter-2",
-                title: "제2장 특허요건 및 특허출원",
-                desc: "신규성, 진보성 등 등록 요건과 출원 절차",
+                title: "제2장 요건 및 출원",
+                desc: "식별력 등 등록 요건과 선출원 주의",
                 color: "text-tech-green",
                 articles: [
-                    { id: "art-29", title: "제29조(특허요건)", content: "산업상 이용할 수 있는 발명으로서, 출원 전 공지되었거나 공연히 실시된 발명 등을 제외하고는 특허를 받을 수 있다. (신규성, 진보성)" },
-                    { id: "art-33", title: "제33조(특허를 받을 수 있는 자)", content: "발명을 한 사람 또는 그 승계인은 이 법에서 정하는 바에 따라 특허를 받을 수 있는 권리를 가진다." },
-                    { id: "art-36", title: "제36조(선출원)", content: "동일한 발명에 대하여 다른 날에 둘 이상의 특허출원이 있는 경우에는 먼저 특허출원한 자만이 특허를 받을 수 있다." },
-                    { id: "art-42", title: "제42조(특허출원)", content: "특허출원서에 발명의 설명·청구범위를 적은 명세서와 필요한 도면 및 요약서를 첨부하여 제출하여야 한다." }
+                    { id: "art-33", title: "제33조(상표등록의 요건)", content: "상품의 보통명칭, 관용상표, 성질표시(산지·품질 등), 현저한 지리적 명칭, 흔한 성 등 식별력이 없는 상표는 등록받을 수 없다." },
+                    { id: "art-34", title: "제34조(부등록 사유)", content: "국기·국제기구 표장과 동일하거나, 공서양속 위반, 타인의 저명 상표와 혼동을 일으키는 상표 등은 등록받을 수 없다." },
+                    { id: "art-35", title: "제35조(선출원)", content: "동일·유사한 상품에 사용할 동일·유사한 상표에 대하여 다른 날에 둘 이상의 출원이 있는 경우 먼저 출원한 자만이 등록받을 수 있다." },
+                    { id: "art-38", title: "제38조(1상표 1출원)", content: "상표등록출원을 하려는 자는 상품류의 구분에 따라 1류 이상의 상품을 지정하여 1상표마다 1출원을 하여야 한다." }
                 ]
             },
             {
                 id: "chapter-3",
                 title: "제3장 심사",
-                desc: "심사 청구, 우선심사 및 특허여부 결정",
+                desc: "심사 절차, 이의신청 및 등록 여부 결정",
                 color: "text-tech-purple",
                 articles: [
-                    { id: "art-57", title: "제57조(심사관에 의한 심사)", content: "특허청장은 심사관에게 특허출원을 심사하게 한다." },
-                    { id: "art-59", title: "제59조(특허출원심사의 청구)", content: "특허출원에 대하여 심사청구가 있을 때에만 이를 심사하며, 출원일부터 3년 이내에 청구해야 한다." },
-                    { id: "art-61", title: "제61조(우선심사)", content: "출원공개 후 제3자가 실시 중이거나 긴급처리가 필요한 경우 우선심사를 할 수 있다." },
-                    { id: "art-64", title: "제64조(출원공개)", content: "특허청장은 출원일부터 1년 6개월이 지난 후 특허공보에 게재하여 출원공개를 하여야 한다." }
+                    { id: "art-50", title: "제50조(심사관에 의한 심사)", content: "특허청장은 심사관에게 상표등록출원 및 이의신청을 심사하게 한다." },
+                    { id: "art-54", title: "제54조(상표등록거절결정)", content: "심사관은 출원이 거절이유(제33조, 제34조 등 위반)에 해당하는 경우 거절결정을 하여야 한다." },
+                    { id: "art-57", title: "제57조(출원공고)", content: "거절이유를 발견할 수 없는 경우 출원공고결정을 하며, 공고일로부터 2개월간 누구든지 이의신청을 할 수 있다." },
+                    { id: "art-68", title: "제68조(상표등록결정)", content: "심사관은 거절이유를 발견할 수 없는 경우 상표등록결정을 하여야 한다." }
                 ]
             },
             {
                 id: "chapter-5",
-                title: "제5장 특허권",
-                desc: "특허권의 효력, 범위 및 실시권",
+                title: "제5장 상표권",
+                desc: "권리의 발생, 존속기간 갱신 및 효력",
                 color: "text-tech-yellow",
                 articles: [
-                    { id: "art-87", title: "제87조(설정등록 및 등록공고)", content: "특허권은 설정등록에 의하여 발생하며, 특허청장은 이를 등록공고하여야 한다." },
-                    { id: "art-88", title: "제88조(존속기간)", content: "특허권의 존속기간은 설정등록한 날부터 특허출원일 후 20년이 되는 날까지로 한다." },
-                    { id: "art-94", title: "제94조(특허권의 효력)", content: "특허권자는 업으로서 특허발명을 실시할 권리를 독점한다." },
-                    { id: "art-100", title: "제100조(전용실시권)", content: "특허권자는 그 특허권에 대하여 타인에게 전용실시권을 설정할 수 있다." }
+                    { id: "art-82", title: "제82조(설정등록)", content: "상표권은 설정등록에 의하여 발생한다." },
+                    { id: "art-83", title: "제83조(존속기간)", content: "상표권의 존속기간은 설정등록일부터 10년으로 하며, 10년마다 갱신할 수 있다. (반영구적 권리)" },
+                    { id: "art-89", title: "제89조(상표권의 효력)", content: "상표권자는 지정상품에 관하여 그 등록상표를 사용할 권리를 독점한다." },
+                    { id: "art-90", title: "제90조(효력이 미치지 않는 범위)", content: "자기의 성명·상호, 보통명칭, 산지·품질 표시 등에는 상표권의 효력이 미치지 아니한다." }
                 ]
             },
             {
                 id: "chapter-trial",
-                title: "제7장~제9장 심판·소송",
-                desc: "권리 구제 및 분쟁 해결을 위한 심판, 재심 및 소송 절차",
+                title: "제7장 심판",
+                desc: "거절결정 불복, 무효 및 취소 심판",
                 color: "text-indigo-400",
                 articles: [
                     { 
-                        id: "art-132-17", 
-                        title: "제132조의17(특허거절결정 등에 대한 심판)", 
-                        content: "특허거절결정 또는 특허권의 존속기간의 연장등록거절결정을 받은 자가 결정에 불복할 때에는 그 결정등본을 송달받은 날부터 3개월 이내에 심판을 청구할 수 있다." 
+                        id: "art-116", 
+                        title: "제116조(거절결정에 대한 심판)", 
+                        content: "거절결정을 받은 자가 불복하는 경우 등본을 송달받은 날부터 3개월 이내에 심판을 청구할 수 있다." 
                     },
                     { 
-                        id: "art-133", 
-                        title: "제133조(특허의 무효심판)", 
-                        content: "이해관계인 또는 심사관은 특허가 제25조, 제29조, 제32조 등에 위반된 경우 무효심판을 청구할 수 있다. 청구범위의 청구항이 둘 이상인 경우에는 청구항마다 청구할 수 있다." 
+                        id: "art-117", 
+                        title: "제117조(상표등록의 무효심판)", 
+                        content: "이해관계인 또는 심사관은 상표등록이 법령을 위반한 경우(식별력 부족, 선출원 위반 등) 무효심판을 청구할 수 있다." 
                     },
                     { 
-                        id: "art-135", 
-                        title: "제135조(권리범위 확인심판)", 
-                        content: "특허권자, 전용실시권자 또는 이해관계인은 특허발명의 보호범위를 확인하기 위하여 특허권의 권리범위 확인심판을 청구할 수 있다." 
-                    },
-                    { 
-                        id: "art-178", 
-                        title: "제178조(재심의 청구)", 
-                        content: "당사자는 확정된 특허취소결정 또는 확정된 심결에 대하여 대리권 흠결 등 민사소송법 준용 사유가 있는 경우 재심을 청구할 수 있다." 
-                    },
-                    { 
-                        id: "art-186", 
-                        title: "제186조(심결 등에 대한 소)", 
-                        content: "심결에 대한 소 및 심판청구서 등의 각하결정에 대한 소는 특허법원의 전속관할로 하며, 심결 또는 결정의 등본을 송달받은 날부터 30일 이내에 제기하여야 한다." 
+                        id: "art-119", 
+                        title: "제119조(상표등록의 취소심판)", 
+                        content: "상표권자가 정당한 이유 없이 등록상표를 3년 이상 국내에서 사용하지 아니한 경우 등에는 취소심판을 청구할 수 있다." 
                     }
                 ]
             },
             {
                 id: "chapter-12",
                 title: "제12장 벌칙",
-                desc: "특허권 침해에 대한 처벌 규정",
+                desc: "상표권 침해에 대한 처벌",
                 color: "text-tech-pink",
                 articles: [
-                    { id: "art-225", title: "제225조(침해죄)", content: "특허권 또는 전용실시권을 침해한 자는 7년 이하의 징역 또는 1억원 이하의 벌금에 처한다. (친고죄 폐지)" },
-                    { id: "art-229", title: "제229조(거짓행위의 죄)", content: "거짓이나 부정한 행위로 특허 등을 받은 자는 3년 이하의 징역 또는 3천만원 이하의 벌금에 처한다." }
+                    { id: "art-230", title: "제230조(침해죄)", content: "상표권 또는 전용사용권을 침해한 자는 7년 이하의 징역 또는 1억원 이하의 벌금에 처한다." },
+                    { id: "art-233", title: "제233조(거짓 표시의 죄)", content: "등록하지 않은 상표를 등록상표인 것처럼 표시하는 행위는 3년 이하의 징역 또는 3천만원 이하의 벌금에 처한다." }
                 ]
             }
         ];
@@ -193,12 +182,12 @@
             return (
                 <a href="#" onClick={scrollToTop} className="flex items-center gap-2 cursor-pointer group">
                     <div className="relative w-8 h-8 flex items-end justify-center">
-                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
-                        <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
-                        <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-green/50 transition-colors"></div>
+                        <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-green transition-colors"></div>
+                        <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-green to-tech-blue rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xl font-bold text-white leading-none">Nan7<span className="text-tech-blue font-light">3</span>Pro</span>
+                        <span className="text-xl font-bold text-white leading-none">Nan7<span className="text-tech-green font-light">3</span>Pro</span>
                     </div>
                 </a>
             );
@@ -210,16 +199,16 @@
                 <div className="container mx-auto relative z-10">
                     <RevealOnScroll>
                         <div className="max-w-4xl mx-auto">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tech-blue/10 border border-tech-blue/20 text-tech-blue text-xs font-bold tracking-wider uppercase mb-8">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tech-green/10 border border-tech-green/20 text-tech-green text-xs font-bold tracking-wider uppercase mb-8">
                                 <BookOpen size={14} /> 대한민국 법률 제21134호
                             </div>
                             <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-8">
-                                <span className="text-gradient">특허법</span><br />
+                                <span className="text-gradient">상표법</span><br />
                                 <span className="text-2xl lg:text-3xl text-slate-300 font-medium mt-4 block">[시행 2025. 11. 11.]</span>
                             </h1>
                             <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed mb-10 font-light">
-                                발명을 보호·장려하고 그 이용을 도모함으로써 기술의 발전을 촉진하여<br/>
-                                산업발전에 이바지함을 목적으로 합니다.
+                                상표를 보호함으로써 상표 사용자의 업무상 신용 유지를 도모하여<br/>
+                                산업발전에 이바지하고 수요자의 이익을 보호함을 목적으로 합니다.
                             </p>
                         </div>
                     </RevealOnScroll>
@@ -236,7 +225,6 @@
             </div>
         );
 
-        // id 속성 및 scroll-margin-top 적용
         const ChapterSection = ({ chapter }) => (
             <section id={chapter.id} className="py-12 border-b border-white/5 scroll-mt-28">
                 <div className="container mx-auto px-6">
@@ -248,7 +236,7 @@
                                 </div>
                                 <h2 className="text-3xl font-bold text-white mb-4">{chapter.desc}</h2>
                                 <p className="text-slate-400 text-sm">
-                                    해당 장은 특허법의 핵심적인 구성 요소로서, 법적 효력과 절차의 기준을 제시합니다.
+                                    상표법의 해당 장은 브랜드 가치 보호와 공정한 거래 질서 확립을 위한 법적 기준을 제시합니다.
                                 </p>
                             </div>
                             <div className="lg:w-2/3 w-full">
@@ -269,7 +257,7 @@
                         Nan<span style={{color: '#6AD7FF'}}>7</span><span style={{color: '#17C8C8'}}>3</span>Pro.
                     </p>
                     <p className="text-slate-500 text-sm">
-                        Source: 대한민국 특허법(법률 제21134호)<br/>
+                        Source: 대한민국 상표법(법률 제21134호)<br/>
                         © 2025 Nan73Pro. All Rights Reserved.
                     </p>
                 </div>
@@ -277,45 +265,40 @@
         );
 
         const App = () => {
-            // 내부 스크롤 메뉴 데이터 (심판·소송 추가)
             const navLinks = [
                 { name: '총칙', target: 'chapter-1' },
-                { name: '요건 및 출원', target: 'chapter-2' },
+                { name: '요건/출원', target: 'chapter-2' },
                 { name: '심사', target: 'chapter-3' },
-                { name: '특허권', target: 'chapter-5' },
-                { name: '심판·소송', target: 'chapter-trial' }, // New Menu Item
+                { name: '상표권', target: 'chapter-5' },
+                { name: '심판', target: 'chapter-trial' },
                 { name: '벌칙', target: 'chapter-12' },
             ];
 
             return (
-                <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
+                <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-green selection:text-navy-900">
                     <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
                         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
                             <Logo />
                             
-                            {/* 우측 정렬 메뉴 컨테이너 */}
                             <div className="hidden md:flex items-center gap-6">
-                                
-                                {/* 1. 기존 텍스트 메뉴 (페이지 내 이동) */}
                                 <div className="flex gap-6 pr-4 border-r border-white/10">
                                     {navLinks.map((link) => (
                                         <a 
                                             key={link.target} 
                                             href={`#${link.target}`} 
-                                            className="text-sm font-medium text-slate-400 hover:text-tech-blue transition-colors"
+                                            className="text-sm font-medium text-slate-400 hover:text-tech-green transition-colors"
                                         >
                                             {link.name}
                                         </a>
                                     ))}
                                 </div>
 
-                                {/* 2. 추가된 관련 법령 버튼 (곡선 블록 형태) */}
                                 <div className="flex gap-3">
+                                    <a href="patent_law.html" className="px-4 py-2 rounded-lg bg-navy-800 border border-slate-700 text-slate-300 text-xs font-bold hover:bg-tech-blue hover:text-white hover:border-tech-blue transition-all shadow-lg hover:shadow-tech-blue/20">
+                                        특허법
+                                    </a>
                                     <a href="design_law.html" className="px-4 py-2 rounded-lg bg-navy-800 border border-slate-700 text-slate-300 text-xs font-bold hover:bg-tech-purple hover:text-white hover:border-tech-purple transition-all shadow-lg hover:shadow-tech-purple/20">
                                         디자인보호법
-                                    </a>
-                                    <a href="trademark_law.html" className="px-4 py-2 rounded-lg bg-navy-800 border border-slate-700 text-slate-300 text-xs font-bold hover:bg-tech-green hover:text-white hover:border-tech-green transition-all shadow-lg hover:shadow-tech-green/20">
-                                        상표법
                                     </a>
                                 </div>
                             </div>
@@ -334,12 +317,12 @@
                                     <AlertCircle size={48} className="text-slate-500 mx-auto mb-6" />
                                     <h3 className="text-2xl font-bold text-white mb-4">전체 법령 열람 안내</h3>
                                     <p className="text-slate-400 max-w-2xl mx-auto mb-8">
-                                        본 페이지는 특허법의 주요 내용을 Nan73Pro 스타일로 요약한 것입니다.<br/>
-                                        제1장부터 제12장까지, 제1조부터 제232조에 이르는 전체 조문은<br/> 국가법령정보센터 원문을 참고하시기 바랍니다.
+                                        본 페이지는 상표법의 주요 내용을 Nan73Pro 스타일로 요약한 것입니다.<br/>
+                                        제1장부터 제12장까지, 제1조부터 제237조에 이르는 전체 조문은<br/> 국가법령정보센터 원문을 참고하시기 바랍니다.
                                     </p>
                                     <div className="inline-flex gap-4">
-                                         <button className="bg-navy-900 border border-slate-600 hover:border-tech-blue text-white px-6 py-3 rounded-xl transition-colors text-sm font-bold flex items-center gap-2">
-                                            <a href="https://www.law.go.kr/lsInfoP.do?lsiSeq=279827&efYd=20251111#0000" target="_blank">법제처 바로가기</a>
+                                         <button className="bg-navy-900 border border-slate-600 hover:border-tech-green text-white px-6 py-3 rounded-xl transition-colors text-sm font-bold flex items-center gap-2">
+                                            <a href="https://www.law.go.kr/lsInfoP.do?lsiSeq=279819&efYd=20251111#0000" target="_blank">법제처 바로가기</a>
                                         </button>
                                     </div>
                                 </RevealOnScroll>
