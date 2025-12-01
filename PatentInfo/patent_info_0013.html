@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nan73Pro: 2024-2025 글로벌 IP 분쟁 동향 및 판례 심층 분석">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Nan73Pro - IP 분쟁 사례 및 판례 해설">
+    <title>Nan73Pro: IP 분쟁 사례 및 판례 해설</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0f172a', 800: '#1e293b', 700: '#334155' },
+                        tech: { blue: '#38bdf8', green: '#34d399', purple: '#818cf8', pink: '#f472b6', yellow: '#fbbf24', red: '#f87171' }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'hero-gradient': 'radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%)',
+                        'text-gradient': 'linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        html { scroll-behavior: smooth; }
+        .text-gradient {
+            background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #2dd4bf 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .bg-grid-pattern {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // --- 아이콘 컴포넌트 ---
+        const IconBase = ({ size = 24, className = "", children }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const Gavel = (p) => <IconBase {...p}><path d="m16 13 5.5 5.5c.8.8.8 2.1 0 2.9-.8.8-2.1.8-2.9 0L13.1 16"/><path d="m11.5 8.5 5.5 5.5"/><path d="M12.9 17.1c-2.3 2.3-6.1 2.3-8.5 0-2.3-2.3-2.3-6.1 0-8.5l4.8-4.8c1.3-1.3 3.5-1.3 4.8 0 1.3 1.3 1.3 3.5 0 4.8l-1.3 1.3"/></IconBase>;
+        const Globe = (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></IconBase>;
+        const AlertTriangle = (p) => <IconBase {...p}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></IconBase>;
+        const FileText = (p) => <IconBase {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IconBase>;
+        const ShieldCheck = (p) => <IconBase {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></IconBase>;
+        const Scale = (p) => <IconBase {...p}><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></IconBase>;
+        
+        // --- 애니메이션 ---
+        const RevealOnScroll = ({ children, className = "" }) => {
+            const [isVisible, setIsVisible] = useState(false);
+            const ref = useRef(null);
+            useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); }
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => { if (ref.current) observer.unobserve(ref.current); };
+            }, []);
+            return (
+                <div ref={ref} className={`transition-all duration-1000 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"} ${className}`}>
+                    {children}
+                </div>
+            );
+        };
+
+        // --- 로고 ---
+        const Logo = () => {
+            const scrollToTop = (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            return (
+                <a href="#" onClick={scrollToTop} className="flex items-center gap-2 cursor-pointer group">
+                    <div className="relative w-8 h-8 flex items-end justify-center">
+                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
+                        <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
+                        <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold text-white leading-none">Nan7<span className="text-tech-blue font-light">3</span>Pro</span>
+                    </div>
+                </a>
+            );
+        };
+
+        // --- Hero Section ---
+        const Hero = () => (
+            <header className="relative pt-32 pb-20 px-6 overflow-hidden flex items-center justify-center text-center bg-hero-gradient min-h-[60vh]">
+                <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern z-0 opacity-50 pointer-events-none"></div>
+                <div className="container mx-auto relative z-10">
+                    <RevealOnScroll>
+                        <div className="max-w-4xl mx-auto">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tech-blue/10 border border-tech-blue/20 text-tech-blue text-xs font-bold tracking-wider uppercase mb-8">
+                                <Gavel size={14} /> Global IP Litigation Report
+                            </div>
+                            <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-8">
+                                2024-2025 글로벌 IP 분쟁<br />
+                                <span className="text-gradient">동향 및 판례 심층 분석</span>
+                            </h1>
+                            <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed mb-10 font-light">
+                                기술 패권 경쟁과 사법 시스템의 구조적 변화 속에서 IP는 '방패'를 넘어 강력한 '창'이 되었습니다.<br/>
+                                <strong className="text-slate-200">UPC 출범, 징벌적 손해배상 강화, 디자인 특허 법리 변경</strong> 등<br/>
+                                급변하는 글로벌 소송 지형을 분석하고 기업의 대응 전략을 제시합니다.
+                            </p>
+                            <div className="flex flex-wrap justify-center gap-4">
+                                <a href="#global-trends" className="bg-navy-800/50 backdrop-blur border border-slate-700 px-6 py-3 rounded-xl hover:border-tech-blue transition-colors flex items-center gap-2">
+                                    <Globe className="text-tech-blue" /> <span className="text-white text-sm font-bold">1. 글로벌 트렌드</span>
+                                </a>
+                                <a href="#cases" className="bg-navy-800/50 backdrop-blur border border-slate-700 px-6 py-3 rounded-xl hover:border-tech-blue transition-colors flex items-center gap-2">
+                                    <FileText className="text-tech-blue" /> <span className="text-white text-sm font-bold">2. 주요 판례</span>
+                                </a>
+                                <a href="#strategy" className="bg-navy-800/50 backdrop-blur border border-slate-700 px-6 py-3 rounded-xl hover:border-tech-blue transition-colors flex items-center gap-2">
+                                    <ShieldCheck className="text-tech-blue" /> <span className="text-white text-sm font-bold">3. 대응 전략</span>
+                                </a>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </header>
+        );
+
+        // --- 1. Global Trends Section ---
+        const GlobalTrends = () => (
+            <section id="global-trends" className="py-24 bg-navy-900 border-y border-white/5">
+                <div className="container mx-auto px-6">
+                    <RevealOnScroll>
+                        <div className="mb-12 border-l-4 border-tech-blue pl-6">
+                            <h2 className="text-3xl font-bold text-white">1. 글로벌 소송 지형의 변화</h2>
+                            <p className="text-slate-400 mt-2 text-sm">UPC의 안착과 미국 징벌적 손해배상의 강화</p>
+                        </div>
+                        
+                        <div className="grid lg:grid-cols-2 gap-8">
+                            {/* UPC */}
+                            <div className="bg-navy-800 p-8 rounded-2xl border border-white/10 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-40 h-40 bg-tech-blue/10 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-tech-blue/20"></div>
+                                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                    <Globe className="text-tech-blue"/> 유럽 통합특허법원 (UPC)
+                                </h3>
+                                <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                                    단일 판결로 17개국 이상의 효력을 갖는 'One-Shot' 해결 시스템이 정착되었습니다.
+                                    한국의 <strong>서울반도체</strong>는 이를 활용해 유통사를 타깃으로 범유럽 판매금지 명령을 이끌어내며 비유럽 기업의 활용법을 증명했습니다.
+                                </p>
+                                <div className="bg-navy-900/80 p-4 rounded-xl border border-white/5 text-xs">
+                                    <div className="flex justify-between mb-2">
+                                        <span className="text-slate-400">기존 시스템</span>
+                                        <span className="text-slate-500 line-through">국가별 개별 소송 (고비용)</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-tech-blue font-bold">UPC 시스템</span>
+                                        <span className="text-white">통합 관할, 저비용 고효율</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* US NPE */}
+                            <div className="bg-navy-800 p-8 rounded-2xl border border-white/10 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-40 h-40 bg-tech-red/10 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-tech-red/20"></div>
+                                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                    <AlertTriangle className="text-tech-red"/> 미국 NPE 및 징벌적 배상
+                                </h3>
+                                <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                                    NPE 활동이 10년 만에 최고치를 기록했습니다. 특히 <strong>고의 침해(Willful Infringement)</strong>가 인정될 경우 배상액이 최대 3배까지 증액되므로, 라이선스 종료 후 무단 사용에 각별한 주의가 필요합니다.
+                                </p>
+                                <div className="flex gap-4 text-xs">
+                                    <span className="px-3 py-1 rounded-full bg-tech-red/20 text-tech-red border border-tech-red/30">NPE 소송 21.6% 증가</span>
+                                    <span className="px-3 py-1 rounded-full bg-tech-red/20 text-tech-red border border-tech-red/30">배상액 3배 리스크</span>
+                                </div>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        // --- 2. Case Studies Section ---
+        const CaseStudies = () => (
+            <section id="cases" className="py-24 bg-navy-800 relative">
+                <div className="absolute top-0 right-0 w-full h-full bg-grid-pattern opacity-30 pointer-events-none"></div>
+                <div className="container mx-auto px-6 relative z-10">
+                    <RevealOnScroll>
+                        <div className="mb-12 border-l-4 border-tech-green pl-6">
+                            <h2 className="text-3xl font-bold text-white">2. 주요 분쟁 사례 심층 분석</h2>
+                            <p className="text-slate-400 mt-2 text-sm">산업의 판도를 바꾼 4대 핵심 판결</p>
+                        </div>
+                        
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {/* LKQ v GM */}
+                            <div className="bg-navy-900/80 p-6 rounded-xl border border-white/10 hover:border-tech-green transition-all">
+                                <span className="text-xs font-bold text-tech-green mb-2 block">자동차 / 디자인 특허</span>
+                                <h3 className="text-lg font-bold text-white mb-3">LKQ vs. GM (미국)</h3>
+                                <p className="text-sm text-slate-300 mb-4">
+                                    <strong>"Rosen-Durling 테스트 폐기"</strong><br/>
+                                    40년간 유지된 디자인 특허의 엄격한 비자명성 기준이 폐기되었습니다. 
+                                    이제 '그레이엄 요인(Graham Factors)'을 적용하여 디자인 특허 무효화가 더 쉬워졌습니다.
+                                </p>
+                                <div className="text-xs bg-navy-800 p-3 rounded text-slate-400">
+                                    📉 영향: 대체 부품 시장 활성화, 오리지널 제조사의 방어 난이도 상승
+                                </div>
+                            </div>
+
+                            {/* Netlist v Samsung */}
+                            <div className="bg-navy-900/80 p-6 rounded-xl border border-white/10 hover:border-tech-blue transition-all">
+                                <span className="text-xs font-bold text-tech-blue mb-2 block">반도체 / 계약 위반</span>
+                                <h3 className="text-lg font-bold text-white mb-3">Netlist vs. Samsung (미국)</h3>
+                                <p className="text-sm text-slate-300 mb-4">
+                                    <strong>"계약 위반이 부른 특허 침해"</strong><br/>
+                                    공동 개발 계약 해지 후에도 기술을 계속 사용한 것이 화근이 되었습니다. 
+                                    배심원단은 이를 '고의 침해'로 인정하여 막대한 배상액을 평결했습니다.
+                                </p>
+                                <div className="text-xs bg-navy-800 p-3 rounded text-slate-400">
+                                    ⚠️ 교훈: 계약 종료 시 즉시 FTO 분석 및 회피 설계 필수
+                                </div>
+                            </div>
+
+                            {/* Nexon v Ironmace */}
+                            <div className="bg-navy-900/80 p-6 rounded-xl border border-white/10 hover:border-tech-purple transition-all">
+                                <span className="text-xs font-bold text-tech-purple mb-2 block">게임 / 영업비밀</span>
+                                <h3 className="text-lg font-bold text-white mb-3">Nexon vs. Ironmace (한국)</h3>
+                                <p className="text-sm text-slate-300 mb-4">
+                                    <strong>"저작권 부정, 영업비밀 인정"</strong><br/>
+                                    게임 규칙은 저작권 보호 대상이 아니라고 보았으나, 프로젝트 유출에 대한 '부정경쟁방지법(영업비밀)' 위반은 인정되었습니다.
+                                </p>
+                                <div className="text-xs bg-navy-800 p-3 rounded text-slate-400">
+                                    🔒 전략: 내부 프로젝트 보호에는 저작권보다 영업비밀 관리가 효과적
+                                </div>
+                            </div>
+
+                            {/* Medytox v Hugel */}
+                            <div className="bg-navy-900/80 p-6 rounded-xl border border-white/10 hover:border-tech-yellow transition-all">
+                                <span className="text-xs font-bold text-tech-yellow mb-2 block">바이오 / ITC</span>
+                                <h3 className="text-lg font-bold text-white mb-3">Medytox vs. Hugel (ITC)</h3>
+                                <p className="text-sm text-slate-300 mb-4">
+                                    <strong>"절도 및 유용(Theft) 입증 실패"</strong><br/>
+                                    유전자원(균주)에 대한 명확한 소유권과 절취 행위를 입증하지 못해 ITC 불공정 행위 주장이 받아들여지지 않았습니다.
+                                </p>
+                                <div className="text-xs bg-navy-800 p-3 rounded text-slate-400">
+                                    🧬 핵심: 자연계 존재 물질의 배타적 소유권 입증 난이도 확인
+                                </div>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        // --- 3. Korean Law Section ---
+        const KoreanLaw = () => (
+            <section className="py-24 bg-navy-900 border-y border-white/5">
+                <div className="container mx-auto px-6">
+                    <RevealOnScroll>
+                        <div className="mb-12 border-l-4 border-tech-purple pl-6">
+                            <h2 className="text-3xl font-bold text-white">3. 한국 법원의 침해 판단 법리</h2>
+                            <p className="text-slate-400 mt-2 text-sm">특허권자 보호 강화 추세와 핵심 판단 기준</p>
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-12">
+                            <div className="space-y-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="bg-tech-purple/20 p-3 rounded-lg text-tech-purple"><Scale size={24}/></div>
+                                    <div>
+                                        <h4 className="text-white font-bold text-lg mb-2">구성요소 완비의 원칙 (All-Elements Rule)</h4>
+                                        <p className="text-sm text-slate-300 leading-relaxed">
+                                            특허 청구항의 모든 구성요소(A+B+C)를 침해 제품이 포함해야 합니다. 하나라도 빠지면 원칙적으로 침해가 아닙니다.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <div className="bg-tech-purple/20 p-3 rounded-lg text-tech-purple"><Scale size={24}/></div>
+                                    <div>
+                                        <h4 className="text-white font-bold text-lg mb-2">균등론 (Doctrine of Equivalents)</h4>
+                                        <p className="text-sm text-slate-300 leading-relaxed">
+                                            비본질적인 부분을 변경하여 회피하는 것을 막기 위해 적용됩니다. <strong>1) 과제 해결 원리의 동일성, 2) 작용 효과의 동일성, 3) 변경의 용이성</strong>을 충족하면 침해로 간주합니다.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-navy-800 p-6 rounded-2xl border border-white/10">
+                                <h4 className="text-tech-purple font-bold mb-4 flex items-center gap-2">
+                                    <Gavel size={18}/> 주요 법적 이슈
+                                </h4>
+                                <ul className="space-y-4 text-sm">
+                                    <li className="bg-navy-900 p-3 rounded border border-white/5">
+                                        <strong className="block text-white mb-1">손해배상 한도 상향</strong>
+                                        <span className="text-slate-400">고의적인 특허/영업비밀 침해 시 징벌적 손해배상 한도가 3배에서 <strong>5배</strong>로 강화되었습니다.</span>
+                                    </li>
+                                    <li className="bg-navy-900 p-3 rounded border border-white/5">
+                                        <strong className="block text-white mb-1">모인출원 (Misappropriated App)</strong>
+                                        <span className="text-slate-400">정당한 권리자가 아닌 자(퇴사자 등)의 출원은 무효이며, 권리 이전 등록 판결이 가능합니다. (원익피앤이 사건)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        // --- 4. Strategy Section ---
+        const Strategy = () => (
+            <section id="strategy" className="py-24 bg-navy-800 relative">
+                <div className="absolute top-0 right-0 w-full h-full bg-grid-pattern opacity-30 pointer-events-none"></div>
+                <div className="container mx-auto px-6 relative z-10">
+                    <RevealOnScroll>
+                        <div className="mb-12 border-l-4 border-tech-blue pl-6">
+                            <h2 className="text-3xl font-bold text-white">4. 기업 IP 리스크 관리 매뉴얼</h2>
+                            <p className="text-slate-400 mt-2 text-sm">FTO 분석부터 경고장 대응까지, 실무 가이드</p>
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-8">
+                            {/* FTO */}
+                            <div className="bg-navy-900/80 p-8 rounded-2xl border border-white/10 hover:border-tech-blue transition-all">
+                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                    <ShieldCheck className="text-tech-blue"/> FTO (Freedom to Operate) 분석
+                                </h3>
+                                <p className="text-sm text-slate-300 mb-6">
+                                    제품 출시 전, 타인의 특허 침해 여부를 분석하는 예방 절차입니다. 고의 침해 혐의를 벗는 결정적 증거가 됩니다.
+                                </p>
+                                <ol className="space-y-3 text-sm text-slate-400 list-decimal pl-4">
+                                    <li><strong className="text-white">대상 특정:</strong> 기술 구성요소 분해 (누락 방지)</li>
+                                    <li><strong className="text-white">청구항 매핑:</strong> All-Elements Rule 적용하여 1:1 대비</li>
+                                    <li><strong className="text-white">대응책 수립:</strong> 회피 설계(Design Around) 또는 무효화 자료 확보</li>
+                                </ol>
+                            </div>
+
+                            {/* Warning Letter */}
+                            <div className="bg-navy-900/80 p-8 rounded-2xl border border-white/10 hover:border-tech-red transition-all">
+                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                    <AlertTriangle className="text-tech-red"/> 경고장(Warning Letter) 대응
+                                </h3>
+                                <p className="text-sm text-slate-300 mb-6">
+                                    초기 대응 실패 시 '고의 침해'로 간주될 수 있습니다. 절대 무시해서는 안 됩니다.
+                                </p>
+                                <ul className="space-y-3 text-sm text-slate-400">
+                                    <li className="flex gap-2">
+                                        <span className="text-tech-red">●</span>
+                                        <span><strong>증거 보존 (Legal Hold):</strong> 문서/이메일 파기 즉시 중단</span>
+                                    </li>
+                                    <li className="flex gap-2">
+                                        <span className="text-tech-red">●</span>
+                                        <span><strong>내용 검증:</strong> 특허 유효성 및 침해 근거의 구체성 확인</span>
+                                    </li>
+                                    <li className="flex gap-2">
+                                        <span className="text-tech-red">●</span>
+                                        <span><strong>답변서:</strong> 감정 배제, "검토 중" 등 유보적 입장으로 신중하게 대응</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </section>
+        );
+
+        // --- App 메인 컴포넌트 ---
+        const App = () => (
+            <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
+                <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
+                    <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                        <Logo />
+                        <div className="flex items-center gap-8">
+                            <div className="hidden md:flex gap-6 text-sm font-medium text-slate-300">
+                                <a href="#global-trends" className="hover:text-tech-blue transition-colors">글로벌 트렌드</a>
+                                <a href="#cases" className="hover:text-tech-blue transition-colors">주요 판례</a>
+                                <a href="#strategy" className="hover:text-tech-blue transition-colors">대응 전략</a>
+                            </div>
+                            <button className="bg-tech-blue text-navy-900 px-5 py-2 rounded-lg text-sm font-bold hover:bg-sky-400 transition shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+                                <a href="../index.html#contact">Contact Us</a>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+                <main>
+                    <Hero />
+                    <GlobalTrends />
+                    <CaseStudies />
+                    <KoreanLaw />
+                    <Strategy />
+                </main>
+                    <footer className="bg-navy-900 py-12 border-t border-white/10 text-center">
+                        <div className="mb-8 flex justify-center items-center gap-4 text-slate-400 text-sm">
+                            <a href="patent_info_0012.html" className="hover:text-tech-blue transition-colors">← 이전글</a>
+                            <span className="text-slate-600">｜</span>
+                            <a href="patent_info_0001.html" className="hover:text-tech-blue transition-colors">처음글 →</a>
+                        </div>
+                        <p className="text-2xl mb-5 font-bold text-white">
+                            Nan<span style={{color: '#6AD7FF'}}>7</span><span style={{color: '#17C8C8'}}>3</span>Pro.
+                        </p>
+                        <p className="text-slate-500 text-sm">© 2025 Nan73Pro. All Rights Reserved.</p>
+                    </footer>
+            </div>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
