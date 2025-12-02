@@ -80,7 +80,7 @@
             position: relative;
             height: 300px;
             width: 100%;
-            max-width: 100%; /* 모바일 넘침 방지 */
+            max-width: 100%; 
         }
     </style>
 </head>
@@ -126,7 +126,7 @@
             );
         };
 
-        // --- Logo Component (Fixed) ---
+        // --- Logo Component ---
         const Logo = () => {
             const scrollToTop = (e) => {
                 e.preventDefault();
@@ -220,11 +220,12 @@
                             </div>
 
                             <div className="bg-navy-800 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-                                <div className="flex border-b border-white/10">
-                                    <button onClick={() => setMode('legal')} className={`flex-1 py-5 text-center text-sm font-bold transition-all ${mode === 'legal' ? 'text-navy-900 bg-tech-blue' : 'text-slate-400 hover:text-white hover:bg-navy-700'}`}>
+                                {/* [수정됨] overflow-x-auto 추가하여 버튼 영역 스크롤 가능하게 변경 */}
+                                <div className="flex border-b border-white/10 overflow-x-auto">
+                                    <button onClick={() => setMode('legal')} className={`flex-1 py-5 min-w-[150px] whitespace-nowrap text-center text-sm font-bold transition-all ${mode === 'legal' ? 'text-navy-900 bg-tech-blue' : 'text-slate-400 hover:text-white hover:bg-navy-700'}`}>
                                         🏛️ 법률적 관점 (상표)
                                     </button>
-                                    <button onClick={() => setMode('business')} className={`flex-1 py-5 text-center text-sm font-bold transition-all ${mode === 'business' ? 'text-navy-900 bg-tech-green' : 'text-slate-400 hover:text-white hover:bg-navy-700'}`}>
+                                    <button onClick={() => setMode('business')} className={`flex-1 py-5 min-w-[150px] whitespace-nowrap text-center text-sm font-bold transition-all ${mode === 'business' ? 'text-navy-900 bg-tech-green' : 'text-slate-400 hover:text-white hover:bg-navy-700'}`}>
                                         💼 경영적 관점 (브랜드)
                                     </button>
                                 </div>
