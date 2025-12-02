@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <meta name="description" content="Nan73Pro: 상표는 권리이고, 브랜드는 자산입니다.">
+     <meta name="description" content="Nan73Pro: 특허 전략: 당신의 아이디어를 자산으로!">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nan73pro.site/PatentInfo/patent_info_0001.html">
-    <meta property="og:title" content="Nan73Pro - 기술을 세일즈하는 IP 파트너">
-    <meta property="og:description" content="추상적인 브랜드를 강력한 무형자산으로 변환시키는 전략을 제시합니다.">
-    <meta property="og:image" content="https://nan73pro.site/images/tmbrand.gif"> 
-    <title>Nan73Pro: 상표와 브랜드의 연관성</title>
+    <meta property="og:url" content="https://nan73pro.site/PatentInfo/patent_info_0002.html">
+    <meta property="og:title" content="Nan73Pro - 특허전략 네비게이터">
+    <meta property="og:description" content="특허 출원의 경영학적 필요성부터 등록 특허의 강력한 법적 효력, 그리고 실제 분쟁 발생 시의 체계적인 대응 메뉴얼을 제공합니다.">
+    <meta property="og:image" content="https://nan73pro.site/images/patright.gif"> 
+    <title>Nan73Pro: 특허권리 및 침해대응 전략</title>
     
     <link rel="canonical" href="https://nan73pro.site/PatentInfo/patent_info_0001.html">
     
@@ -90,8 +90,6 @@
             height: 300px;
             width: 100%;
         }
-        .footer-logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 15px; color: white; }
-        .footer-logo .dot { color: var(--accent-color); }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden">
@@ -106,15 +104,10 @@
         );
         const Shield = (p) => <IconBase {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></IconBase>;
         const Coins = (p) => <IconBase {...p}><circle cx="9" cy="7" r="4"></circle><path d="M10 15H6a4 4 0 0 0-4 4v2"></path><circle cx="15" cy="17" r="4"></circle><path d="M15 2h6"></path></IconBase>;
-        const Handshake = (p) => <IconBase {...p}><path d="M20.2 16.6l-5.8 5.8a2.828 2.828 0 0 1-4 0l-5.8-5.8a4 4 0 0 1 0-5.66l.7-.7a4 4 0 0 1 5.66 0l3.54 3.54a1 1 0 0 0 1.42 0l3.54-3.54a4 4 0 0 1 5.66 0l.7.7a4 4 0 0 1 0 5.66z"></path></IconBase>;
         const Scale = (p) => <IconBase {...p}><path d="M12 3v19"></path><path d="M5 8h14"></path><path d="M2 13h6"></path><path d="M16 13h6"></path></IconBase>;
-        const Briefcase = (p) => <IconBase {...p}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></IconBase>;
-        const Check = (p) => <IconBase {...p}><polyline points="20 6 9 17 4 12"></polyline></IconBase>;
         const AlertTriangle = (p) => <IconBase {...p}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></IconBase>;
-        const Search = (p) => <IconBase {...p}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></IconBase>;
-        const FileText = (p) => <IconBase {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></IconBase>;
-        const Bell = (p) => <IconBase {...p}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></IconBase>;
-        const Lock = (p) => <IconBase {...p}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></IconBase>;
+        const Check = (p) => <IconBase {...p}><polyline points="20 6 9 17 4 12"></polyline></IconBase>;
+        const ArrowRight = (p) => <IconBase {...p}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></IconBase>;
 
         // --- Helper Components ---
         const RevealOnScroll = ({ children, className = "" }) => {
@@ -136,23 +129,16 @@
             );
         };
 
-        // --- Logo Component (From Brand Consultant) ---
         const Logo = ({ href = "#" }) => {
             const isScrollLink = href === "#";
-
             const handleClick = (e) => {
                 if (isScrollLink) {
                     e.preventDefault();
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             };
-
             return (
-                <a 
-                    href={href} 
-                    onClick={handleClick}
-                    className="flex items-center gap-2 group cursor-pointer"
-                >
+                <a href={href} onClick={handleClick} className="flex items-center gap-2 group cursor-pointer">
                     <div className="relative w-10 h-10 flex items-end justify-center">
                         <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm transform skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
                         <div className="absolute bottom-3 left-3 w-3 h-3 bg-slate-400 rounded-sm transform skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
@@ -170,7 +156,7 @@
             );
         };
 
-        // --- Main Sections ---
+        // --- Content Sections ---
 
         const Hero = () => (
             <header className="relative pt-32 pb-20 px-6 overflow-hidden flex items-center justify-center text-center bg-hero-gradient min-h-[70vh]">
@@ -179,23 +165,23 @@
                     <RevealOnScroll>
                         <div className="max-w-4xl mx-auto">
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tech-blue/10 border border-tech-blue/20 text-tech-blue text-xs font-bold tracking-wider uppercase mb-8">
-                                <Scale size={14} />
-                                IP & Brand Strategy Lab
+                                <Shield size={14} />
+                                IP Strategy Report
                             </div>
                             <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-8">
-                                상표는 <span className="text-gradient">권리</span>이고,<br />
-                                브랜드는 <span className="text-gradient">자산</span>입니다.
+                                특허 전략: <br />
+                                <span className="text-gradient">당신의 아이디어를 자산으로</span>
                             </h1>
                             <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
-                                많은 기업이 브랜드를 마케팅 용어로만 이해합니다. 하지만 법적 보호 장치인 '상표권' 없는 브랜드는 모래 위에 지은 성과 같습니다. 
-                                본 리포트는 추상적인 브랜드를 강력한 무형자산으로 변환시키는 전략을 제시합니다.
+                                본 리포트는 특허 출원의 경영학적 필요성부터 등록 특허의 강력한 법적 효력,
+                                그리고 실제 분쟁 발생 시의 체계적인 대응 메뉴얼을 제공합니다.
                             </p>
                             
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
                                 {[
-                                    { icon: Shield, title: "독점적 권리", desc: "타인의 무단 사용을 법적으로 금지할 수 있는 유일한 수단" },
-                                    { icon: Coins, title: "자산 가치", desc: "기업 매각, 라이선싱 시 핵심 평가 요소로 작용" },
-                                    { icon: Handshake, title: "신뢰의 징표", desc: "소비자에게 품질 출처를 보증하는 역할 수행" }
+                                    { icon: Shield, title: "독점적 권리", desc: "20년간 기술 독점 및 시장 우위 확보" },
+                                    { icon: Coins, title: "자산 가치", desc: "기술이전, 라이선싱, 기업가치 상승" },
+                                    { icon: Scale, title: "법적 보호", desc: "민형사상 구제수단 및 강력한 제재" }
                                 ].map((item, idx) => (
                                     <div key={idx} className="bg-navy-800/50 backdrop-blur border border-slate-700 p-6 rounded-xl hover:border-tech-blue transition-colors group">
                                         <div className="w-12 h-12 bg-navy-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-tech-blue/20 transition-colors mx-auto md:mx-0">
@@ -212,112 +198,26 @@
             </header>
         );
 
-        const ComparisonSection = () => {
-            const [mode, setMode] = useState('legal');
-            
-            const data = {
-                legal: {
-                    title: "법률적 관점 (Trademark)",
-                    icon: Scale,
-                    points: ["자타상품 식별을 위한 기호, 문자, 도형", "특허청 등록을 통해 발생하는 독점배타권", "침해 시 민형사상 조치 가능", "속지주의 원칙 (등록된 국가에서만 보호)"],
-                    desc: "법은 상표를 '재산권'으로 정의합니다. 등록되지 않은 브랜드는 법적으로 보호받기 어려우며, 타인이 도용해도 제재할 수단이 제한적입니다."
-                },
-                business: {
-                    title: "경영적 관점 (Brand)",
-                    icon: Briefcase,
-                    points: ["소비자의 마음속에 형성된 이미지의 총체", "신뢰, 품질, 경험을 포함하는 무형자산", "마케팅과 커뮤니케이션의 핵심 도구", "국경을 초월한 인지도 형성 가능"],
-                    desc: "경영학에서 브랜드는 '약속'입니다. 고객에게 일관된 경험을 제공하여 충성도를 높이고, 경쟁사 대비 가격 프리미엄을 가능하게 합니다."
-                }
-            };
-
-            const activeData = data[mode];
-
-            return (
-                <section id="compare" className="py-24 bg-navy-900 border-y border-white/5">
-                    <div className="container mx-auto px-6">
-                        <RevealOnScroll>
-                            <div className="mb-12 border-l-4 border-tech-blue pl-6">
-                                <h2 className="text-3xl font-bold text-white">개념의 명확화: 상표 vs 브랜드</h2>
-                                <p className="text-slate-400 mt-2 text-sm max-w-2xl">
-                                    상표(Trademark)와 브랜드(Brand)는 혼용되어 사용되지만, 법률적 및 경영학적 관점에서 명확한 차이가 있습니다. 
-                                </p>
-                            </div>
-
-                            <div className="bg-navy-800 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-                                <div className="flex border-b border-white/10">
-                                    <button onClick={() => setMode('legal')} className={`flex-1 py-5 text-center text-sm font-bold transition-all ${mode === 'legal' ? 'text-navy-900 bg-tech-blue' : 'text-slate-400 hover:text-white hover:bg-navy-700'}`}>
-                                        🏛️ 법률적 관점 (상표)
-                                    </button>
-                                    <button onClick={() => setMode('business')} className={`flex-1 py-5 text-center text-sm font-bold transition-all ${mode === 'business' ? 'text-navy-900 bg-tech-green' : 'text-slate-400 hover:text-white hover:bg-navy-700'}`}>
-                                        💼 경영적 관점 (브랜드)
-                                    </button>
-                                </div>
-                                
-                                <div className="p-8 md:p-12">
-                                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                                        <div className="space-y-6">
-                                            <activeData.icon size={64} className={mode === 'legal' ? "text-tech-blue" : "text-tech-green"} />
-                                            <h3 className="text-3xl font-bold text-white">{activeData.title}</h3>
-                                            <div className={`w-20 h-1 ${mode === 'legal' ? 'bg-tech-blue' : 'bg-tech-green'}`}></div>
-                                            <p className="text-slate-300 leading-relaxed text-lg font-light">{activeData.desc}</p>
-                                        </div>
-                                        <div className="bg-navy-900/50 p-8 rounded-xl border border-white/10">
-                                            <h4 className="font-bold text-slate-200 mb-6 uppercase tracking-wider text-sm">Key Characteristics</h4>
-                                            <ul className="space-y-4">
-                                                {activeData.points.map((p, i) => (
-                                                    <li key={i} className="flex items-start gap-3">
-                                                        <Check size={18} className={mode === 'legal' ? "text-tech-blue mt-1 shrink-0" : "text-tech-green mt-1 shrink-0"} />
-                                                        <span className="text-slate-400 text-sm">{p}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </RevealOnScroll>
-                    </div>
-                </section>
-            );
-        };
-
-        const ChartsSection = () => {
-            const growthChartRef = useRef(null);
-            const radarChartRef = useRef(null);
+        const NecessitySection = () => {
+            const chartRef = useRef(null);
 
             useEffect(() => {
-                // Growth Chart
-                const ctxGrowth = growthChartRef.current.getContext('2d');
-                const growthChart = new Chart(ctxGrowth, {
-                    type: 'line',
+                const ctx = chartRef.current.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
                     data: {
-                        labels: ['1년차', '2년차', '3년차(등록)', '4년차', '5년차', '6년차'],
-                        datasets: [
-                            {
-                                label: '상표권 보유 기업',
-                                data: [100, 120, 150, 210, 280, 350],
-                                borderColor: '#38bdf8', // tech-blue
-                                backgroundColor: (context) => {
-                                    const ctx = context.chart.ctx;
-                                    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                                    gradient.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
-                                    gradient.addColorStop(1, 'rgba(56, 189, 248, 0)');
-                                    return gradient;
-                                },
-                                borderWidth: 3,
-                                fill: true,
-                                tension: 0.4
-                            },
-                            {
-                                label: '미보유 기업',
-                                data: [100, 115, 125, 130, 135, 140],
-                                borderColor: '#64748b', // slate-500
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                tension: 0.4,
-                                pointBackgroundColor: '#64748b'
-                            }
-                        ]
+                        labels: ['매출 성장률', '영업 이익률', '자산 가치(지수)'],
+                        datasets: [{
+                            label: '특허 보유 기업',
+                            data: [18.5, 12.4, 150],
+                            backgroundColor: '#38bdf8', // tech-blue
+                            borderRadius: 4
+                        }, {
+                            label: '미보유 기업',
+                            data: [5.2, 4.1, 100],
+                            backgroundColor: '#475569', // slate-600
+                            borderRadius: 4
+                        }]
                     },
                     options: {
                         responsive: true,
@@ -344,177 +244,159 @@
                         }
                     }
                 });
+                return () => chart.destroy();
+            }, []);
 
-                // Radar Chart
-                const ctxRadar = radarChartRef.current.getContext('2d');
-                const radarChart = new Chart(ctxRadar, {
-                    type: 'radar',
+            return (
+                <section id="necessity" className="py-24 bg-navy-900 border-y border-white/5">
+                    <div className="container mx-auto px-6">
+                        <RevealOnScroll>
+                            <div className="mb-12 border-l-4 border-tech-blue pl-6">
+                                <h2 className="text-3xl font-bold text-white">1. 특허 출원의 필요성 및 경제적 효과</h2>
+                                <p className="text-slate-400 mt-2 text-sm max-w-2xl">
+                                    왜 지금 당장 특허를 출원해야 하는가? 데이터로 보는 특허 보유 기업의 경쟁력.
+                                </p>
+                            </div>
+
+                            <div className="grid lg:grid-cols-2 gap-12 items-center bg-navy-800 p-8 rounded-2xl border border-white/10 shadow-lg">
+                                <div className="space-y-4">
+                                    <p className="text-xs font-bold text-tech-blue tracking-wider uppercase mb-2">CORE BENEFITS</p>
+                                    {[
+                                        { title: "시장 방어 및 진입장벽 구축", desc: "후발주자의 모방을 원천 차단하고 독점적 시장 지위를 확보합니다." },
+                                        { title: "마케팅 및 신뢰도 향상", desc: "'특허 획득' 문구 사용을 통한 기술력 입증 및 소비자 신뢰도 제고." },
+                                        { title: "투자 유치 및 자금 조달", desc: "IP 담보 대출 및 벤처 투자 심사 시 핵심 평가 지표로 활용됩니다." }
+                                    ].map((item, idx) => (
+                                        <div key={idx} className="group p-5 rounded-xl border border-white/5 bg-navy-900/50 hover:bg-navy-900 hover:border-tech-blue transition-all cursor-default">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="font-bold text-white">{item.title}</h3>
+                                                <ArrowRight className="text-tech-blue opacity-0 group-hover:opacity-100 transition-opacity" size={18} />
+                                            </div>
+                                            <p className="text-sm text-slate-400 mt-2 group-hover:text-slate-300 transition-colors">{item.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="flex flex-col items-center justify-center bg-navy-900 p-6 rounded-xl border border-white/5">
+                                    <h4 className="text-sm font-bold text-slate-400 mb-6 text-center">특허 보유 유무에 따른 기업 성장률</h4>
+                                    <div className="chart-container">
+                                        <canvas ref={chartRef}></canvas>
+                                    </div>
+                                    <p className="text-xs text-center text-slate-600 mt-4">
+                                        * 보유 기업은 미보유 기업 대비 자산 가치 1.5배 이상 높음
+                                    </p>
+                                </div>
+                            </div>
+                        </RevealOnScroll>
+                    </div>
+                </section>
+            );
+        };
+
+        const ProtectionSection = () => {
+            const [activeTab, setActiveTab] = useState('civil');
+            const chartRef = useRef(null);
+
+            const data = {
+                civil: {
+                    title: "민사적 구제 수단",
+                    points: [
+                        { t: "침해금지청구권", d: "현재 진행 중인 침해 행위의 중지 및 예방 청구 (가처분 포함)" },
+                        { t: "손해배상청구권", d: "고의/과실로 인한 특허 침해 시 재산적 손해 배상 청구" },
+                        { t: "신용회복조치", d: "침해로 실추된 업무상 신용 회복을 위한 조치 청구" },
+                        { t: "부당이득반환", d: "침해자가 법률상 원인 없이 얻은 이익 반환 청구" }
+                    ]
+                },
+                criminal: {
+                    title: "형사적 제재",
+                    points: [
+                        { t: "침해죄 성립", d: "7년 이하의 징역 또는 1억원 이하의 벌금 (고의 침해 시)" },
+                        { t: "친고죄 폐지", d: "특허권자의 고소가 없어도 공소 제기 가능 (반의사불벌죄 여부 검토)" },
+                        { t: "양벌규정", d: "행위자뿐만 아니라 그 법인(회사)에게도 벌금형 부과" }
+                    ]
+                },
+                scope: {
+                    title: "권리 범위 해석 원칙",
+                    points: [
+                        { t: "구성요소 완비의 원칙", d: "청구항의 모든 구성요소를 실시해야 침해 성립 (All Elements Rule)" },
+                        { t: "균등론", d: "일부 변경되었더라도 기술적 사상이 동일하고 효과가 같다면 침해 인정" },
+                        { t: "공지기술 제외", d: "이미 공지된 기술(자유기술)인 경우 특허권 효력 미치지 않음" }
+                    ]
+                }
+            };
+
+            useEffect(() => {
+                const ctx = chartRef.current.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'doughnut',
                     data: {
-                        labels: ['법적 보호력', '고객 신뢰도', '투자 가치', '시장 확장성', '분쟁 방어력'],
+                        labels: ['손해배상', '침해금지', '형사고소', '신용회복'],
                         datasets: [{
-                            label: '등록된 브랜드',
-                            data: [95, 90, 85, 80, 90],
-                            fill: true,
-                            backgroundColor: 'rgba(56, 189, 248, 0.2)',
-                            borderColor: '#38bdf8',
-                            pointBackgroundColor: '#38bdf8',
-                            pointBorderColor: '#fff',
-                        }, {
-                            label: '미등록 상표',
-                            data: [20, 50, 30, 40, 10],
-                            fill: true,
-                            backgroundColor: 'rgba(239, 68, 68, 0.2)', // Red for danger
-                            borderColor: '#ef4444',
-                            pointBackgroundColor: '#ef4444',
-                            pointBorderColor: '#fff',
+                            data: [45, 35, 15, 5],
+                            backgroundColor: ['#38bdf8', '#0ea5e9', '#6366f1', '#94a3b8'],
+                            borderWidth: 0
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { labels: { color: '#cbd5e1' } }
-                        },
-                        scales: {
-                            r: {
-                                angleLines: { color: '#334155' },
-                                grid: { color: '#334155' },
-                                pointLabels: {
-                                    color: '#cbd5e1',
-                                    font: { size: 12, family: "'Pretendard', sans-serif" }
-                                },
-                                suggestedMin: 0,
-                                suggestedMax: 100
-                            }
+                            legend: { position: 'right', labels: { color: '#cbd5e1', font: { size: 10 } } }
                         }
                     }
                 });
-
-                return () => {
-                    growthChart.destroy();
-                    radarChart.destroy();
-                };
+                return () => chart.destroy();
             }, []);
 
+            const activeContent = data[activeTab];
+
             return (
-                <section id="value" className="py-24 bg-navy-800 relative">
+                <section id="protection" className="py-24 bg-navy-800 relative">
                      <div className="absolute top-0 right-0 w-full h-full bg-grid-pattern opacity-30 pointer-events-none"></div>
                     <div className="container mx-auto px-6 relative z-10">
-                        <div className="text-center mb-16">
-                            <span className="text-tech-blue font-bold tracking-wider text-sm uppercase border border-tech-blue/30 px-3 py-1 rounded-full bg-tech-blue/5">Data Analytics</span>
-                            <h2 className="text-3xl font-bold text-white mt-6">데이터로 보는 지식재산권의 가치</h2>
-                            <p className="text-slate-400 mt-4 max-w-2xl mx-auto font-light">
-                                데이터는 '보호받는 브랜드'가 더 높은 경제적 수익과 생존율을 보임을 증명합니다.
-                            </p>
-                        </div>
-
-                        <div className="grid lg:grid-cols-2 gap-8">
-                            <RevealOnScroll>
-                                <div className="bg-navy-900 rounded-2xl p-8 border border-white/10 shadow-lg">
-                                    <h3 className="font-bold text-slate-200 mb-6 flex items-center justify-between">
-                                        <span>기업 가치 성장 추이</span>
-                                        <span className="text-xs font-normal text-slate-500 bg-navy-800 px-2 py-1 rounded border border-slate-700">단위: 억 원</span>
-                                    </h3>
-                                    <div className="chart-container">
-                                        <canvas ref={growthChartRef}></canvas>
-                                    </div>
-                                    <div className="mt-6 p-4 bg-tech-blue/10 border border-tech-blue/20 rounded-lg text-xs text-tech-blue leading-relaxed">
-                                        <span className="font-bold">Insight:</span> 상표 등록(3년차) 이후, 법적 안전장치가 확보되면서 마케팅 투자가 자산 가치로 직결되어 비등록 기업 대비 250% 이상의 가치 상승을 보입니다.
-                                    </div>
-                                </div>
-                            </RevealOnScroll>
-
-                            <RevealOnScroll className="delay-200">
-                                <div className="bg-navy-900 rounded-2xl p-8 border border-white/10 shadow-lg">
-                                    <h3 className="font-bold text-slate-200 mb-6 flex items-center justify-between">
-                                        <span>브랜드 경쟁력 분석 (Radar)</span>
-                                        <span className="text-xs font-normal text-slate-500 bg-navy-800 px-2 py-1 rounded border border-slate-700">Score: 1-100</span>
-                                    </h3>
-                                    <div className="chart-container">
-                                        <canvas ref={radarChartRef}></canvas>
-                                    </div>
-                                    <div className="mt-6 p-4 bg-tech-green/10 border border-tech-green/20 rounded-lg text-xs text-tech-green leading-relaxed">
-                                        <span className="font-bold">Insight:</span> 등록된 상표는 '투자 유치 용이성'과 '권리 행사' 항목에서 압도적인 우위를 점하며, 이는 프랜차이즈 확장이나 해외 진출 시 필수적입니다.
-                                    </div>
-                                </div>
-                            </RevealOnScroll>
-                        </div>
-                    </div>
-                </section>
-            );
-        };
-
-        const RiskSection = () => {
-            const [activeRisk, setActiveRisk] = useState(0);
-
-            const risks = [
-                {
-                    title: "모방 제품 (Counterfeit)",
-                    stat: "매출의 20% 감소",
-                    desc: "유명 브랜드의 명성에 편승한 짝퉁 제품은 정품 시장을 잠식합니다. 상표권이 있다면 세관에서 통관 보류를 요청하거나, 판매 사이트 폐쇄를 요구할 수 있는 강력한 법적 근거가 됩니다.",
-                    icon: AlertTriangle
-                },
-                {
-                    title: "상표 브로커 (Squatting)",
-                    stat: "평균 환수 비용 5,000만원+",
-                    desc: "해외 진출 시 현지 브로커가 귀사의 브랜드를 먼저 선점하는 사례가 급증하고 있습니다. 상표를 되찾기 위한 소송 비용과 시간 낭비는 기업 경영에 치명적입니다.",
-                    icon: Lock
-                },
-                {
-                    title: "브랜드 희석 (Dilution)",
-                    stat: "브랜드 충성도 40% 하락",
-                    desc: "저품질의 유사 상품이 난립하면 오리지널 브랜드의 이미지까지 손상됩니다. 식별력을 잃은 브랜드는 더 이상 프리미엄 가격을 받을 수 없게 됩니다.",
-                    icon: Handshake
-                }
-            ];
-
-            return (
-                <section id="risk" className="py-24 bg-navy-900">
-                    <div className="container mx-auto px-6">
                         <RevealOnScroll>
-                            <div className="flex flex-col md:flex-row items-start gap-12">
-                                <div className="md:w-1/3">
-                                    <h2 className="text-3xl font-bold text-white mb-6">상표 부재의 위험성</h2>
-                                    <p className="text-slate-400 text-sm leading-relaxed mb-8">
-                                        상표권 확보를 소홀히 했을 때 기업이 직면하는 위험은 단순한 이름 변경 비용을 넘어섭니다. 
-                                        이는 쌓아온 고객 신뢰의 붕괴와 시장 퇴출로 이어질 수 있습니다.
-                                    </p>
-                                    
-                                    <div className="space-y-4">
-                                        {risks.map((risk, index) => (
-                                            <button 
-                                                key={index}
-                                                onClick={() => setActiveRisk(index)}
-                                                className={`w-full text-left p-4 rounded-xl border transition-all duration-300 ${
-                                                    activeRisk === index 
-                                                    ? 'bg-navy-800 border-tech-blue shadow-[0_0_15px_rgba(56,189,248,0.2)]' 
-                                                    : 'bg-navy-800/30 border-white/5 hover:bg-navy-800 hover:border-slate-600'
-                                                }`}
-                                            >
-                                                <span className={`block text-xs mb-1 ${activeRisk === index ? 'text-tech-blue' : 'text-slate-500'}`}>Risk Factor {index + 1}</span>
-                                                <span className={`font-bold ${activeRisk === index ? 'text-white' : 'text-slate-400'}`}>{risk.title}</span>
-                                            </button>
-                                        ))}
-                                    </div>
+                            <div className="mb-12 border-l-4 border-tech-green pl-6">
+                                <h2 className="text-3xl font-bold text-white">2. 등록 특허의 법적 보호 범위</h2>
+                                <p className="text-slate-400 mt-2 text-sm max-w-2xl">
+                                    특허청구범위(Claims)에 기재된 내용에 한하여 강력한 법적 권리가 발생합니다.
+                                </p>
+                            </div>
+
+                            <div className="bg-navy-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+                                <div className="flex border-b border-white/10 overflow-x-auto">
+                                    {['civil', 'criminal', 'scope'].map((tab) => (
+                                        <button 
+                                            key={tab}
+                                            onClick={() => setActiveTab(tab)}
+                                            className={`flex-1 py-5 min-w-[120px] text-center text-sm font-bold transition-all ${activeTab === tab ? 'text-navy-900 bg-tech-blue' : 'text-slate-400 hover:text-white hover:bg-navy-800'}`}
+                                        >
+                                            {tab === 'civil' ? '민사적 구제' : tab === 'criminal' ? '형사적 제재' : '권리 해석'}
+                                        </button>
+                                    ))}
                                 </div>
 
-                                <div className="md:w-2/3 w-full bg-navy-800 p-8 rounded-2xl border border-white/10 shadow-2xl min-h-[400px] flex flex-col justify-center relative overflow-hidden">
-                                     <div className="absolute top-0 right-0 w-64 h-64 bg-tech-blue/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                                    
-                                    <div className="text-center p-4 animate-fade-in relative z-10">
-                                        {(() => {
-                                            const Item = risks[activeRisk];
-                                            return (
-                                                <>
-                                                    <div className="inline-flex p-4 rounded-full bg-navy-900 border border-slate-700 mb-6 text-tech-blue shadow-inner">
-                                                        <Item.icon size={48} />
+                                <div className="p-8 md:p-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <div className="md:col-span-2 space-y-6">
+                                        <h3 className="text-2xl font-bold text-white mb-6">{activeContent.title}</h3>
+                                        <ul className="space-y-4">
+                                            {activeContent.points.map((pt, i) => (
+                                                <li key={i} className="flex items-start gap-4 p-4 bg-navy-800/50 rounded-lg border border-white/5">
+                                                    <div className="w-6 h-6 rounded-full bg-tech-blue/20 text-tech-blue flex items-center justify-center shrink-0 mt-0.5">
+                                                        <Check size={14} />
                                                     </div>
-                                                    <h3 className="text-2xl font-bold text-white mb-2">{Item.title}</h3>
-                                                    <div className="text-3xl font-bold text-tech-blue mb-6 tracking-tight">{Item.stat}</div>
-                                                    <p className="text-slate-400 leading-relaxed font-light max-w-lg mx-auto">{Item.desc}</p>
-                                                </>
-                                            );
-                                        })()}
+                                                    <div>
+                                                        <span className="font-bold text-white block mb-1">{pt.t}</span>
+                                                        <span className="text-sm text-slate-400">{pt.d}</span>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className="bg-navy-800 p-6 rounded-xl border border-white/10 flex flex-col justify-center items-center">
+                                        <h4 className="text-sm font-bold text-slate-300 mb-6">특허 소송 청구 유형 비율</h4>
+                                        <div className="chart-container" style={{height: '200px'}}>
+                                            <canvas ref={chartRef}></canvas>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -524,42 +406,118 @@
             );
         };
 
-        // --- ID "roadmap" added here for navigation target ---
-        const RoadmapSection = () => {
-            const steps = [
-                { title: "선행 조사", desc: "유사 상표 존재 여부 확인 및 등록 가능성 검토", icon: Search },
-                { title: "출원 (Application)", desc: "특허청에 상표 사용 의사 표시 및 서류 제출", icon: FileText },
-                { title: "심사 및 공고", desc: "심사관의 거절이유 통지 대응 및 출원공고", icon: Bell },
-                { title: "등록 및 관리", desc: "등록료 납부 및 10년 단위 갱신을 통한 영구적 권리화", icon: Shield }
-            ];
+        const ResponseSection = () => {
+            const [activePhase, setActivePhase] = useState('detection');
+
+            const content = {
+                detection: {
+                    title: "단계 1: 침해 사실 인지 및 증거 확보",
+                    steps: [
+                        "내용증명 발송 전, 상대방이 모르게 증거를 확보하는 것이 핵심입니다.",
+                        "공증 구매(Trap Purchase)를 통해 제품 실물과 영수증을 확보하십시오.",
+                        "상대방의 카탈로그, 웹사이트 캡처 등 영업 활동 내역을 수집하십시오.",
+                        "특허법률사무소에 의뢰하여 '권리범위확인심판' 또는 '감정서'를 준비하십시오."
+                    ]
+                },
+                warning: {
+                    title: "단계 2: 경고장 발송 및 협상",
+                    steps: [
+                        "침해 중지 및 손해배상을 요구하는 공식 경고장(내용증명)을 발송합니다.",
+                        "초기부터 과도한 위협보다는 라이선스 계약 체결 등 비즈니스적 해결을 제안하는 것이 유리합니다.",
+                        "상대방의 '무효심판' 제기 가능성에 대비하여 특허의 무결성을 재검토하십시오."
+                    ]
+                },
+                litigation: {
+                    title: "단계 3: 민형사상 조치 (본안 소송)",
+                    steps: [
+                        "침해금지가처분신청: 판결 확정 전까지 제조/판매를 신속히 중단시킵니다.",
+                        "손해배상청구소송: 일실수익, 침해자 이익, 또는 통상 실시료 상당액을 청구합니다.",
+                        "특허권침해금지청구: 생산 설비의 폐기 등을 함께 청구합니다.",
+                        "침해 입증 책임 완화 제도를 활용하여 자료 제출 명령을 신청하십시오."
+                    ]
+                }
+            };
+
+            const activeData = content[activePhase];
 
             return (
-                <section id="roadmap" className="py-24 bg-navy-800 border-t border-white/5">
+                <section id="response" className="py-24 bg-navy-900">
                     <div className="container mx-auto px-6">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl font-bold text-white">성공적인 브랜드 권리화 로드맵</h2>
-                            <p className="text-slate-400 mt-2">Abstract Idea to Protected Asset</p>
-                        </div>
-                        
-                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-                            {/* Connector Line (Desktop) */}
-                            <div className="hidden lg:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-navy-800 via-tech-blue/50 to-navy-800 z-0"></div>
-                            
-                            {steps.map((step, idx) => (
-                                <RevealOnScroll key={idx} className={`delay-${idx * 100}`}>
-                                    <div className="relative bg-navy-900 p-6 rounded-xl border border-white/10 hover:border-tech-blue transition-all duration-300 group z-10 h-full hover:-translate-y-2 hover:shadow-[0_10px_30px_-10px_rgba(56,189,248,0.3)]">
-                                        <div className="w-12 h-12 mx-auto bg-navy-800 rounded-full flex items-center justify-center mb-4 border border-slate-700 group-hover:bg-tech-blue group-hover:text-navy-900 group-hover:border-tech-blue transition-all shadow-lg text-slate-400">
-                                            <step.icon size={20} />
+                        <RevealOnScroll>
+                            <div className="mb-12 border-l-4 border-red-500 pl-6">
+                                <h2 className="text-3xl font-bold text-white">3. 침해 사례 발생 시 대응 메뉴얼</h2>
+                                <p className="text-slate-400 mt-2 text-sm">
+                                    감정적인 대응은 금물입니다. 단계별 전략 프로세스를 따라 대응하십시오.
+                                </p>
+                            </div>
+
+                            <div className="flex flex-col md:flex-row items-start gap-8">
+                                <div className="md:w-1/3 w-full space-y-4">
+                                    <div className="p-6 bg-navy-800 rounded-2xl border border-white/10 mb-6">
+                                        <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                                            <AlertTriangle className="text-yellow-400" />
+                                            <span>상황 발생</span>
+                                        </h3>
+                                        <p className="text-sm text-slate-400">현재 상황을 선택하여 대응 전략을 확인하세요.</p>
+                                    </div>
+                                    
+                                    {[
+                                        { key: 'detection', label: '1. 모방품 발견 (침해 의심)' },
+                                        { key: 'warning', label: '2. 경고장 발송 준비' },
+                                        { key: 'litigation', label: '3. 협상 결렬 및 소송' }
+                                    ].map((btn) => (
+                                        <button 
+                                            key={btn.key}
+                                            onClick={() => setActivePhase(btn.key)}
+                                            className={`w-full text-left p-4 rounded-xl border transition-all duration-300 ${
+                                                activePhase === btn.key 
+                                                ? 'bg-navy-800 border-tech-blue shadow-[0_0_15px_rgba(56,189,248,0.2)] text-white' 
+                                                : 'bg-navy-800/30 border-white/5 text-slate-400 hover:bg-navy-800 hover:text-white'
+                                            }`}
+                                        >
+                                            <span className="font-bold">{btn.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="md:w-2/3 w-full bg-navy-800 p-8 rounded-2xl border border-white/10 shadow-2xl relative overflow-hidden min-h-[400px]">
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-tech-blue/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                                    
+                                    <div className="relative z-10">
+                                        <div className="inline-block px-3 py-1 bg-tech-blue/10 border border-tech-blue/30 text-tech-blue text-xs font-bold rounded mb-6">
+                                            ACTION PLAN
                                         </div>
-                                        <div className="text-center">
-                                            <div className="text-xs font-bold text-tech-blue mb-1">STEP 0{idx + 1}</div>
-                                            <h4 className="font-bold text-white mb-2">{step.title}</h4>
-                                            <p className="text-xs text-slate-500 leading-relaxed group-hover:text-slate-300 transition-colors">{step.desc}</p>
+                                        <h3 className="text-2xl font-bold text-white mb-8 border-b border-white/10 pb-4">{activeData.title}</h3>
+                                        
+                                        <div className="space-y-4">
+                                            {activeData.steps.map((step, i) => (
+                                                <div key={i} className="flex items-start gap-4 p-4 bg-navy-900 rounded-lg border border-slate-700">
+                                                    <div className="flex-shrink-0 w-8 h-8 bg-navy-800 border border-slate-600 rounded-full flex items-center justify-center font-bold text-tech-blue shadow-sm">
+                                                        {i + 1}
+                                                    </div>
+                                                    <p className="text-slate-300 text-sm pt-1.5 leading-relaxed">{step}</p>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
-                                </RevealOnScroll>
-                            ))}
-                        </div>
+                                </div>
+                            </div>
+
+                            {/* Evidence Checklist */}
+                            <div className="mt-8 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6">
+                                <h3 className="font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                                    <Check className="text-yellow-400" size={20} /> 필수 증거 수집 체크리스트
+                                </h3>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {["침해 제품 실물 확보", "카탈로그/홍보물", "제조/판매 회사 정보", "거래 내역서/영수증"].map((item, i) => (
+                                        <div key={i} className="flex items-center gap-2 p-2 bg-navy-900/50 rounded border border-white/5">
+                                            <div className="w-5 h-5 rounded-full bg-yellow-500/20 flex items-center justify-center text-xs font-bold text-yellow-400">{i+1}</div>
+                                            <span className="text-sm text-slate-300">{item}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </RevealOnScroll>
                     </div>
                 </section>
             );
@@ -568,24 +526,18 @@
         const App = () => {
             return (
                 <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
-                    {/* Nav */}
                     <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
                         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-                            {/* Left: Logo (Updated to Nan73Pro style) */}
                             <Logo />
-
-                            {/* Right: Links and Contact Button Grouped */}
                             <div className="flex items-center gap-8">
                                 <div className="hidden md:flex gap-6 text-sm font-medium text-slate-300">
-                                    <a href="#compare" className="hover:text-tech-blue transition-colors">상표 vs 브랜드</a>
-                                    <a href="#value" className="hover:text-tech-blue transition-colors">가치 분석</a>
-                                    <a href="#risk" className="hover:text-tech-blue transition-colors">위험 관리</a>
-                                    {/* Added Roadmap Link */}
-                                    <a href="#roadmap" className="hover:text-tech-blue transition-colors">로드맵</a>
+                                    <a href="#necessity" className="hover:text-tech-blue transition-colors">출원의 필요성</a>
+                                    <a href="#protection" className="hover:text-tech-blue transition-colors">법적 보호범위</a>
+                                    <a href="#response" className="hover:text-tech-blue transition-colors">침해 대응 전략</a>
                                 </div>
-                                {/* Modified Contact Button: Removed BG, Made Clickable Area Larger (Tag changed from button to a) */}
+                                {/* Contact Us Button Modified Here */}
                                 <a 
-                                    href="/MyBrand/brand_story.html#contact" 
+                                    href="../index.html#contact" 
                                     className="border border-tech-blue text-tech-blue px-5 py-2 rounded-lg text-sm font-bold hover:bg-tech-blue/10 transition shadow-[0_0_15px_rgba(56,189,248,0.2)]"
                                 >
                                     Contact Us
@@ -596,12 +548,10 @@
 
                     <main>
                         <Hero />
-                        <ComparisonSection />
-                        <ChartsSection />
-                        <RiskSection />
-                        <RoadmapSection />
+                        <NecessitySection />
+                        <ProtectionSection />
+                        <ResponseSection />
                     </main>
-
 
                     <footer className="bg-navy-900 py-12 border-t border-white/10 text-center">
                         <div className="mb-8 flex justify-center items-center gap-4 text-slate-400 text-sm">
@@ -622,5 +572,4 @@
         root.render(<App />);
     </script>
 </body>
-
 </html>

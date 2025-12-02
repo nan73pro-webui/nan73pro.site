@@ -284,7 +284,7 @@
         );
 
         const Conclusion = () => (
-            <section className="py-20 bg-gradient-to-br from-navy-800 to-navy-900 border-t border-white/5 text-center">
+            <section id="conclusion" className="py-20 bg-gradient-to-br from-navy-800 to-navy-900 border-t border-white/5 text-center">
                 <div className="container mx-auto px-6">
                     <RevealOnScroll>
                         <MapPin size={48} className="text-tech-blue mx-auto mb-6" />
@@ -310,10 +310,9 @@
                                     <a href="#legal" className="hover:text-tech-blue transition-colors">법적요건</a>
                                     <a href="#strategy" className="hover:text-tech-blue transition-colors">검색전략</a>
                                     <a href="#analysis" className="hover:text-tech-blue transition-colors">분석방법</a>
+                                    <a href="#conclusion" className="hover:text-tech-blue transition-colors">최종결론</a>
                                 </div>
-                                <button className="bg-tech-blue text-navy-900 px-5 py-2 rounded-lg text-sm font-bold hover:bg-sky-400 transition shadow-[0_0_15px_rgba(56,189,248,0.4)]">
-                                    <a href="../index.html#contact">Contact Us</a>
-                                </button>
+                                    <a href="../index.html#contact" className="border border-tech-blue text-tech-blue px-5 py-2 rounded-lg text-sm font-bold hover:bg-tech-blue/10 transition shadow-[0_0_15px_rgba(56,189,248,0.2)]">Contact Us</a>
                             </div>
                         </div>
                     </nav>
