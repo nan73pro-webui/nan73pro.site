@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
      <meta name="description" content="Nan73Pro: 상표는 권리이고, 브랜드는 자산입니다.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://nan73pro.site/PatentInfo/patent_info_0002.html">
@@ -48,11 +48,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Global Styles */
-        body {
+        /* [수정 1] 가로 스크롤 및 넘침 원천 차단 */
+        html, body {
             font-family: 'Pretendard', sans-serif;
             background-color: #0f172a;
             color: #f8fafc;
+            width: 100%;
+            overflow-x: hidden; /* 가로 스크롤 방지 */
+            position: relative;
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -75,15 +78,16 @@
             background-size: 40px 40px;
         }
         
-        /* Chart Container Overflow Fix */
+        /* [수정 2] 차트 컨테이너 안정화 */
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
+            overflow: hidden; /* 내부 캔버스가 튀어나오지 않도록 절단 */
         }
     </style>
 </head>
-<body class="antialiased overflow-x-hidden">
+<body class="antialiased">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -383,10 +387,10 @@
                             </p>
                         </div>
 
+                        {/* [수정 3] Grid Layout에 있는 카드들을 강제로 max-w-full로 제한 */}
                         <div className="grid lg:grid-cols-2 gap-8">
                             <RevealOnScroll>
-                                { /* [수정됨] min-w-0 추가하여 Grid Overflow 방지 및 padding 수정 */ }
-                                <div className="bg-navy-900 rounded-2xl p-4 md:p-8 border border-white/10 shadow-lg w-full overflow-hidden min-w-0">
+                                <div className="bg-navy-900 rounded-2xl p-4 md:p-8 border border-white/10 shadow-lg w-full min-w-0 max-w-full overflow-hidden">
                                     <h3 className="font-bold text-slate-200 mb-6 flex items-center justify-between">
                                         <span>기업 가치 성장 추이</span>
                                         <span className="text-xs font-normal text-slate-500 bg-navy-800 px-2 py-1 rounded border border-slate-700">단위: 억 원</span>
@@ -401,8 +405,7 @@
                             </RevealOnScroll>
 
                             <RevealOnScroll className="delay-200">
-                                { /* [수정됨] min-w-0 추가하여 Grid Overflow 방지 및 padding 수정 */ }
-                                <div className="bg-navy-900 rounded-2xl p-4 md:p-8 border border-white/10 shadow-lg w-full overflow-hidden min-w-0">
+                                <div className="bg-navy-900 rounded-2xl p-4 md:p-8 border border-white/10 shadow-lg w-full min-w-0 max-w-full overflow-hidden">
                                     <h3 className="font-bold text-slate-200 mb-6 flex items-center justify-between">
                                         <span>브랜드 경쟁력 분석 (Radar)</span>
                                         <span className="text-xs font-normal text-slate-500 bg-navy-800 px-2 py-1 rounded border border-slate-700">Score: 1-100</span>
@@ -561,7 +564,7 @@
                                 </div>
                                 
                                 <a 
-                                    href="../index.html#contact" 
+                                    href="../MyBrand/brand_story.html#contact" 
                                     className="border border-tech-blue text-tech-blue px-4 md:px-5 py-2 rounded-lg text-sm font-bold hover:bg-tech-blue/10 transition shadow-[0_0_15px_rgba(56,189,248,0.2)] whitespace-nowrap"
                                 >
                                     Contact Us
