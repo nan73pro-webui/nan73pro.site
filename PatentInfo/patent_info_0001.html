@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta name="description" content="Nan73Pro: 특허 전략: 당신의 아이디어를 자산으로!">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nan73pro.site/PatentInfo/patent_info_0002.html">
+    <meta property="og:url" content="https://nan73pro.site/PatentInfo/patent_info_0001.html">
     <meta property="og:title" content="Nan73Pro - 특허전략 네비게이터">
     <meta property="og:description" content="특허 출원의 경영학적 필요성부터 등록 특허의 강력한 법적 효력, 그리고 실제 분쟁 발생 시의 체계적인 대응 메뉴얼을 제공합니다.">
     <meta property="og:image" content="https://nan73pro.site/images/patright.gif"> 
@@ -68,15 +68,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .btn-glow {
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-glow:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
-        }
-
         .bg-grid-pattern {
             background-image: 
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
@@ -129,28 +120,21 @@
             );
         };
 
-        const Logo = ({ href = "#" }) => {
-            const isScrollLink = href === "#";
-            const handleClick = (e) => {
-                if (isScrollLink) {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+        // --- [수정된 부분] Logo 컴포넌트 교체 (0003 버전과 동일하게 심플화) ---
+        const Logo = () => {
+            const scrollToTop = (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             };
             return (
-                <a href={href} onClick={handleClick} className="flex items-center gap-2 group cursor-pointer">
-                    <div className="relative w-10 h-10 flex items-end justify-center">
-                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm transform skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
-                        <div className="absolute bottom-3 left-3 w-3 h-3 bg-slate-400 rounded-sm transform skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
-                        <div className="absolute bottom-6 left-6 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm transform skew-y-[-10deg] shadow-[0_0_15px_rgba(56,189,248,0.5)] flex items-center justify-center">
-                            <div className="w-1 h-1 bg-white rounded-full animate-pulse"></div>
-                        </div>
+                <a href="#" onClick={scrollToTop} className="flex items-center gap-2 cursor-pointer group">
+                    <div className="relative w-8 h-8 flex items-end justify-center">
+                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
+                        <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
+                        <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
                     </div>
-                    <div className="flex flex-col justify-center">
-                        <span className="text-xl font-bold tracking-tight text-white leading-none">
-                            Nan7<span className="text-tech-blue font-light">3</span>Pro
-                        </span>
-                        <span className="text-[10px] text-slate-400 tracking-widest uppercase">Branding Consultant</span>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold text-white leading-none">Nan7<span className="text-tech-blue font-light">3</span>Pro</span>
                     </div>
                 </a>
             );
@@ -523,6 +507,7 @@
             );
         };
 
+        // --- [수정된 부분] App 컴포넌트 네비게이션 구조 수정 ---
         const App = () => {
             return (
                 <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
@@ -535,7 +520,6 @@
                                     <a href="#protection" className="hover:text-tech-blue transition-colors">법적 보호범위</a>
                                     <a href="#response" className="hover:text-tech-blue transition-colors">침해 대응 전략</a>
                                 </div>
-                                {/* Contact Us Button Modified Here */}
                                 <a 
                                     href="../index.html#contact" 
                                     className="border border-tech-blue text-tech-blue px-5 py-2 rounded-lg text-sm font-bold hover:bg-tech-blue/10 transition shadow-[0_0_15px_rgba(56,189,248,0.2)]"
