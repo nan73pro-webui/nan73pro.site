@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <meta name="description" content="Nan73Pro: 상표는 권리이고, 브랜드는 자산입니다.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nan73pro.site/PatentInfo/patent_info_0001.html">
+    <meta property="og:url" content="https://nan73pro.site/PatentInfo/patent_info_0002.html">
     <meta property="og:title" content="Nan73Pro - 기술을 세일즈하는 IP 파트너">
     <meta property="og:description" content="추상적인 브랜드를 강력한 무형자산으로 변환시키는 전략을 제시합니다.">
     <meta property="og:image" content="https://nan73pro.site/images/tmbrand.gif"> 
     <title>Nan73Pro: 상표와 브랜드의 연관성</title>
     
-    <link rel="canonical" href="https://nan73pro.site/PatentInfo/patent_info_0001.html">
+    <link rel="canonical" href="https://nan73pro.site/PatentInfo/patent_info_0002.html">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -136,35 +136,21 @@
             );
         };
 
-        // --- Logo Component (From Brand Consultant) ---
-        const Logo = ({ href = "#" }) => {
-            const isScrollLink = href === "#";
-
-            const handleClick = (e) => {
-                if (isScrollLink) {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+        // --- [수정된 부분] Logo 컴포넌트 교체 (심플 버전으로 통일) ---
+        const Logo = () => {
+            const scrollToTop = (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             };
-
             return (
-                <a 
-                    href={href} 
-                    onClick={handleClick}
-                    className="flex items-center gap-2 group cursor-pointer"
-                >
-                    <div className="relative w-10 h-10 flex items-end justify-center">
-                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm transform skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
-                        <div className="absolute bottom-3 left-3 w-3 h-3 bg-slate-400 rounded-sm transform skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
-                        <div className="absolute bottom-6 left-6 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm transform skew-y-[-10deg] shadow-[0_0_15px_rgba(56,189,248,0.5)] flex items-center justify-center">
-                            <div className="w-1 h-1 bg-white rounded-full animate-pulse"></div>
-                        </div>
+                <a href="#" onClick={scrollToTop} className="flex items-center gap-2 cursor-pointer group">
+                    <div className="relative w-8 h-8 flex items-end justify-center">
+                        <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
+                        <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
+                        <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
                     </div>
-                    <div className="flex flex-col justify-center">
-                        <span className="text-xl font-bold tracking-tight text-white leading-none">
-                            Nan7<span className="text-tech-blue font-light">3</span>Pro
-                        </span>
-                        <span className="text-[10px] text-slate-400 tracking-widest uppercase">Branding Consultant</span>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold text-white leading-none">Nan7<span className="text-tech-blue font-light">3</span>Pro</span>
                     </div>
                 </a>
             );
@@ -524,7 +510,6 @@
             );
         };
 
-        // --- ID "roadmap" added here for navigation target ---
         const RoadmapSection = () => {
             const steps = [
                 { title: "선행 조사", desc: "유사 상표 존재 여부 확인 및 등록 가능성 검토", icon: Search },
@@ -571,7 +556,7 @@
                     {/* Nav */}
                     <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
                         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-                            {/* Left: Logo (Updated to Nan73Pro style) */}
+                            {/* [수정됨] 로고를 심플 버전으로 교체 */}
                             <Logo />
 
                             {/* Right: Links and Contact Button Grouped */}
@@ -580,12 +565,11 @@
                                     <a href="#compare" className="hover:text-tech-blue transition-colors">상표 vs 브랜드</a>
                                     <a href="#value" className="hover:text-tech-blue transition-colors">가치 분석</a>
                                     <a href="#risk" className="hover:text-tech-blue transition-colors">위험 관리</a>
-                                    {/* Added Roadmap Link */}
                                     <a href="#roadmap" className="hover:text-tech-blue transition-colors">로드맵</a>
                                 </div>
-                                {/* Modified Contact Button: Removed BG, Made Clickable Area Larger (Tag changed from button to a) */}
+                                {/* [수정됨] Contact Link를 index.html로 통일하여 모바일 레이아웃 최적화 */}
                                 <a 
-                                    href="../MyBrand/brand_story.html#contact" 
+                                    href="../index.html#contact" 
                                     className="border border-tech-blue text-tech-blue px-5 py-2 rounded-lg text-sm font-bold hover:bg-tech-blue/10 transition shadow-[0_0_15px_rgba(56,189,248,0.2)]"
                                 >
                                     Contact Us
@@ -601,7 +585,6 @@
                         <RiskSection />
                         <RoadmapSection />
                     </main>
-
 
                     <footer className="bg-navy-900 py-12 border-t border-white/10 text-center">
                         <div className="mb-8 flex justify-center items-center gap-4 text-slate-400 text-sm">
@@ -622,5 +605,4 @@
         root.render(<App />);
     </script>
 </body>
-
 </html>
