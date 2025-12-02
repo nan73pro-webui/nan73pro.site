@@ -68,15 +68,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .btn-glow {
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-glow:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
-        }
-
         .bg-grid-pattern {
             background-image: 
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
@@ -84,14 +75,13 @@
             background-size: 40px 40px;
         }
         
-        /* Chart Container */
+        /* Chart Container Overflow Fix */
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
+            max-width: 100%; /* 모바일 넘침 방지 */
         }
-        .footer-logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 15px; color: white; }
-        .footer-logo .dot { color: var(--accent-color); }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden">
@@ -136,7 +126,7 @@
             );
         };
 
-        // --- [수정된 부분] Logo 컴포넌트 교체 (심플 버전으로 통일) ---
+        // --- Logo Component (Fixed) ---
         const Logo = () => {
             const scrollToTop = (e) => {
                 e.preventDefault();
@@ -144,7 +134,7 @@
             };
             return (
                 <a href="#" onClick={scrollToTop} className="flex items-center gap-2 cursor-pointer group">
-                    <div className="relative w-8 h-8 flex items-end justify-center">
+                    <div className="relative w-8 h-8 flex items-end justify-center flex-shrink-0">
                         <div className="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue/50 transition-colors"></div>
                         <div className="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-tech-blue transition-colors"></div>
                         <div className="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-tech-blue to-tech-green rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
@@ -396,7 +386,7 @@
 
                         <div className="grid lg:grid-cols-2 gap-8">
                             <RevealOnScroll>
-                                <div className="bg-navy-900 rounded-2xl p-8 border border-white/10 shadow-lg">
+                                <div className="bg-navy-900 rounded-2xl p-8 border border-white/10 shadow-lg w-full overflow-hidden">
                                     <h3 className="font-bold text-slate-200 mb-6 flex items-center justify-between">
                                         <span>기업 가치 성장 추이</span>
                                         <span className="text-xs font-normal text-slate-500 bg-navy-800 px-2 py-1 rounded border border-slate-700">단위: 억 원</span>
@@ -411,7 +401,7 @@
                             </RevealOnScroll>
 
                             <RevealOnScroll className="delay-200">
-                                <div className="bg-navy-900 rounded-2xl p-8 border border-white/10 shadow-lg">
+                                <div className="bg-navy-900 rounded-2xl p-8 border border-white/10 shadow-lg w-full overflow-hidden">
                                     <h3 className="font-bold text-slate-200 mb-6 flex items-center justify-between">
                                         <span>브랜드 경쟁력 분석 (Radar)</span>
                                         <span className="text-xs font-normal text-slate-500 bg-navy-800 px-2 py-1 rounded border border-slate-700">Score: 1-100</span>
@@ -553,24 +543,25 @@
         const App = () => {
             return (
                 <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-blue selection:text-navy-900">
-                    {/* Nav */}
-                    <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
-                        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-                            {/* [수정됨] 로고를 심플 버전으로 교체 */}
+                    {/* Fixed Nav with Mobile Optimization */}
+                    <nav className="fixed top-0 w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
+                        <div className="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+                            
+                            {/* Logo */}
                             <Logo />
 
-                            {/* Right: Links and Contact Button Grouped */}
-                            <div className="flex items-center gap-8">
+                            {/* Right: Links and Contact Button */}
+                            <div className="flex items-center gap-4 md:gap-8">
                                 <div className="hidden md:flex gap-6 text-sm font-medium text-slate-300">
                                     <a href="#compare" className="hover:text-tech-blue transition-colors">상표 vs 브랜드</a>
                                     <a href="#value" className="hover:text-tech-blue transition-colors">가치 분석</a>
                                     <a href="#risk" className="hover:text-tech-blue transition-colors">위험 관리</a>
                                     <a href="#roadmap" className="hover:text-tech-blue transition-colors">로드맵</a>
                                 </div>
-                                {/* [수정됨] Contact Link를 index.html로 통일하여 모바일 레이아웃 최적화 */}
+                                
                                 <a 
                                     href="../index.html#contact" 
-                                    className="border border-tech-blue text-tech-blue px-5 py-2 rounded-lg text-sm font-bold hover:bg-tech-blue/10 transition shadow-[0_0_15px_rgba(56,189,248,0.2)]"
+                                    className="border border-tech-blue text-tech-blue px-4 md:px-5 py-2 rounded-lg text-sm font-bold hover:bg-tech-blue/10 transition shadow-[0_0_15px_rgba(56,189,248,0.2)] whitespace-nowrap"
                                 >
                                     Contact Us
                                 </a>
