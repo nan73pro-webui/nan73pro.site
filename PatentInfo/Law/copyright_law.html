@@ -263,23 +263,28 @@
             return (
                 <div className="min-h-screen bg-navy-900 text-slate-50 font-sans selection:bg-tech-pink selection:text-navy-900">
                     <nav className="fixed w-full z-50 bg-navy-900/80 backdrop-blur-md border-b border-white/5">
-                        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                        {/* [수정] 모바일에서 flex-col(세로 정렬) 적용 */}
+                        <div className="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
                             <Logo />
                             
-                            <div className="hidden md:flex items-center gap-6">
-                                <div className="flex gap-6 pr-4 border-r border-white/10">
+                            {/* [수정] hidden 제거, flex-col 적용 */}
+                            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+                                
+                                {/* 1. 내부 메뉴: 모바일에서 줄바꿈 및 중앙 정렬 (보이게 설정) */}
+                                <div className="flex flex-wrap justify-center gap-4 md:gap-6 pr-0 md:pr-4 md:border-r border-white/10">
                                     {navLinks.map((link) => (
                                         <a 
                                             key={link.target} 
                                             href={`#${link.target}`} 
-                                            className="text-sm font-medium text-slate-400 hover:text-tech-pink transition-colors"
+                                            className="text-sm font-medium text-slate-400 hover:text-tech-pink transition-colors whitespace-nowrap"
                                         >
                                             {link.name}
                                         </a>
                                     ))}
                                 </div>
 
-                                <div className="flex gap-3">
+                                {/* 2. 외부 링크 버튼: 모바일에서는 숨김 (hidden md:flex) */}
+                                <div className="hidden md:flex gap-3">
                                     <a href="unfair_law.html" className="px-4 py-2 rounded-lg bg-navy-800 border border-slate-700 text-slate-300 text-xs font-bold hover:bg-tech-blue hover:text-white hover:border-tech-blue transition-all shadow-lg hover:shadow-tech-blue/20">
                                         부정경쟁방지법
                                     </a>
