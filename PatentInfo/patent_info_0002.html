@@ -80,7 +80,6 @@
             position: relative;
             height: 300px;
             width: 100%;
-            max-width: 100%; 
         }
     </style>
 </head>
@@ -220,7 +219,6 @@
                             </div>
 
                             <div className="bg-navy-800 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-                                {/* [수정됨] overflow-x-auto 추가하여 버튼 영역 스크롤 가능하게 변경 */}
                                 <div className="flex border-b border-white/10 overflow-x-auto">
                                     <button onClick={() => setMode('legal')} className={`flex-1 py-5 min-w-[150px] whitespace-nowrap text-center text-sm font-bold transition-all ${mode === 'legal' ? 'text-navy-900 bg-tech-blue' : 'text-slate-400 hover:text-white hover:bg-navy-700'}`}>
                                         🏛️ 법률적 관점 (상표)
@@ -387,7 +385,8 @@
 
                         <div className="grid lg:grid-cols-2 gap-8">
                             <RevealOnScroll>
-                                <div className="bg-navy-900 rounded-2xl p-8 border border-white/10 shadow-lg w-full overflow-hidden">
+                                { /* [수정됨] min-w-0 추가하여 Grid Overflow 방지 및 padding 수정 */ }
+                                <div className="bg-navy-900 rounded-2xl p-4 md:p-8 border border-white/10 shadow-lg w-full overflow-hidden min-w-0">
                                     <h3 className="font-bold text-slate-200 mb-6 flex items-center justify-between">
                                         <span>기업 가치 성장 추이</span>
                                         <span className="text-xs font-normal text-slate-500 bg-navy-800 px-2 py-1 rounded border border-slate-700">단위: 억 원</span>
@@ -402,7 +401,8 @@
                             </RevealOnScroll>
 
                             <RevealOnScroll className="delay-200">
-                                <div className="bg-navy-900 rounded-2xl p-8 border border-white/10 shadow-lg w-full overflow-hidden">
+                                { /* [수정됨] min-w-0 추가하여 Grid Overflow 방지 및 padding 수정 */ }
+                                <div className="bg-navy-900 rounded-2xl p-4 md:p-8 border border-white/10 shadow-lg w-full overflow-hidden min-w-0">
                                     <h3 className="font-bold text-slate-200 mb-6 flex items-center justify-between">
                                         <span>브랜드 경쟁력 분석 (Radar)</span>
                                         <span className="text-xs font-normal text-slate-500 bg-navy-800 px-2 py-1 rounded border border-slate-700">Score: 1-100</span>
