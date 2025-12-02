@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 기반 개인화 추천 데이터 처리 시스템 - 디지털 특허 브로슈어</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel for JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Katex for Math -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 
@@ -217,7 +213,8 @@
             );
 
             return (
-                <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-20">
+                /* 수정됨: pb-20 제거 */
+                <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
                     {/* Header */}
                     <header className="bg-gradient-to-r from-slate-900 via-indigo-900 to-violet-900 text-white shadow-xl">
                         <div className="max-w-6xl mx-auto px-4 py-10">
@@ -424,15 +421,12 @@
 
                     <footer className="bg-slate-900 text-slate-400 py-12 mt-12 border-t border-slate-800">
                         <div className="max-w-6xl mx-auto px-4 text-center">
-                            <h2 className="text-white font-bold text-lg mb-4">AI Personalization Data Engine</h2>
                             <p className="text-sm mb-8 max-w-2xl mx-auto">
                                 본 브로슈어는 업로드된 'AI 기반... 데이터 처리 방법 및 시스템' 명세서를 바탕으로 
                                 이해를 돕기 위해 제작된 디지털 자료입니다.
                             </p>
                             <div className="flex justify-center gap-4 text-xs">
-                                <span>&copy; 2025 Patent Visualization Assistant</span>
-                                <span>•</span>
-                                <span>Powered by React & Tailwind</span>
+                                <span>&copy; 2025 Patent Visualization Assistant.</span>
                             </div>
                         </div>
                     </footer>
