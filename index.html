@@ -467,7 +467,6 @@
             .btn { width: 100%; }
             
             .comparison-grid { grid-template-columns: 1fr; gap: 20px; }
-            /* .solution-card { top: 0; }  <-- 이 부분 제거 */
             
             .process-wrapper { flex-direction: column; gap: 40px; }
             .process-arrow { display: none; }
@@ -475,11 +474,18 @@
             .step-number { top: -20px; left: auto; right: 20px; }
             .step-desc { min-height: auto; }
             
-            .contact-wrapper { flex-direction: column; gap: 40px; }
+            /* ▼▼▼ [수정된 부분] ▼▼▼ */
+            .contact-wrapper { 
+                /* 기존: flex-direction: column; */
+                /* 변경: column-reverse로 설정하여 순서를 뒤집습니다 (폼이 위로, 텍스트가 아래로) */
+                flex-direction: column-reverse; 
+                gap: 40px; 
+            }
+            /* ▲▲▲ [수정 완료] ▲▲▲ */
+
             .contact-form-wrapper { width: 100%; max-width: 100%; }
             .contact-title { font-size: 2rem; }
-        }
-    </style>
+        }    </style>
 </head>
 <body>
 
@@ -824,6 +830,7 @@
 </body>
 
 </html>
+
 
 
 
