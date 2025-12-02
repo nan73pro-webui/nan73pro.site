@@ -71,7 +71,8 @@
     <div id="root" class="w-full max-w-md mx-auto"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        // useEffect 추가
+        const { useState, useEffect } = React;
         
         // --- Icons ---
         const Icon = ({ children, className = "" }) => (
@@ -135,37 +136,8 @@
 
         const DigitalCard = () => {
             
-            // --- [ADD] 카카오톡 브라우저 감지 및 회피 함수 ---
-            const escapeKakaoBrowser = () => {
-                const userAgent = navigator.userAgent.toLowerCase();
-                
-                // 카카오톡 인앱 브라우저인지 확인
-                if (userAgent.match(/kakaotalk/i)) {
-                    // Android: Chrome으로 강제 이동
-                    if (userAgent.match(/android/i)) {
-                        const url = location.href.replace(/https?:\/\//i, '');
-                        // intent 스킴을 이용해 크롬 호출
-                        location.href = `intent://${url}#Intent;scheme=https;package=com.android.chrome;end`;
-                        return true;
-                    } 
-                    // iOS: 알림 표시 (강제 이동 불가)
-                    else if (userAgent.match(/iphone|ipad|ipod/i)) {
-                        alert('아이폰 카카오톡에서는 연락처 파일 다운로드가 제한됩니다.\n\n오른쪽 하단(또는 상단) [···] 메뉴 클릭 후\n[Safari로 열기]를 선택하여 저장해주세요.');
-                        return true;
-                    }
-                }
-                return false;
-            };
-
-            const handleSave = (e) => {
-                e.preventDefault();
-
-                // [ADD] 저장 버튼 클릭 시 카카오톡 브라우저 체크 실행
-                if (escapeKakaoBrowser()) {
-                    return; // 카카오톡이면 여기서 중단 (안드로이드는 크롬 이동, 아이폰은 알림)
-                }
-
-                // 일반 브라우저(크롬, 사파리 등)에서 실행되는 저장 로직
+            // --- 1. 실제 연락처 다운로드 수행 로직 (분리됨) ---
+            const downloadVCard = () => {
                 const vcardContent = `BEGIN:VCARD
 VERSION:3.0
 FN:Nan73Pro
@@ -184,6 +156,55 @@ END:VCARD`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+            };
+
+            // --- 2. 카카오톡 브라우저 감지 및 '자동 저장' 신호 전송 ---
+            const escapeKakaoBrowser = () => {
+                const userAgent = navigator.userAgent.toLowerCase();
+                
+                if (userAgent.match(/kakaotalk/i)) {
+                    // Android: Chrome으로 이동시 'auto_save=true' 파라미터 추가
+                    if (userAgent.match(/android/i)) {
+                        const currentUrl = new URL(window.location.href);
+                        currentUrl.searchParams.set('auto_save', 'true'); // 자동 저장 신호 심기
+                        
+                        const intentUrl = currentUrl.toString().replace(/^https?:\/\//i, '');
+                        
+                        location.href = `intent://${intentUrl}#Intent;scheme=https;package=com.android.chrome;end`;
+                        return true;
+                    } 
+                    // iOS: 알림 표시
+                    else if (userAgent.match(/iphone|ipad|ipod/i)) {
+                        alert('아이폰 카카오톡에서는 연락처 파일 다운로드가 제한됩니다.\n\n오른쪽 하단(또는 상단) [···] 메뉴 클릭 후\n[Safari로 열기]를 선택하여 저장해주세요.');
+                        return true;
+                    }
+                }
+                return false;
+            };
+
+            // --- 3. 페이지 로드 시 '자동 저장' 신호가 있는지 확인 (크롬에서 동작) ---
+            useEffect(() => {
+                const params = new URLSearchParams(window.location.search);
+                // URL에 auto_save=true 가 있고, 현재 브라우저가 카카오톡이 아니라면 (크롬 등)
+                if (params.get('auto_save') === 'true' && !navigator.userAgent.match(/kakaotalk/i)) {
+                    // 약간의 딜레이를 주어 브라우저가 준비된 후 다운로드 시도
+                    setTimeout(() => {
+                        downloadVCard();
+                    }, 500);
+                }
+            }, []);
+
+            // --- 버튼 클릭 핸들러 ---
+            const handleSave = (e) => {
+                e.preventDefault();
+
+                // 카카오톡이면 크롬으로 탈출 시도 (auto_save 파라미터 포함해서)
+                if (escapeKakaoBrowser()) {
+                    return; 
+                }
+
+                // 일반 브라우저라면 즉시 다운로드
+                downloadVCard();
             };
 
             return (
@@ -286,5 +307,4 @@ END:VCARD`;
         root.render(<DigitalCard />);
     </script>
 </body>
-
 </html>
