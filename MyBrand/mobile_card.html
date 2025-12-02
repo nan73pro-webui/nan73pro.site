@@ -134,8 +134,38 @@
         );
 
         const DigitalCard = () => {
+            
+            // --- [ADD] 카카오톡 브라우저 감지 및 회피 함수 ---
+            const escapeKakaoBrowser = () => {
+                const userAgent = navigator.userAgent.toLowerCase();
+                
+                // 카카오톡 인앱 브라우저인지 확인
+                if (userAgent.match(/kakaotalk/i)) {
+                    // Android: Chrome으로 강제 이동
+                    if (userAgent.match(/android/i)) {
+                        const url = location.href.replace(/https?:\/\//i, '');
+                        // intent 스킴을 이용해 크롬 호출
+                        location.href = `intent://${url}#Intent;scheme=https;package=com.android.chrome;end`;
+                        return true;
+                    } 
+                    // iOS: 알림 표시 (강제 이동 불가)
+                    else if (userAgent.match(/iphone|ipad|ipod/i)) {
+                        alert('아이폰 카카오톡에서는 연락처 파일 다운로드가 제한됩니다.\n\n오른쪽 하단(또는 상단) [···] 메뉴 클릭 후\n[Safari로 열기]를 선택하여 저장해주세요.');
+                        return true;
+                    }
+                }
+                return false;
+            };
+
             const handleSave = (e) => {
                 e.preventDefault();
+
+                // [ADD] 저장 버튼 클릭 시 카카오톡 브라우저 체크 실행
+                if (escapeKakaoBrowser()) {
+                    return; // 카카오톡이면 여기서 중단 (안드로이드는 크롬 이동, 아이폰은 알림)
+                }
+
+                // 일반 브라우저(크롬, 사파리 등)에서 실행되는 저장 로직
                 const vcardContent = `BEGIN:VCARD
 VERSION:3.0
 FN:Nan73Pro
@@ -205,7 +235,7 @@ END:VCARD`;
                                 <li className="flex items-center gap-3">
                                     <div className="w-1 h-1 bg-tech-blue rounded-full shrink-0"></div>
                                     <span className="text-slate-200 text-[15px] font-medium leading-snug tracking-tight">
-                                        등록특허 <span className="text-tech-blue font-bold">웹리포트</span>로 투자/비지니스 확장 설계
+                                        등록특허 <span className="text-tech-blue font-bold">웹리포트</span>로 투자/비지니스 확장설계
                                     </span>
                                 </li>
                                 <li className="flex items-center gap-3">
@@ -256,5 +286,4 @@ END:VCARD`;
         root.render(<DigitalCard />);
     </script>
 </body>
-
 </html>
