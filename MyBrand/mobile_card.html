@@ -140,12 +140,15 @@
             const downloadVCard = () => {
                 const vcardContent = `BEGIN:VCARD
 VERSION:3.0
+N:유;준혁;;;
 FN:Nan73Pro
 ORG:Nan73Pro
 TITLE:Patent & Brand Consultant
 TEL;TYPE=CELL:010-2784-4668
 EMAIL:nan73pro@gmail.com
-URL:https://nan73pro.site
+URL;type=WORK;type=pref:https://nan73pro.site
+item1.URL:https://nan73pro.site/eCard.html
+item1.X-ABLabel:디지털 명함
 NOTE:구조적 전문성으로 필연적 행운을 설계합니다
 END:VCARD`;
                 const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8' });
@@ -307,4 +310,5 @@ END:VCARD`;
         root.render(<DigitalCard />);
     </script>
 </body>
+
 </html>
