@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>앱(App) 디자인 보호: 2025년 UI/UX 법률 가이드 | Nan73Pro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0f172a', 800: '#1e293b' }, 
+                        tech: { blue: '#38bdf8', green: '#34d399' }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Noto Sans KR', sans-serif],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 변수 설정 (IP_Insight_0001 스타일 계승) */
+        :root {
+            --color-primary: #1A3A5E;
+            --color-secondary: #007BFF;
+            --style-slow: #5D7992;
+            --style-fast: #FF7F32;
+            --style-fast-light: #FFF0E6;
+            --style-slow-light: #EFF4F8;
+        }
+
+        /* 썸네일 이미지 */
+        .post-thumbnail {
+            width: 100%; height: auto; display: flex; justify-content: center;
+            overflow: hidden; border-bottom: 1px solid #eee; background-color: #f8fafc;
+        }
+        .post-thumbnail img { max-width: 100%; height: auto; display: block; }
+
+        /* 본문 타이포그래피 */
+        .blog-content h1.post-title { 
+            font-size: 2.2rem; font-weight: 900; margin-bottom: 15px; 
+            line-height: 1.3; color: #111; letter-spacing: -1px; word-break: keep-all;
+        }
+        .blog-content .post-subtitle { 
+            font-size: 1.1rem; color: #555; margin-bottom: 40px; 
+            border-left: 5px solid var(--color-secondary); padding: 15px; 
+            background-color: #f8f9fa; border-radius: 0 8px 8px 0;
+        }
+        
+        .article-body h3 { 
+            font-size: 1.6rem; margin-top: 50px; margin-bottom: 20px; 
+            font-weight: 800; color: var(--color-primary); 
+            border-bottom: 2px solid #eee; padding-bottom: 10px; word-break: keep-all;
+        }
+        .article-body h4 {
+            font-size: 1.2rem; margin-top: 25px; margin-bottom: 10px;
+            font-weight: 700; color: #333; display: flex; align-items: center; gap: 8px;
+        }
+        .article-body p { 
+            margin-bottom: 1.5rem; font-size: 1.05rem; line-height: 1.8; 
+            color: #333; text-align: justify; word-break: keep-all; 
+        }
+        .highlight { font-weight: 700; background: linear-gradient(to top, #ffefc1 40%, transparent 40%); }
+        sup { color: var(--color-secondary); font-weight: bold; margin-left: 2px; }
+
+        /* 박스 스타일 */
+        .info-box {
+            background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 25px; margin-bottom: 20px;
+        }
+        .info-box .badge {
+            display: inline-block; padding: 4px 10px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 700; margin-bottom: 10px;
+        }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+
+        /* 판례 카드 스타일 */
+        .case-card {
+            background: white; border-radius: 16px; padding: 25px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
+            margin-bottom: 20px; position: relative; overflow: hidden;
+        }
+        .case-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
+            background: var(--color-primary);
+        }
+        .case-card.danger::before { background: var(--style-fast); }
+        
+        .card-list { padding-left: 20px; margin-top: 10px; }
+        .card-list li { margin-bottom: 8px; list-style-type: disc; font-size: 0.95rem; color: #444; }
+        .card-list li strong { color: #222; font-weight: 700; }
+
+        /* 테이블 */
+        .table-wrapper { overflow-x: auto; margin: 30px 0; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .strategy-table { 
+            width: 100%; border-collapse: separate; border-spacing: 0; 
+            font-size: 0.9rem; min-width: 600px; /* 모바일 가로 스크롤 대응 */
+        }
+        .strategy-table th { 
+            background-color: var(--color-primary); color: white; padding: 15px; 
+            text-align: center; font-weight: 700; white-space: nowrap;
+        }
+        .strategy-table td { 
+            border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; 
+            padding: 15px; vertical-align: top; color: #333; 
+        }
+        .strategy-table tr:last-child td { border-bottom: none; }
+        .strategy-table tr td:last-child { border-right: none; }
+        .strategy-table .col-method { background: #f8fafc; font-weight: bold; color: var(--color-primary); width: 15%; text-align: center; vertical-align: middle; }
+        .strategy-table .col-target { width: 20%; font-weight: 600; text-align: center; vertical-align: middle;}
+        .strategy-table .col-strategy { width: 45%; }
+        .strategy-table .col-note { width: 20%; color: #666; font-size: 0.85rem; text-align: center; vertical-align: middle; }
+
+        /* CTA 섹션 */
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #0f172a 100%);
+            padding: 50px 30px; text-align: center; border-radius: 20px; 
+            margin-top: 60px; color: white;
+        }
+        .cta-section h3 { color: white !important; border: none !important; margin-top: 0 !important; }
+        .cta-section p { color: #cbd5e1 !important; text-align: center !important; }
+        .cta-button {
+            display: inline-block; margin-top: 20px; padding: 15px 40px;
+            background-color: var(--style-fast); color: white; font-weight: 800;
+            border-radius: 50px; text-decoration: none; box-shadow: 0 10px 20px rgba(255, 127, 50, 0.4);
+            transition: transform 0.2s;
+        }
+        .cta-button:hover { transform: translateY(-2px); }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .strategy-table { font-size: 0.8rem; }
+            .strategy-table th, .strategy-table td { padding: 10px 8px; }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans antialiased text-slate-800 selection:bg-[#38bdf8] selection:text-[#0f172a] flex flex-col min-h-screen">
+
+    <nav class="fixed w-full z-50 bg-[#0f172a] border-b border-white/5 shadow-xl transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <a href="#" class="flex items-center gap-3 cursor-pointer group no-underline">
+                <div class="relative w-8 h-8 flex items-end justify-center">
+                    <div class="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-[#38bdf8]/50 transition-colors duration-300"></div>
+                    <div class="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-[#38bdf8] transition-colors duration-300"></div>
+                    <div class="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-[#38bdf8] to-[#34d399] rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-white leading-none">Nan7<span class="text-[#38bdf8] font-light">3</span>Pro</span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-4">
+                <a href="https://blog.naver.com/nan-pro" class="hidden md:flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium no-underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Blog
+                </a><span class="text-white">|</span>
+                <a href="../../index.html#contact" class="icons hidden md:flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium no-underline">
+                    Contact<i class="fa-solid fa-comment"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-32 pb-20 px-4 relative z-10">
+        
+        <div class="bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] max-w-4xl mx-auto overflow-hidden blog-content border border-slate-200">
+            
+            <div class="post-thumbnail">
+                <img src="https://nan73pro.site/images/blog03.jpg" alt="UI UX 디자인 보호 전략" onerror="this.style.display='none'; this.parentElement.style.height='250px'; this.parentElement.innerHTML='<span style=\'color:#94a3b8; font-weight:bold;\'>이미지 로딩 영역</span>'">
+            </div>
+
+            <div class="p-8 md:p-12 article-body">
+                <p class="post-subtitle">2025년 UI/UX 보호의 모든 것(법 개정·판례·실무 총정리)</p>
+
+                <p>안녕하세요. 기업의 무형 자산 가치를 극대화하는 파트너, <strong>Nan73Pro</strong>입니다.</p>
+                <p>"기술은 평준화되었고, 고객을 설득하는 것은 결국 경험(Experience)이다." 오늘날 비즈니스 현장의 핵심입니다. 하지만 안타깝게도 많은 기업이 공들여 만든 UI/UX를 법의 사각지대에 방치하고 있습니다.</p>
+                <p>단순히 '저작권이 있겠지'라고 안심하셨나요? 경쟁사가 교묘하게 레이아웃을 베끼거나 프로세스를 모방했을 때 저작권만으로는 막을 수 없습니다. 오늘은 2021년 법 개정부터 2025년 최신 심사 기준, 그리고 야놀자·애플 등 주요 판례를 통해 <span class="highlight">우리 기업의 디지털 얼굴을 지키는 '중첩적 보호 전략'</span>을 심층 분석해 드립니다.</p>
+
+                <h3>1. 패러다임의 전환: '물품'에서 해방된 디자인</h3>
+                <p>과거에는 "디자인은 물품(Article)에 표현되어야 한다"는 원칙 때문에, 화면 속 아이콘만으로는 등록이 불가능했습니다. 하지만 2021년, 이 낡은 규칙이 깨졌습니다.</p>
+
+                <div class="info-box">
+                    <span class="badge badge-blue">Change</span> <strong>2021년 개정법: '화상(Image)' 자체의 독립</strong><sup>1</sup>
+                    <ul class="card-list">
+                        <li><strong>변화:</strong> 물리적 기기 도면 없이, 디지털 공간의 아이콘이나 GUI만으로 디자인 등록 가능<sup>2</sup></li>
+                        <li><strong>확장:</strong> 메타버스 아이템, 프로젝션 UI 등 가상 공간 디자인도 보호 대상 포함<sup>3</sup></li>
+                        <li><strong>강력한 제재:</strong> 앱 마켓에 무단 복제 앱을 올리는 '전송' 행위 자체도 침해로 간주<sup>4</sup></li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <span class="badge badge-red">Issue</span> <strong>2024-2025 심사기준 강화</strong>
+                    <ul class="card-list">
+                        <li><strong>부분 디자인의 엄격성:</strong> 아이콘(실선)이 같아도 배치나 배경(파선)이 다르면 '비유사' 판단 가능성<sup>5</sup></li>
+                        <li><strong>기능성 심사:</strong> 단순 예술품이 아닌, '기기 조작'이나 '기능 발휘'와 연관된 UI여야 함<sup>6</sup></li>
+                    </ul>
+                </div>
+
+                <h3>2. [전략] 4중 방어막을 구축하라</h3>
+                <p>UI/UX는 시각적 요소와 기능적 요소가 혼재된 복합 산출물입니다. 단 하나의 법으로는 완벽히 지킬 수 없습니다. 4가지 무기를 섞어 쓰는 <strong>중첩적 보호 전략</strong>이 필요합니다.<sup>7</sup></p>
+
+                <div class="table-wrapper">
+                    <table class="strategy-table">
+                        <thead>
+                            <tr>
+                                <th>보호 수단</th>
+                                <th>보호 대상</th>
+                                <th>전략적 핵심</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-method">디자인권</td>
+                                <td class="col-target">외관<br>(Shape)</td>
+                                <td class="col-strategy"><strong>가장 강력하고 직접적인 수단.</strong><br>아이콘, 레이아웃, 동적 효과 보호.<br>침해 입증이 용이함.</td>
+                                <td class="col-note"><span style="color:#ef4444; font-weight:bold;">[필수]</span></td>
+                            </tr>
+                            <tr>
+                                <td class="col-method">특허권</td>
+                                <td class="col-target">기능<br>(Function)</td>
+                                <td class="col-strategy">'밀어서 잠금해제'처럼 독창적인<br>구동 원리 보호. 권리 범위 넓음.</td>
+                                <td class="col-note">기술적 사상<br>(등록 난이도 상)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-method">저작권</td>
+                                <td class="col-target">코드/표현</td>
+                                <td class="col-strategy">소스 코드 및 독창적 그래픽.<br>별도 출원 불필요하나 기능 보호 취약.</td>
+                                <td class="col-note">아이디어 배제</td>
+                            </tr>
+                            <tr>
+                                <td class="col-method">부정경쟁<br>방지법</td>
+                                <td class="col-target">성과/노력</td>
+                                <td class="col-strategy">등록 권리가 없을 때 '성과 도용'이나<br>'데드카피(3년 내)'를 막는 최후 보루.</td>
+                                <td class="col-note">보충적 수단</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>3. [심층 분석] 글로벌 판례로 보는 리스크 관리</h3>
+                <p>법전에 있는 내용과 실제 판결은 다를 수 있습니다. 주요 사건을 통해 '진짜 위험'을 파악해 봅시다.</p>
+
+                <div class="case-card">
+                    <h4>🇰🇷 [국내] 야놀자 vs 여기어때 사건</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:10px;">데이터와 UI의 경계에 대한 판단</p>
+                    <ul class="card-list">
+                        <li><strong>상황:</strong> 경쟁사가 서버 정보를 크롤링해 자사 앱에 활용</li>
+                        <li><strong>판결:</strong> 형사는 무죄였으나, <strong>민사에서는 '성과 도용'을 인정해 10억 원 배상 판결</strong><sup>9</sup></li>
+                        <li><strong>Lesson:</strong> UI 디자인뿐만 아니라, 그 뒤에 있는 <strong>'데이터 구축 노력'</strong>도 법적 보호 대상입니다. 기계적 크롤링은 치명적일 수 있습니다.<sup>10</sup></li>
+                    </ul>
+                </div>
+
+                <div class="case-card danger">
+                    <h4>🇺🇸 [미국] Apple vs AliveCor (애플워치)</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:10px;">헬스케어 GUI와 특허 무효 이슈</p>
+                    <ul class="card-list">
+                        <li><strong>상황:</strong> 심전도 측정 GUI가 특허 침해로 제소됨</li>
+                        <li><strong>결과:</strong> ITC는 수입금지를 내렸으나, <strong>특허심판원(PTAB)은 해당 특허를 '자명하다(Obvious)'며 무효화</strong><sup>11</sup></li>
+                        <li><strong>Lesson:</strong> 기능적 필연성에 의한 UI(예: 의료 그래프)는 특허 등록이 까다롭습니다. 확실한 차별점이 필요합니다.</li>
+                    </ul>
+                </div>
+
+                <div class="case-card">
+                    <h4>🇺🇸 [미국] 스냅챗(Snapchat) 사건</h4>
+                    <ul class="card-list">
+                        <li><strong>Lesson:</strong> 속도 인증 필터 사용 중 과속 사망 사고 발생. 법원은 앱의 <strong>'설계 결함' 책임</strong>을 인정했습니다. UI는 심미성을 넘어 사용자의 안전(Design for Safety)까지 고려해야 합니다.<sup>12</sup></li>
+                    </ul>
+                </div>
+
+                <h3>4. [실무 가이드] 당장 어떻게 출원해야 할까?</h3>
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <span class="text-2xl">🎬</span>
+                            <div>
+                                <strong class="text-lg text-slate-800 block mb-1">동적 디자인(Animated GUI)을 잡아라</strong>
+                                <p class="text-slate-600 text-sm m-0">정지 화면만 내지 마세요. 화면 전환 효과나 움직임은 MP4/GIF 파일로 제출하여 '움직임' 자체를 보호받아야 합니다.<sup>13</sup></p>
+                            </div>
+                        </li>
+                        <hr class="border-slate-100">
+                        <li class="flex gap-3">
+                            <span class="text-2xl">🎯</span>
+                            <div>
+                                <strong class="text-lg text-slate-800 block mb-1">부분 디자인으로 '알맹이'만 보호하라</strong>
+                                <p class="text-slate-600 text-sm m-0">화면 전체를 실선으로 그리면 배경색만 바꿔도 침해를 피합니다. 핵심 아이콘만 실선, 나머지는 파선으로 처리해 보호 범위를 넓히십시오.<sup>15</sup></p>
+                            </div>
+                        </li>
+                        <hr class="border-slate-100">
+                        <li class="flex gap-3">
+                            <span class="text-2xl">📝</span>
+                            <div>
+                                <strong class="text-lg text-slate-800 block mb-1">명칭을 구체화하라</strong>
+                                <p class="text-slate-600 text-sm m-0">단순 '화상 디자인' 대신 "애플리케이션용 아이콘", "디스플레이 패널용 GUI" 등으로 구체적 기재가 필수입니다.<sup>16</sup></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cta-section">
+                    <h3>'빠진 고리'를 채우는 IP 리더십</h3>
+                    <p>디지털 시장에서 디자인은 기술과 소비자를 잇는 유일한 접점입니다.<br>화상 디자인권이라는 새로운 무기, Nan73Pro가 쥐어드리겠습니다.</p>
+                    <a href="../../index.html#contact" class="cta-button">UI/UX 보호 상담하기</a>
+                </div>
+                
+                <div class="mt-8 p-4 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-500 break-keep text-center">
+                    본 칼럼은 디자인·UI_UX 보호 전략 분석 보고서와 최신 법령을 바탕으로 작성되었습니다.
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#0f172a] py-8 border-t border-white/10 text-center relative z-20">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-center items-center gap-3 text-slate-400 text-sm mb-5 font-medium" style="font-size: 14px;">
+                <a href="./IP_insight_0002.html" class="hover:text-[#38bdf8] transition-colors">← 이전글</a>
+                <span class="text-slate-700">|</span>
+                <a href="#" class="hover:text-[#38bdf8] transition-colors">다음글 →</a>
+            </div>
+            
+            <p class="text-2xl mb-5 font-bold text-white tracking-tight">
+                Nan<span style="color: #6AD7FF">7</span><span style="color: #17C8C8">3</span>Pro.
+            </p>
+
+            <p class="text-slate-600 text-sm">© 2025 Nan73Pro. All Rights Reserved.</p>
+        </div>
+    </footer>
+    </body>
+</html>
