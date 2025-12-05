@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특허 등록: 일반심사 vs 우선심사 전략 | Nan73Pro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0f172a', 800: '#1e293b' }, 
+                        tech: { blue: '#38bdf8', green: '#34d399' }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Noto Sans KR', sans-serif],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 변수 설정 */
+        :root {
+            --color-primary: #1A3A5E;
+            --color-secondary: #007BFF;
+            --style-slow: #5D7992;
+            --style-fast: #FF7F32;
+            --style-fast-light: #FFF0E6;
+            --style-slow-light: #EFF4F8;
+        }
+
+        /* 썸네일 이미지 */
+        .post-thumbnail {
+            width: 100%; height: auto; display: flex; justify-content: center;
+            overflow: hidden; border-bottom: 1px solid #eee; background-color: #f8fafc;
+        }
+        .post-thumbnail img { max-width: 100%; height: auto; display: block; }
+
+        /* 본문 타이포그래피 */
+        .blog-content h1.post-title { 
+            font-size: 2.2rem; font-weight: 900; margin-bottom: 15px; 
+            line-height: 1.3; color: #111; letter-spacing: -1px; word-break: keep-all;
+        }
+        .blog-content .post-subtitle { 
+            font-size: 1.1rem; color: #555; margin-bottom: 40px; 
+            border-left: 5px solid var(--color-secondary); padding: 15px; 
+            background-color: #f8f9fa; border-radius: 0 8px 8px 0;
+        }
+        
+        .article-body h3 { 
+            font-size: 1.6rem; margin-top: 50px; margin-bottom: 20px; 
+            font-weight: 800; color: var(--color-primary); 
+            border-bottom: 2px solid #eee; padding-bottom: 10px; word-break: keep-all;
+        }
+        .article-body p { 
+            margin-bottom: 1.5rem; font-size: 1.05rem; line-height: 1.8; 
+            color: #333; text-align: justify; word-break: keep-all; 
+        }
+        .highlight { font-weight: 700; background: linear-gradient(to top, #ffefc1 40%, transparent 40%); }
+
+        /* 비교 박스 */
+        .compare-box-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
+        .compare-card { border-radius: 16px; padding: 25px; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        .card-slow { background-color: var(--style-slow-light); border: 1px solid #dae1e7; }
+        .card-slow h4 { color: var(--style-slow); font-size: 1.3rem; margin-bottom: 10px; font-weight: 800; }
+        
+        .card-fast { background-color: var(--style-fast-light); border: 1px solid #ffe0d0; }
+        .card-fast h4 { color: var(--style-fast); font-size: 1.3rem; margin-bottom: 10px; font-weight: 800; }
+
+        .card-list { padding-left: 20px; margin-top: 10px; }
+        .card-list li { margin-bottom: 8px; list-style-type: disc; font-size: 0.95rem; color: #444; }
+
+        /* 테이블 */
+        .strategy-table { 
+            width: 100%; border-collapse: separate; border-spacing: 0; 
+            margin: 30px 0; font-size: 0.95rem; border-radius: 12px; 
+            overflow: hidden; border: 1px solid #e2e8f0; 
+        }
+        .strategy-table th { 
+            background-color: var(--color-primary); color: white; padding: 15px; 
+            text-align: center; font-weight: 700; 
+        }
+        .strategy-table td { 
+            border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; 
+            padding: 15px; text-align: center; color: #333; 
+        }
+        .strategy-table tr:last-child td { border-bottom: none; }
+        .strategy-table tr td:last-child { border-right: none; }
+        .strategy-table .fast-highlight { color: var(--style-fast); font-weight: bold; background-color: #fff1eb; }
+
+        /* CTA 섹션 */
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #0f172a 100%);
+            padding: 50px 30px; text-align: center; border-radius: 20px; 
+            margin-top: 60px; color: white;
+        }
+        .cta-section h3 { color: white !important; border: none !important; margin-top: 0 !important; }
+        .cta-section p { color: #cbd5e1 !important; text-align: center !important; }
+        .cta-button {
+            display: inline-block; margin-top: 20px; padding: 15px 40px;
+            background-color: var(--style-fast); color: white; font-weight: 800;
+            border-radius: 50px; text-decoration: none; box-shadow: 0 10px 20px rgba(255, 127, 50, 0.4);
+        }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .compare-box-wrapper { grid-template-columns: 1fr; }
+            .strategy-table { font-size: 0.85rem; }
+            .strategy-table th, .strategy-table td { padding: 10px 5px; }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans antialiased text-slate-800 selection:bg-[#38bdf8] selection:text-[#0f172a] flex flex-col min-h-screen">
+
+    <nav class="fixed w-full z-50 bg-[#0f172a] border-b border-white/5 shadow-xl transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <a href="#" class="flex items-center gap-3 cursor-pointer group no-underline">
+                <div class="relative w-8 h-8 flex items-end justify-center">
+                    <div class="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-[#38bdf8]/50 transition-colors duration-300"></div>
+                    <div class="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-[#38bdf8] transition-colors duration-300"></div>
+                    <div class="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-[#38bdf8] to-[#34d399] rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-white leading-none">Nan7<span class="text-[#38bdf8] font-light">3</span>Pro</span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2 md:gap-4">
+                <a href="https://blog.naver.com/nan-pro" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium no-underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Blog
+                </a><span class="text-white">|</span>
+                <a href="../../index.html#contact" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium no-underline">
+                    Contact<i class="fa-solid fa-comment"></i>
+                </a>
+            </div>
+
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-32 pb-20 px-4 relative z-10">
+        
+        <div class="bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] max-w-4xl mx-auto overflow-hidden blog-content border border-slate-200">
+            
+            <div class="post-thumbnail">
+                <img src="https://nan73pro.site/images/blog01.jpg" alt="특허 KTX vs 완행열차 비교" onerror="this.style.display='none'; this.parentElement.style.height='250px'; this.parentElement.innerHTML='<span style=\'color:#94a3b8; font-weight:bold;\'>이미지 로딩 영역</span>'">
+            </div>
+
+            <div class="p-8 md:p-12 article-body">
+                <h1 class="post-title">특허 등록, KTX를 탈 것인가? 완행열차를 탈 것인가?</h1>
+                <p class="post-subtitle">일반심사(18개월) vs 우선심사(3개월) 당신의 전략적 선택은?</p>
+
+                <p>안녕하세요. 귀하의 비즈니스를 지식재산으로 보호하고 가치를 높여드리는 <strong>IP전략가 Nan73Pro</strong>입니다.</p>
+                <p>특허 상담을 하다 보면 가장 많이 듣는 질문이 있습니다. <br><em>"특허 나오는데 얼마나 걸리나요? 최대한 빨리 받고 싶습니다."</em></p>
+                <p>하지만 <strong>무조건 빠른 것이 정답은 아닙니다.</strong> 특허 심사 제도는 단순한 행정 절차가 아니라, 사업의 속도를 조절하는 '엑셀'과 '브레이크'이기 때문입니다.</p>
+
+                <h3>1. 속도의 차이: 1년 6개월 vs 3개월</h3>
+                <p>가장 큰 차이는 역시 '결과를 받아보는 시간'입니다.</p>
+                
+                <div style="background:#f8fafc; border-radius:12px; padding:25px; margin-bottom:30px; border:1px solid #e2e8f0;">
+                    <div style="margin-bottom:20px;">
+                        <span style="font-weight:bold; color:var(--style-slow); display:flex; align-items:center; gap:5px;">🚂 일반심사 (완행열차)</span>
+                        <div style="width:100%; background:#e2e8f0; height:24px; border-radius:12px; margin-top:8px; position:relative; overflow:hidden;">
+                            <div style="width:90%; background:var(--style-slow); height:100%; border-radius:12px;"></div>
+                            <span style="position:absolute; right:12%; top:2px; color:white; font-size:0.85rem; font-weight:600; text-shadow:0 1px 2px rgba(0,0,0,0.2);">약 16~24개월</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span style="font-weight:bold; color:var(--style-fast); display:flex; align-items:center; gap:5px;">🚄 우선심사 (KTX)</span>
+                        <div style="width:100%; background:#e2e8f0; height:24px; border-radius:12px; margin-top:8px; position:relative; overflow:hidden;">
+                            <div style="width:20%; background:var(--style-fast); height:100%; border-radius:12px;"></div>
+                            <span style="position:absolute; left:22%; top:2px; color:#475569; font-size:0.85rem; font-weight:800;">약 3~6개월</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>2. [핵심] 당신의 상황에 따른 '전략적 선택' 가이드</h3>
+                <p>최고의 컨설턴트로서 제안하는 상황별 선택 기준입니다. 이 부분이 오늘 포스팅의 핵심입니다.</p>
+
+                <div class="compare-box-wrapper">
+                    <div class="compare-card card-fast">
+                        <h4>🔥 우선심사 (속도전)</h4>
+                        <p style="font-size:0.95rem; margin-bottom:15px; color:#666; border-bottom:1px dashed #ffe0d0; padding-bottom:10px;">비용을 들여서라도 시간을 사야할 때</p>
+                        <ul class="card-list">
+                            <li><strong>투자 유치(IR) / 대출:</strong> 등록증 필수 요구 시</li>
+                            <li><strong>제품 출시 임박:</strong> 카피(Copy) 제품 강력 경고 필요</li>
+                            <li><strong>정부 과제:</strong> 종료 시점 실적 제출</li>
+                            <li><strong>벤처 인증:</strong> 빠른 가점 확보 필요</li>
+                        </ul>
+                    </div>
+
+                    <div class="compare-card card-slow">
+                        <h4>🐢 일반심사 (지연전)</h4>
+                        <p style="font-size:0.95rem; margin-bottom:15px; color:#666; border-bottom:1px dashed #dae1e7; padding-bottom:10px;">시장을 관망하며 비용을 아낄 때</p>
+                        <ul class="card-list">
+                            <li><strong>시장성 검증 중:</strong> 사업화 불확실 시</li>
+                            <li><strong>개량 발명 가능성:</strong> 기술 보완 시간 확보</li>
+                            <li><strong>경쟁사 견제 (Pending):</strong> '심사 중' 상태로 회피 설계 방해</li>
+                            <li><strong>예산 절감:</strong> 초기 비용 최소화</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>3. 한눈에 보는 비교표</h3>
+                <table class="strategy-table">
+                    <thead>
+                        <tr>
+                            <th>구분</th>
+                            <th>일반심사 (완행열차)</th>
+                            <th>우선심사 (KTX)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>소요 기간</td>
+                            <td>약 16~24개월</td>
+                            <td class="fast-highlight">약 3~6개월</td>
+                        </tr>
+                        <tr>
+                            <td>비용</td>
+                            <td>기본 비용</td>
+                            <td>관납료 + 대리인 비용 추가</td>
+                        </tr>
+                        <tr>
+                            <td>전략 포인트</td>
+                            <td><strong>[시간 벌기]</strong><br>시장 검증 및 보완 기회</td>
+                            <td class="fast-highlight"><strong>[권리 확정]</strong><br>독점권 조기 확보</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>4. 결론: 속도보다 중요한 것은 '방향'입니다.</h3>
+                <p>특허는 등록증이라는 종이 한 장이 아니라, 비즈니스를 보호하는 무기여야 합니다.</p>
+                <p>지금 당장 투자가 급하다면? <span class="highlight">우선심사</span>로 달리십시오.<br>
+                시장을 보며 경쟁사를 애태우고 싶다면? <span class="highlight">일반심사</span>로 호흡을 조절하십시오.</p>
+
+<style>
+  #cusdis_thread {
+    max-width: 800px;      /* 데스크탑에서 너무 넓게 퍼지지 않도록 폭 고정 */
+    width: 100%;           /* 모바일이나 작은 화면에서는 꽉 차게 */
+    margin: 60px auto;     /* 위아래 여백, 좌우 가운데 정렬 */
+    padding: 0 20px;       /* 좌우 안쪽 여백 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* 혹시 모를 아이프레임 자체 스크롤바 숨기기 (안쪽 입력창 스크롤바는 제어 불가) */
+  #cusdis_thread iframe {
+    width: 100% !important;
+    overflow: hidden !important; 
+  }
+</style>
+
+<div id="cusdis_thread"
+  data-host="https://cusdis.com"
+  data-app-id="f41021fa-7c9e-47f2-9f9e-a17db7bf61ad"
+  data-page-id="ip_insight_test"
+  data-page-url="https://nan73pro.site/PatentInfo/Posting/IP_Insight_test.html"
+  data-page-title="IP Insight 테스트"
+  data-theme="auto">
+</div>
+
+<script defer src="https://cusdis.com/js/cusdis.es.js"></script>
+<script>
+  window.CUSDIS_LOCALE = {
+    "powered_by": "댓글 시스템 by Cusdis",
+    "post_comment": "댓글 등록",
+    "loading": "로딩 중...",
+    "email": "이메일 (선택사항)",
+    "nickname": "닉네임",
+    "reply_placeholder": "여기에 소중한 의견을 남겨주세요...",
+    "reply_btn": "답글 달기",
+    "sending": "전송 중...",
+    "mod_badge": "관리자",
+    "content_is_required": "내용을 입력해주세요.",
+    "nickname_is_required": "닉네임을 입력해주세요.",
+    "comment_has_been_sent": "댓글이 등록되었습니다. (관리자 승인 대기 중)"
+  }
+</script>
+
+            </div>
+        </div>
+    </main>
+
+
+    <footer class="bg-[#0f172a] py-8 border-t border-white/10 text-center relative z-20">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-center items-center gap-3 text-slate-400 text-sm mb-5 font-medium" style="font-size: 14px;">
+                <a href="./IP_Insight_0012.html" class="hover:text-[#38bdf8] transition-colors">← 이전글</a>
+                <span class="text-slate-700">|</span>
+                <a href="./IP_Insight_0002.html" class="hover:text-[#38bdf8] transition-colors">다음글 →</a>
+            </div>
+            
+            <p class="text-2xl mb-5 font-bold text-white tracking-tight">
+                Nan<span style="color: #6AD7FF">7</span><span style="color: #17C8C8">3</span>Pro.
+            </p>
+
+            <p class="text-slate-600 text-sm">© 2025 Nan73Pro. All Rights Reserved.</p>
+        </div>
+    </footer>
+    </body>
+</html>
