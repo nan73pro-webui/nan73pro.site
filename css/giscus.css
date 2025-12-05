@@ -1,1 +1,8 @@
-
+/* 댓글 개수와 'Powered by giscus'가 있는 헤더 숨기기 */
+.gsc-header {
+    display: none !important;
+}
+/* (혹시 1단계 안 하셨으면) 반응 부분도 숨기기 */
+.gsc-reactions-count, .gsc-timeline {
+    display: none !important;
+}
