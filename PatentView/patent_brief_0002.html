@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 기반 개인화 추천 데이터 처리 시스템 - 디지털 특허 브로슈어</title>
+    <title>잘피 집단 이식방법 - 디지털 특허 브로슈어</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -12,31 +12,21 @@
     
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-
     <style>
-        /* 폰트 설정 (Noto Sans KR & Pretendard) */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
         body { font-family: 'Noto Sans KR', sans-serif; }
         
-        /* 커스텀 애니메이션 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-in { animation: fadeIn 0.5s ease-out forwards; }
         
-        /* 스크롤바 커스텀 */
-        .custom-scrollbar::-webkit-scrollbar {
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
+        /* 해양 느낌의 그라디언트 애니메이션 */
+        @keyframes oceanCurrent {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
@@ -44,390 +34,330 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState } = React;
 
-        // --- Icons (Lucide React Style) ---
-        const Activity = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>;
-        const Database = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>;
-        const Cpu = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>;
-        const Layers = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>;
-        const Clock = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
-        const Hash = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>;
-        const Shield = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
-        const ChevronRight = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
+        // --- Icons ---
+        const Leaf = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.77 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>;
+        const Anchor = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>;
+        const Box = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>;
 
-        // --- Math Equation Component ---
-        const MathEquation = ({ tex }) => {
-            const containerRef = useRef(null);
-            useEffect(() => {
-                if (containerRef.current) {
-                    katex.render(tex, containerRef.current, {
-                        throwOnError: false,
-                        displayMode: true
-                    });
-                }
-            }, [tex]);
-            return <div ref={containerRef}></div>;
-        };
-
-        // --- Main Component ---
-        const AISystem = () => {
+        const SeagrassSystem = () => {
             const [activeTab, setActiveTab] = useState('overview');
-            const [selectedModule, setSelectedModule] = useState(null);
+            const [selectedPart, setSelectedPart] = useState(null);
+            const [step, setStep] = useState(0); // 0:Ready, 1:Dig/Harvest, 2:Lift/Move, 3:Plant/Release
 
-            // Patent Data Extraction
             const patentInfo = {
-                title: "AI 기반 다중-스케일 시계열 인코딩 및 컨텍스트 가중 전처리 기반 개인화 추천 엔진",
-                category: "데이터 처리 시스템 / AI 추천",
-                summary: "사용자의 행동 로그를 단기/중기/장기 등 다양한 시간 스케일로 분석하고, 캠페인 등의 맥락(Context) 정보를 반영하여 추천 모델의 성능을 극대화하는 데이터 전처리 기술입니다.",
-                keywords: ["Multi-scale Windowing", "Context-Weighted Sampling", "Hash-based Negative Sampling", "Feature Store"]
+                title: "잘피 집단 이식방법",
+                englishTitle: "Method for Group Transplantation of Seagrass",
+                summary: "해양 생태계의 핵심인 잘피를 '그랩(Grab)'으로 군락 채집하여 뿌리와 토양을 보존한 채 이식합니다. 거친 파도에도 유실되지 않는 획기적인 생존율 극대화 기술입니다.",
+                keywords: ["잘피복원", "그랩이식", "생존율극대화", "해양생태계"]
             };
 
-            // Module Data (Based on Fig 1 & Spec)
-            const modules = {
-                "110": { id: "110", name: "로그 수집 모듈", icon: <Database/>, desc: "사용자의 이벤트(View, Click, Purchase)를 검증된 포맷(Avro, Protobuf)으로 실시간 수집합니다." },
-                "120": { id: "120", name: "클리닝 및 정규화", icon: <Activity/>, desc: "수집된 원시 데이터의 노이즈를 제거하고 표준 포맷으로 정규화합니다." },
-                "130": { id: "130", name: "세션화 및 다중 윈도우", icon: <Clock/>, desc: "비활성 간격(Inactivity Gap)을 기준으로 세션을 나누고, 단기/중기/장기 윈도우를 병렬 생성합니다.", highlight: true },
-                "140": { id: "140", name: "컨텍스트 가중 샘플링", icon: <Layers/>, desc: "캠페인 여부, 구매 금액 등 외부 요인을 반영하여 학습 데이터의 중요도(Weight)를 산정합니다.", highlight: true },
-                "150": { id: "150", name: "해시 기반 네거티브 샘플링", icon: <Hash/>, desc: "전체 아이템을 해시 버킷으로 나누고, 균형 잡힌 부정 샘플(Negative Sample)을 추출하여 편향을 줄입니다.", highlight: true },
-                "160": { id: "160", name: "특징 생성 및 인코딩", icon: <Cpu/>, desc: "처리된 데이터를 모델이 학습 가능한 벡터 형태로 변환합니다." },
-                "170": { id: "170", name: "개인정보 보호 및 압축", icon: <Shield/>, desc: "식별자를 비가역 변환(Feature Hashing)하고 데이터를 양자화하여 저장 효율을 높입니다." },
-                "180": { id: "180", name: "Feature Store / 모니터링", icon: <Database/>, desc: "최종 특징을 저장하고 데이터 분포 변화(Drift)를 실시간 감시합니다." }
+            const partsData = {
+                "10": {
+                    id: "10",
+                    name: "그랩 (Grab)",
+                    desc: "이식 작업의 핵심 장비",
+                    detail: "상단 힌지축을 중심으로 개폐되는 한 쌍의 버켓으로 구성됩니다. 잘피를 낱개가 아닌 '집단(Clump)'으로 뿌리째 채집하여 이동시키는 도구입니다."
+                },
+                "11": {
+                    id: "11",
+                    name: "버켓 (Bucket)",
+                    desc: "토양과 잘피를 담는 공간",
+                    detail: "끝부분이 뾰족하게 가공되어 해저 토양에 쉽게 박히며, 맞물리는 단부에는 고무패킹(11b)이 있어 이송 중 토양 유출을 방지합니다."
+                },
+                "13": {
+                    id: "13",
+                    name: "힘 전달부 (Force Arm)",
+                    desc: "X자 형상의 개폐 장치",
+                    detail: "지렛대 원리를 이용하여 적은 힘으로도 해저 토양을 깊게 파내고 버켓을 강력하게 닫을 수 있게 돕는 구조물입니다."
+                },
+                "20": {
+                    id: "20",
+                    name: "적재 용기 (Container)",
+                    desc: "대량 이송용 적층 박스",
+                    detail: "채집한 잘피를 담아 층층이 쌓을 수 있는 사각틀 구조입니다. 하단 바닥판(25)이 슬라이딩 방식으로 열려 이식지에 잘피를 손상 없이 투하합니다."
+                }
             };
 
-            // --- Diagram Components ---
+            // --- Control Logic ---
+            const nextStep = () => setStep(prev => Math.min(prev + 1, 3));
+            const prevStep = () => setStep(prev => Math.max(prev - 1, 0));
+            const reset = () => setStep(0);
 
-            // Fig 1: System Architecture Flow
-            const SystemFlowChart = () => {
-                const steps = ["110", "120", "130", "140", "150", "160", "170", "180"];
+            // --- Schematic SVG ---
+            const SchematicDiagram = () => {
+                // Animation States
+                // 0: Hover, 1: Dig (Down & Close), 2: Lift (Up & Close), 3: Transplant (Down & Open)
+                
+                const grabY = step === 1 || step === 3 ? 280 : 100; // Height of grab
+                const bucketAngle = step === 1 || step === 2 ? 0 : 45; // 0=Closed, 45=Open
+                const clumpOpacity = step >= 1 ? 1 : 0; // Show seagrass inside grab
+                const transplantedOpacity = step === 3 ? 1 : 0; // Show seagrass on ground
+                const seabedHole = step === 3; // Visual hack for hole
+
                 return (
-                    <div className="w-full overflow-x-auto custom-scrollbar pb-4">
-                        <div className="flex items-center min-w-max px-4 py-8 space-x-4">
-                            {steps.map((stepId, index) => {
-                                const mod = modules[stepId];
-                                const isSelected = selectedModule?.id === stepId;
-                                return (
-                                    <div key={stepId} className="flex items-center">
-                                        <div 
-                                            onClick={() => setSelectedModule(mod)}
-                                            className={`
-                                                relative w-40 p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 flex flex-col items-center text-center gap-3 hover:shadow-lg hover:-translate-y-1
-                                                ${isSelected ? 'border-indigo-500 bg-indigo-50 shadow-indigo-200' : 'border-slate-200 bg-white hover:border-indigo-300'}
-                                            `}
-                                        >
-                                            <div className={`p-3 rounded-full ${isSelected ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-500'}`}>
-                                                {mod.icon}
-                                            </div>
-                                            <div className="text-xs font-bold text-slate-400">module {mod.id}</div>
-                                            <div className="font-bold text-slate-700 text-sm leading-tight">{mod.name}</div>
-                                            
-                                            {/* Highlight Badge */}
-                                            {mod.highlight && (
-                                                <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm animate-pulse">CORE</span>
-                                            )}
-                                        </div>
-                                        {index < steps.length - 1 && (
-                                            <div className="px-2 text-slate-300">
-                                                <ChevronRight size={24} strokeWidth={3} />
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                    <div className="relative w-full h-96 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex items-center justify-center shadow-2xl">
+                        {/* Status Overlay */}
+                        <div className="absolute top-4 left-4 z-10 flex gap-2">
+                             <span className={`px-2 py-1 rounded text-xs font-bold ${step === 0 ? 'bg-teal-500 text-white' : 'bg-slate-700 text-slate-400'}`}>1. 준비</span>
+                             <span className={`px-2 py-1 rounded text-xs font-bold ${step === 1 ? 'bg-teal-600 text-white' : 'bg-slate-700 text-slate-400'}`}>2. 채집(Grab)</span>
+                             <span className={`px-2 py-1 rounded text-xs font-bold ${step === 2 ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'}`}>3. 이송</span>
+                             <span className={`px-2 py-1 rounded text-xs font-bold ${step === 3 ? 'bg-green-500 text-white' : 'bg-slate-700 text-slate-400'}`}>4. 이식완료</span>
+                        </div>
+
+                        {/* Controls */}
+                        <div className="absolute bottom-4 right-4 z-20 flex gap-2">
+                            <button onClick={reset} className="px-3 py-1 bg-slate-600 text-white rounded hover:bg-slate-500 text-xs">Reset</button>
+                            <button onClick={prevStep} className="px-3 py-1 bg-slate-600 text-white rounded hover:bg-slate-500 text-xs">Prev</button>
+                            <button onClick={nextStep} className="px-4 py-1 bg-teal-600 text-white rounded hover:bg-teal-500 font-bold text-xs">Next Step ▶</button>
+                        </div>
+
+                        <svg viewBox="0 0 500 400" className="w-full h-full max-w-lg">
+                            <defs>
+                                <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stopColor="#1e293b" />
+                                    <stop offset="100%" stopColor="#0f172a" />
+                                </linearGradient>
+                                <pattern id="sandPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <rect width="20" height="20" fill="#d4b483" />
+                                    <circle cx="2" cy="2" r="1" fill="#c2a272" />
+                                </pattern>
+                            </defs>
+
+                            {/* Water Background */}
+                            <rect width="500" height="400" fill="url(#waterGrad)" />
+                            
+                            {/* Seabed */}
+                            <path d={seabedHole ? "M0 320 H200 Q250 380 300 320 H500 V400 H0 Z" : "M0 320 H500 V400 H0 Z"} fill="url(#sandPattern)" className="transition-all duration-700" />
+                            
+                            {/* Seagrass Clump (Inside Grab) */}
+                            <g style={{ transform: `translate(250px, ${grabY + 40}px)`, opacity: (step === 1 || step === 2) ? 1 : 0, transition: 'all 1s' }}>
+                                <path d="M-20 0 Q-10 -40 0 -50 Q10 -40 20 0 Z" fill="#4ade80" />
+                                <path d="M-15 0 L-25 -45 M-5 0 L0 -60 M10 0 L20 -50" stroke="#22c55e" strokeWidth="3" fill="none" />
+                                <path d="M-30 0 H30 Q0 30 -30 0" fill="#78350f" /> {/* Roots/Soil */}
+                            </g>
+
+                            {/* Transplanted Seagrass (On Ground) */}
+                            <g style={{ transform: `translate(250px, 320px)`, opacity: transplantedOpacity, transition: 'opacity 1s ease-in 0.5s' }}>
+                                <path d="M-20 0 Q-10 -40 0 -50 Q10 -40 20 0 Z" fill="#4ade80" />
+                                <path d="M-15 0 L-25 -45 M-5 0 L0 -60 M10 0 L20 -50" stroke="#22c55e" strokeWidth="3" fill="none" />
+                                <ellipse cx="0" cy="5" rx="30" ry="10" fill="#78350f" />
+                            </g>
+
+                            {/* The GRAB Mechanism */}
+                            <g style={{ transform: `translate(250px, ${grabY}px)`, transition: 'transform 1s ease-in-out' }}>
+                                {/* Central Pivot */}
+                                <circle cx="0" cy="0" r="5" fill="#94a3b8" />
+                                <line x1="0" y1="0" x2="0" y2="-100" stroke="#cbd5e1" strokeWidth="4" /> {/* Cable */}
+
+                                {/* Left Bucket (11) */}
+                                <g style={{ transform: `rotate(${bucketAngle}deg)`, transformOrigin: '0 0', transition: 'transform 1s' }}>
+                                    <path d="M0 0 L-60 20 A 70 70 0 0 0 0 80 Z" fill="#64748b" stroke="#cbd5e1" strokeWidth="2" />
+                                    <g onClick={() => setSelectedPart(partsData["11"])} className="cursor-pointer hover:opacity-80">
+                                       <text x="-40" y="50" fontSize="12" fill="white">11</text>
+                                    </g>
+                                </g>
+
+                                {/* Right Bucket (11) */}
+                                <g style={{ transform: `rotate(-${bucketAngle}deg)`, transformOrigin: '0 0', transition: 'transform 1s' }}>
+                                    <path d="M0 0 L60 20 A 70 70 0 0 1 0 80 Z" fill="#64748b" stroke="#cbd5e1" strokeWidth="2" />
+                                </g>
+
+                                {/* Force Arms (13) */}
+                                <g onClick={() => setSelectedPart(partsData["13"])} className="cursor-pointer hover:opacity-80">
+                                    <line x1="-50" y1="-50" x2="0" y2="0" stroke="#fbbf24" strokeWidth="4" />
+                                    <line x1="50" y1="-50" x2="0" y2="0" stroke="#fbbf24" strokeWidth="4" />
+                                    <text x="0" y="-60" fontSize="12" fill="#fbbf24" textAnchor="middle">13</text>
+                                </g>
+                            </g>
+
+                            {/* Label for Container (20) - Suggestion */}
+                            { step === 2 && (
+                                <g transform="translate(400, 100)" className="animate-in" onClick={() => setSelectedPart(partsData["20"])} style={{cursor: 'pointer'}}>
+                                    <rect x="0" y="0" width="60" height="40" fill="none" stroke="#fbbf24" strokeWidth="2" strokeDasharray="4"/>
+                                    <text x="30" y="25" fontSize="10" fill="#fbbf24" textAnchor="middle">20(이송)</text>
+                                </g>
+                            )}
+                        </svg>
+                        <div className="absolute bottom-4 left-4 text-slate-400 text-xs bg-slate-900/50 p-1 rounded">
+                            * 특허 도면 3, 4를 재구성. Next Step을 눌러 이식 과정을 확인하세요.
                         </div>
                     </div>
                 );
             };
 
-            // Fig 2: Multi-scale Window Visualization
-            const TimeWindowVisual = () => (
-                <div className="bg-slate-900 p-6 rounded-xl shadow-inner text-white relative overflow-hidden group">
-                    {/* Background Grid */}
-                    <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '20px 20px'}}></div>
-                    
-                    <div className="relative z-10 space-y-8 my-4">
-                        <div className="flex justify-between text-xs text-slate-400 font-mono mb-2 border-b border-slate-700 pb-1">
-                            <span>Past (90 Days)</span>
-                            <span>Past (7 Days)</span>
-                            <span>Past (30 Mins)</span>
-                            <span className="text-red-400 font-bold">Current Time (t)</span>
-                        </div>
-
-                        {/* Long Window */}
-                        <div className="relative">
-                            <div className="h-2 bg-slate-700 rounded-full w-full"></div>
-                            <div className="absolute top-0 right-0 h-8 bg-gradient-to-l from-blue-600 to-transparent w-[90%] rounded-r-full opacity-80 group-hover:w-[95%] transition-all duration-1000">
-                                <span className="absolute right-full top-0 -mt-6 mr-2 text-xs text-blue-400 font-bold whitespace-nowrap">Long Window (장기 취향)</span>
-                            </div>
-                        </div>
-
-                        {/* Medium Window */}
-                        <div className="relative pl-[60%]">
-                            <div className="h-2 bg-slate-700 rounded-full w-full"></div>
-                            <div className="absolute top-0 right-0 h-8 bg-gradient-to-l from-purple-500 to-transparent w-[80%] rounded-r-full opacity-90 group-hover:w-[85%] transition-all duration-700">
-                                <span className="absolute right-full top-0 -mt-6 mr-2 text-xs text-purple-400 font-bold whitespace-nowrap">Medium Window (중기 패턴)</span>
-                            </div>
-                        </div>
-
-                        {/* Short Window */}
-                        <div className="relative pl-[85%]">
-                            <div className="h-2 bg-slate-700 rounded-full w-full"></div>
-                            <div className="absolute top-0 right-0 h-8 bg-gradient-to-l from-pink-500 to-transparent w-[90%] rounded-r-full shadow-[0_0_15px_rgba(236,72,153,0.5)] animate-pulse">
-                                <span className="absolute right-full top-0 -mt-6 mr-2 text-xs text-pink-400 font-bold whitespace-nowrap">Short Window (즉각 의도)</span>
-                            </div>
-                        </div>
-                        
-                        {/* Current Time Line */}
-                        <div className="absolute top-0 bottom-0 right-0 w-0.5 bg-red-500 shadow-[0_0_10px_red]"></div>
-                    </div>
-                    <p className="text-center text-slate-400 text-xs mt-6">
-                        * 도 2 개념화: 사용자의 의도를 다각도로 포착하기 위해 3가지 시간 윈도우를 병렬(Parallel) 처리
-                    </p>
-                </div>
-            );
-
-            // Fig 3: Hash Bucket Visualization
-            const HashBucketVisual = () => (
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="grid grid-cols-4 gap-2 mb-4">
-                        {[...Array(12)].map((_, i) => (
-                            <div key={i} className={`
-                                h-12 rounded-lg border flex items-center justify-center text-sm font-mono
-                                ${i === 6 ? 'bg-indigo-100 border-indigo-500 text-indigo-700 font-bold ring-2 ring-indigo-200' : 'bg-slate-50 border-slate-200 text-slate-400'}
-                            `}>
-                                {i === 6 ? 'Selected' : `Bucket ${i+1}`}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="flex justify-center">
-                        <div className="bg-slate-800 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg transform translate-y-[-50%]">
-                            <Hash size={16}/> 
-                            <span>Consistent Hashing Sampling</span>
-                            <span className="bg-yellow-500 text-black text-xs px-1.5 py-0.5 rounded font-bold">Negative Set</span>
-                        </div>
-                    </div>
-                    <p className="text-center text-slate-500 text-xs mt-2">
-                        * 도 3 개념화: 전체 아이템을 해시 버킷으로 나누어, 인기도/균등/Hard Negative를 혼합 추출
-                    </p>
-                </div>
-            );
-
             return (
-                /* 수정됨: pb-20 제거 */
-                <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+                <div className="min-h-screen bg-slate-50 font-sans text-slate-800 flex flex-col">
                     {/* Header */}
-                    <header className="bg-gradient-to-r from-slate-900 via-indigo-900 to-violet-900 text-white shadow-xl">
-                        <div className="max-w-6xl mx-auto px-4 py-10">
-                            <div className="flex flex-col gap-4">
-                                <div className="flex items-center gap-2">
-                                    <span className="px-3 py-1 rounded-full bg-indigo-500/30 border border-indigo-400/50 text-indigo-200 text-xs font-bold">
-                                        특허 출원/명세서 분석
-                                    </span>
-                                    <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-slate-300 text-xs">
-                                        IPC: G06Q, G06N
-                                    </span>
+                    <header className="bg-gradient-to-r from-teal-900 to-slate-900 text-white shadow-xl border-b-4 border-teal-500 relative overflow-hidden">
+                         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                        <div className="max-w-6xl mx-auto px-4 py-10 relative z-10">
+                            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="bg-teal-600 text-white px-2 py-0.5 rounded text-xs font-bold">ECO TECH</span>
+                                        <span className="text-slate-400 text-xs">등록특허 10-1679735</span>
+                                    </div>
+                                    <h1 className="text-3xl md:text-4xl font-bold mb-2">{patentInfo.title}</h1>
+                                    <h2 className="text-sm text-slate-400 font-mono mb-4">{patentInfo.englishTitle}</h2>
+                                    <p className="text-slate-300 max-w-2xl leading-relaxed">
+                                        {patentInfo.summary}
+                                    </p>
                                 </div>
-                                <h1 className="text-2xl md:text-4xl font-bold leading-tight">
-                                    {patentInfo.title}
-                                </h1>
-                                <p className="text-indigo-200 text-sm md:text-base max-w-2xl leading-relaxed">
-                                    {patentInfo.summary}
-                                </p>
+                                <div className="flex gap-2">
+                                    {patentInfo.keywords.map((kw, i) => (
+                                        <span key={i} className="px-3 py-1 bg-white/10 rounded-full text-xs border border-white/20">#{kw}</span>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </header>
 
-                    {/* Tab Navigation */}
+                    {/* Navigation */}
                     <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm">
                         <div className="max-w-6xl mx-auto px-4">
-                            <nav className="flex space-x-8 overflow-x-auto no-scrollbar">
-                                {[
-                                    { id: 'overview', label: '시스템 개요 (System)' },
-                                    { id: 'core', label: '핵심 기술 (Core Logic)' },
-                                    { id: 'effect', label: '기대 효과 (Benefits)' }
-                                ].map(tab => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`py-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap
-                                            ${activeTab === tab.id ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-800'}
-                                        `}
-                                    >
-                                        {tab.label}
-                                    </button>
-                                ))}
+                            <nav className="flex space-x-8">
+                                <button onClick={() => setActiveTab('overview')} className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'overview' ? 'border-teal-600 text-teal-700' : 'border-transparent text-slate-500'}`}>기술 개요</button>
+                                <button onClick={() => setActiveTab('structure')} className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'structure' ? 'border-teal-600 text-teal-700' : 'border-transparent text-slate-500'}`}>장치 구조 및 작동</button>
+                                <button onClick={() => setActiveTab('effect')} className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'effect' ? 'border-teal-600 text-teal-700' : 'border-transparent text-slate-500'}`}>효과 분석</button>
                             </nav>
                         </div>
                     </div>
 
-                    {/* Content Area */}
-                    <main className="max-w-6xl mx-auto px-4 py-8 animate-in">
+                    {/* Main Content */}
+                    <main className="max-w-6xl mx-auto px-4 py-8 animate-in flex-grow w-full">
                         
-                        {/* TAB: SYSTEM OVERVIEW */}
+                        {/* TAB: OVERVIEW */}
                         {activeTab === 'overview' && (
-                            <div className="space-y-8">
-                                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                                    <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                                        <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                                            <Database className="text-indigo-600" size={20}/> 
-                                            데이터 처리 파이프라인 (도 1 기반)
-                                        </h2>
-                                        <span className="text-xs text-slate-400 bg-white px-2 py-1 rounded border">Interactive Diagram</span>
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="space-y-6">
+                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                        <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                            <span className="text-red-500 font-bold">⚠️</span> 기존 이식 방법의 한계
+                                        </h3>
+                                        <ul className="space-y-3 text-slate-600">
+                                            <li className="flex gap-3 items-start">
+                                                <span className="text-red-500 font-bold mt-1">×</span>
+                                                <span>낱개 이식 시 거친 파도나 조류에 쉽게 유실됨</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start">
+                                                <span className="text-red-500 font-bold mt-1">×</span>
+                                                <span>철망 등을 사용하는 경우 사후 수거 작업 필요</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start">
+                                                <span className="text-red-500 font-bold mt-1">×</span>
+                                                <span>이식 과정에서 뿌리가 손상되어 생존율 저하</span>
+                                            </li>
+                                        </ul>
                                     </div>
                                     
-                                    {/* Interactive Flow Chart */}
-                                    <div className="bg-slate-50/50">
-                                        <SystemFlowChart />
+                                    <div className="bg-teal-50 p-6 rounded-2xl border border-teal-100">
+                                        <h3 className="text-xl font-bold text-teal-900 mb-4 flex items-center gap-2">
+                                            <span className="text-teal-600 font-bold">✨</span> 본 발명의 솔루션 (Solution)
+                                        </h3>
+                                        <ul className="space-y-3 text-teal-800">
+                                            <li className="flex gap-3 items-start">
+                                                <span className="bg-teal-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">1</span>
+                                                <span><strong>군락(Group) 채집:</strong> 뿌리끼리 얽힌 상태로 채집하여 결속력 강화</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start">
+                                                <span className="bg-teal-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">2</span>
+                                                <span><strong>토양 동시 이식:</strong> 서식지 토양을 그대로 옮겨 환경 적응력 극대화</span>
+                                            </li>
+                                            <li className="flex gap-3 items-start">
+                                                <span className="bg-teal-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mt-1">3</span>
+                                                <span><strong>무공해 공법:</strong> 철망이나 끈 등 인공물을 남기지 않는 친환경 공법</span>
+                                            </li>
+                                        </ul>
                                     </div>
-
-                                    {/* Detail View */}
-                                    <div className="p-6 bg-white min-h-[200px]">
-                                        {selectedModule ? (
-                                            <div className="animate-in">
-                                                <div className="flex items-start gap-4">
-                                                    <div className="p-4 bg-indigo-100 text-indigo-600 rounded-xl">
-                                                        {selectedModule.icon}
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="text-xl font-bold text-indigo-900 mb-2 flex items-center gap-2">
-                                                            {selectedModule.name}
-                                                            <span className="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">Module {selectedModule.id}</span>
-                                                        </h3>
-                                                        <p className="text-slate-600 leading-relaxed">
-                                                            {selectedModule.desc}
-                                                        </p>
-                                                        {selectedModule.highlight && (
-                                                            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-100 rounded-lg text-sm text-yellow-800">
-                                                                <strong className="block mb-1">💡 핵심 포인트</strong>
-                                                                본 발명의 차별화된 성능 향상 요인이 포함된 모듈입니다.
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-2 py-8">
-                                                <Activity size={40} className="text-slate-200"/>
-                                                <p>위 다이어그램의 모듈을 클릭하여 상세 기능을 확인하세요.</p>
-                                            </div>
-                                        )}
-                                    </div>
+                                </div>
+                                <div className="bg-slate-800 text-white p-8 rounded-2xl shadow-lg flex flex-col justify-center items-center text-center">
+                                    <Leaf size={64} className="text-teal-400 mb-6" />
+                                    <h2 className="text-2xl font-bold mb-4">"바다 숲을 그대로 옮기다"</h2>
+                                    <p className="text-slate-300 leading-relaxed">
+                                        잘피는 단독으로 존재할 때보다<br/>
+                                        서로 얽혀있을 때 가장 강합니다.<br/>
+                                        <span className="text-teal-400 font-bold mt-2 block">생존율 혁신, 그랩 이식 공법</span>
+                                    </p>
                                 </div>
                             </div>
                         )}
 
-                        {/* TAB: CORE LOGIC */}
-                        {activeTab === 'core' && (
-                            <div className="grid lg:grid-cols-2 gap-8 animate-in">
-                                {/* 1. Multi-scale Windowing */}
-                                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <span className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-bold">1</span>
-                                        <h3 className="text-lg font-bold text-slate-800">다중-스케일 시퀀스 (Multi-scale)</h3>
+                        {/* TAB: STRUCTURE */}
+                        {activeTab === 'structure' && (
+                            <div className="grid lg:grid-cols-3 gap-8">
+                                <div className="lg:col-span-1 space-y-4">
+                                    <h3 className="font-bold text-slate-700 flex items-center gap-2">
+                                        <Anchor size={20}/> 주요 장치 구성
+                                    </h3>
+                                    <div className="space-y-2">
+                                        {Object.values(partsData).map((part) => (
+                                            <button
+                                                key={part.id}
+                                                onClick={() => setSelectedPart(part)}
+                                                className={`w-full text-left p-4 rounded-xl border transition-all ${selectedPart?.id === part.id ? 'border-teal-500 bg-teal-50 ring-1 ring-teal-500' : 'border-slate-200 hover:bg-white bg-slate-50'}`}
+                                            >
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span className="font-bold text-slate-800">{part.name}</span>
+                                                    <span className="text-xs bg-slate-200 px-2 py-0.5 rounded text-slate-500">{part.id}</span>
+                                                </div>
+                                                <p className="text-xs text-slate-500 truncate">{part.desc}</p>
+                                            </button>
+                                        ))}
                                     </div>
-                                    <p className="text-slate-600 text-sm mb-6">
-                                        사용자의 행동은 단기적인 목적과 장기적인 취향이 혼재되어 있습니다. 
-                                        본 시스템은 <strong>단일 윈도우의 한계</strong>를 극복하기 위해 3가지 시간 척도를 병렬로 처리합니다.
-                                    </p>
-                                    <TimeWindowVisual />
-                                </div>
-
-                                {/* 2. Context Weighted Sampling */}
-                                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <span className="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center font-bold">2</span>
-                                        <h3 className="text-lg font-bold text-slate-800">컨텍스트 가중 샘플링 (Weighted)</h3>
-                                    </div>
-                                    <p className="text-slate-600 text-sm mb-4">
-                                        모든 로그를 동일하게 학습하지 않습니다. <strong>캠페인</strong>이나 <strong>구매 가치</strong>가 높은 중요 이벤트에 더 높은 가중치($w$)를 부여합니다.
-                                    </p>
-                                    
-                                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4 overflow-x-auto">
-                                        <div className="text-xs text-slate-400 mb-2 font-mono">Equation 1 (청구항 3)</div>
-                                        <MathEquation tex="w = base\_w \times (1 + \alpha \cdot camp\_flag) \times (1 + \beta \cdot \log(1 + value))" />
-                                    </div>
-                                    
-                                    <ul className="space-y-2 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl">
-                                        <li className="flex gap-2"><span className="text-purple-500 font-bold">base_w</span>: 기본 가중치</li>
-                                        <li className="flex gap-2"><span className="text-purple-500 font-bold">camp_flag</span>: 프로모션/캠페인 여부 (0/1)</li>
-                                        <li className="flex gap-2"><span className="text-purple-500 font-bold">value</span>: 아이템 구매 금액 (로그 스케일 적용)</li>
-                                    </ul>
-                                </div>
-
-                                {/* 3. Hash-based Negative Sampling */}
-                                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                                    <div className="flex flex-col md:flex-row gap-8">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-6">
-                                                <span className="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center font-bold">3</span>
-                                                <h3 className="text-lg font-bold text-slate-800">해시 기반 네거티브 샘플링</h3>
-                                            </div>
-                                            <p className="text-slate-600 text-sm mb-4 leading-relaxed">
-                                                추천 시스템 학습 시, 사용자가 반응하지 않은 아이템(Negative)을 선정하는 것은 매우 중요합니다.
-                                                단순 랜덤 추출은 <strong>인기 편향(Popularity Bias)</strong>을 초래합니다.
-                                                본 발명은 <strong>해시 버킷(Hash Bucket)</strong>을 이용하여 전 영역에서 균형 잡힌 샘플링을 수행합니다.
-                                            </p>
-                                            <div className="flex flex-wrap gap-2">
-                                                <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-bold">인기도 기반</span>
-                                                <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-bold">균등(Uniform)</span>
-                                                <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-bold">Hard Negative</span>
-                                            </div>
+                                    {selectedPart && (
+                                        <div className="mt-4 p-4 bg-slate-800 text-white rounded-xl animate-in">
+                                            <strong className="block text-teal-400 mb-2">{selectedPart.name}</strong>
+                                            <p className="text-sm text-slate-300 leading-relaxed">{selectedPart.detail}</p>
                                         </div>
-                                        <div className="flex-1">
-                                            <HashBucketVisual />
-                                        </div>
-                                    </div>
+                                    )}
+                                </div>
+                                <div className="lg:col-span-2 h-full">
+                                    <SchematicDiagram />
                                 </div>
                             </div>
                         )}
 
                         {/* TAB: EFFECT */}
                         {activeTab === 'effect' && (
-                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in">
-                                <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-6 rounded-2xl text-white shadow-lg">
-                                    <div className="bg-white/20 w-12 h-12 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm">
-                                        <Activity className="text-white" />
+                            <div className="space-y-8">
+                                <h3 className="text-xl font-bold text-center">3단계 이식 프로세스 효과</h3>
+                                <div className="grid md:grid-cols-3 gap-6">
+                                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-md hover:shadow-lg transition-shadow">
+                                        <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center mb-3 font-bold">1</div>
+                                        <h4 className="font-bold mb-2 text-teal-900">군락 채집 (Harvest)</h4>
+                                        <p className="text-sm text-slate-600">그랩(10)을 이용해 잘피를 뿌리째 흙과 함께 한 번에 퍼올립니다. 개체 간의 결속력이 유지됩니다.</p>
                                     </div>
-                                    <h3 className="font-bold text-lg mb-2">추천 품질 향상</h3>
-                                    <p className="text-indigo-100 text-sm">다중 윈도우를 통해 단기 의도와 장기 취향을 모두 반영하여 NDCG, Recall 지표 개선.</p>
-                                </div>
-                                
-                                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                                    <div className="bg-purple-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-purple-600">
-                                        <Layers />
+                                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-md hover:shadow-lg transition-shadow">
+                                        <div className="w-10 h-10 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center mb-3 font-bold">2</div>
+                                        <h4 className="font-bold mb-2 text-blue-900">안전 이송 (Transport)</h4>
+                                        <p className="text-sm text-slate-600">적재 용기(20)에 층층이 담아 대량 이송이 가능하며, 이송 중 잘피의 마름이나 손상을 최소화합니다.</p>
                                     </div>
-                                    <h3 className="font-bold text-slate-800 text-lg mb-2">비즈니스 목표 달성</h3>
-                                    <p className="text-slate-600 text-sm">프로모션 및 고부가가치 아이템에 가중치를 두어 실제 매출 기여도(KPI) 상승.</p>
-                                </div>
-
-                                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                                    <div className="bg-green-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-green-600">
-                                        <Hash />
+                                    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-md hover:shadow-lg transition-shadow">
+                                        <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center mb-3 font-bold">3</div>
+                                        <h4 className="font-bold mb-2 text-green-900">정착 이식 (Transplant)</h4>
+                                        <p className="text-sm text-slate-600">해저에 홈을 파고 그대로 안착시킵니다. 흙 무게와 뿌리 얽힘 덕분에 파도에도 쓸려가지 않습니다.</p>
                                     </div>
-                                    <h3 className="font-bold text-slate-800 text-lg mb-2">편향(Bias) 완화</h3>
-                                    <p className="text-slate-600 text-sm">해시 기반 샘플링으로 인기 아이템 쏠림 현상을 방지하고 모델의 일반화 성능 확보.</p>
                                 </div>
 
-                                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                                    <div className="bg-slate-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-slate-600">
-                                        <Shield />
-                                    </div>
-                                    <h3 className="font-bold text-slate-800 text-lg mb-2">보안 및 효율성</h3>
-                                    <p className="text-slate-600 text-sm">식별자 비가역 변환 및 데이터 압축/양자화로 개인정보 규제 준수 및 비용 절감.</p>
+                                <div className="mt-8 p-6 bg-slate-100 rounded-xl border border-slate-200">
+                                     <h4 className="font-bold mb-3 flex items-center gap-2">
+                                        <Box size={20} className="text-slate-500"/>
+                                        특허 청구항(Claim) 핵심 요약
+                                     </h4>
+                                     <p className="text-sm text-slate-600 leading-relaxed">
+                                        본 특허는 단순히 잘피를 심는 것이 아니라, <strong>1) 그랩을 이용한 집단 채집, 2) 적재 용기를 이용한 효율적 이송, 3) 바닥판 슬라이딩 방식을 통한 원형 보존 투하</strong>를 포함하는 통합 프로세스를 권리 범위로 합니다. (청구항 1, 2 참조)
+                                     </p>
                                 </div>
                             </div>
                         )}
                     </main>
 
-                    <footer className="bg-slate-900 text-slate-400 py-12 mt-12 border-t border-slate-800">
-                        <div className="max-w-6xl mx-auto px-4 text-center">
-                            <p className="text-sm mb-8 max-w-2xl mx-auto">
-                                본 브로슈어는 업로드된 'AI 기반... 데이터 처리 방법 및 시스템' 명세서를 바탕으로 
-                                이해를 돕기 위해 제작된 디지털 자료입니다.
-                            </p>
-                            <div className="flex justify-center gap-4 text-xs">
-                                <span>&copy; 2025 Patent Visualization Assistant.</span>
-                            </div>
+                    <footer className="bg-slate-900 text-slate-400 py-10 mt-12 text-center text-sm border-t border-slate-800">
+                        <div className="max-w-6xl mx-auto px-4">
+                            <p className="mb-2">본 자료는 '잘피 집단 이식방법' 특허 명세서(10-1679735)를 시각화한 디지털 브로슈어입니다.</p>
+                            <p className="text-slate-500">&copy; 2025 Patent Visualization Assistant by Nan73Pro.</p>
                         </div>
                     </footer>
                 </div>
@@ -435,7 +365,7 @@
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<AISystem />);
+        root.render(<SeagrassSystem />);
     </script>
 </body>
 </html>
