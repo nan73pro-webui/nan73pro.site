@@ -1,6 +1,6 @@
 /* 1. 기본 테마(예: GitHub Light)를 먼저 불러옵니다. */
 /* 다크 모드를 원하시면 light.css 대신 dark.css로 바꾸세요 */
-@import url("https://giscus.app/themes/light.css");
+@import url("https://giscus.app/themes/dark.css");
 
 /* 2. 이제 숨기고 싶은 부분을 안 보이게 처리합니다. */
 
