@@ -1,8 +1,20 @@
-/* 댓글 개수와 'Powered by giscus'가 있는 헤더 숨기기 */
+/* 1. 기본 테마(예: GitHub Light)를 먼저 불러옵니다. */
+/* 다크 모드를 원하시면 light.css 대신 dark.css로 바꾸세요 */
+@import url("https://giscus.app/themes/light.css");
+
+/* 2. 이제 숨기고 싶은 부분을 안 보이게 처리합니다. */
+
+/* '반응 0개' 및 이모지 숨기기 */
+.gsc-reactions-count, .gsc-timeline {
+    display: none !important;
+}
+
+/* '댓글 0개' 헤더 텍스트 숨기기 */
 .gsc-header {
     display: none !important;
 }
-/* (혹시 1단계 안 하셨으면) 반응 부분도 숨기기 */
-.gsc-reactions-count, .gsc-timeline {
-    display: none !important;
+
+/* (선택) 댓글 입력창 테두리 등을 깔끔하게 다듬으려면 추가 */
+.gsc-comment-box {
+    border-top: none; 
 }
