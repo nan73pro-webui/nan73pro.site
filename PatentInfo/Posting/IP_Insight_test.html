@@ -254,14 +254,42 @@
         </div>
     </main>
 
+<style>
+  #cusdis_thread {
+    max-width: 800px;     /* 댓글창 최대 너비 (본문에 맞춰 조절 가능) */
+    margin: 60px auto;    /* 위아래 여백 60px, 좌우 중앙 정렬 */
+    padding: 0 20px;      /* 모바일에서 옆에 딱 붙지 않게 여백 줌 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+</style>
+
 <div id="cusdis_thread"
   data-host="https://cusdis.com"
   data-app-id="f41021fa-7c9e-47f2-9f9e-a17db7bf61ad"
   data-page-id="ip_insight_test"
   data-page-url="https://nan73pro.site/PatentInfo/Posting/IP_Insight_test.html"
   data-page-title="IP Insight 테스트"
+  data-theme="auto"
 ></div>
-<script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+
+<script defer src="https://cusdis.com/js/cusdis.es.js"></script>
+
+<script>
+  window.CUSDIS_LOCALE = {
+    "powered_by": "댓글 시스템 by Cusdis",
+    "post_comment": "댓글 등록",
+    "loading": "로딩 중...",
+    "email": "이메일 (선택사항)",
+    "nickname": "닉네임",
+    "reply_placeholder": "여기에 소중한 의견을 남겨주세요...",
+    "reply_btn": "답글 달기",
+    "sending": "전송 중...",
+    "mod_badge": "관리자",
+    "content_is_required": "내용을 입력해주세요.",
+    "nickname_is_required": "닉네임을 입력해주세요.",
+    "comment_has_been_sent": "댓글이 등록되었습니다. (관리자 승인 대기 중)"
+  }
+</script>
 
     <footer class="bg-[#0f172a] py-8 border-t border-white/10 text-center relative z-20">
         <div class="container mx-auto px-6">
