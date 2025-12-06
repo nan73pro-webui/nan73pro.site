@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특허 명세서 작성 마스터 가이드: 초보자를 위한 실전 전략 | Nan73Pro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0f172a', 800: '#1e293b' }, 
+                        tech: { blue: '#38bdf8', green: '#34d399' },
+                        // 기존 프리미엄 컬러 유지
+                        premium: { gold: '#d4af37' }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Noto Sans KR', sans-serif],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Nan73Pro Design System (IP_Insight_0013 기반 + 프리미엄 테마 추가) */
+        :root {
+            --color-primary: #1A3A5E;
+            --color-secondary: #007BFF;
+            --color-premium: #d4af37; /* 기존 콘텐츠의 프리미엄 컬러 */
+            --style-slow: #5D7992;
+            --style-fast: #FF7F32;
+            --style-fast-light: #FFF0E6;
+            --style-slow-light: #EFF4F8;
+        }
+
+        /* 썸네일 및 컨설팅 배너 (기존 스타일 유지 + 이미지 로딩 적용) */
+        .post-thumbnail {
+            width: 100%; height: auto; min-height: 280px; display: flex; justify-content: center; align-items: center;
+            overflow: hidden; border-bottom: 1px solid #eee; 
+            background: linear-gradient(135deg, var(--color-primary) 0%, #0f172a 100%);
+            color: white; text-align: center; flex-direction: column; position: relative;
+        }
+        .post-thumbnail img { max-width: 100%; height: auto; display: block; position: absolute; top:0; left:0; w-full h-full object-cover; z-index: 0; opacity: 0.3; }
+        .thumbnail-content { position: relative; z-index: 1; padding: 20px; }
+
+        .consulting-badge {
+            background-color: var(--color-premium); color: #0f172a; padding: 5px 15px;
+            border-radius: 20px; font-weight: 800; font-size: 0.9rem; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); display: inline-block;
+        }
+
+        /* 타이포그래피 (IP_Insight_0013 스타일 기반) */
+        .blog-content h1.post-title { 
+            font-size: 2.4rem; font-weight: 900; margin-bottom: 15px; 
+            line-height: 1.3; color: #111; letter-spacing: -1px; word-break: keep-all;
+        }
+        .blog-content .post-subtitle { 
+            font-size: 1.15rem; color: #555; margin-bottom: 40px; 
+            border-left: 5px solid var(--color-premium); padding: 15px; 
+            background-color: #f8f9fa; border-radius: 0 8px 8px 0;
+        }
+        
+        .article-body h2 {
+            font-size: 1.8rem; margin-top: 60px; margin-bottom: 25px; font-weight: 800;
+            color: var(--color-primary); display: flex; align-items: center; gap: 10px;
+        }
+        .article-body h3 { 
+            font-size: 1.5rem; margin-top: 40px; margin-bottom: 20px; 
+            font-weight: 700; color: #333; 
+            border-bottom: 2px solid #eee; padding-bottom: 10px; word-break: keep-all;
+        }
+        .article-body h4 {
+            font-size: 1.25rem; margin-top: 30px; margin-bottom: 10px;
+            font-weight: 700; color: #444; display: flex; align-items: center; gap: 8px;
+        }
+        .article-body p { 
+            margin-bottom: 1.5rem; font-size: 1.05rem; line-height: 1.8; 
+            color: #333; text-align: justify; word-break: keep-all; 
+        }
+        .highlight { font-weight: 700; background: linear-gradient(to top, #ffefc1 40%, transparent 40%); }
+        .premium-highlight { color: var(--color-premium); font-weight: 800; }
+
+        /* 카드 및 박스 스타일 (기존 스타일 유지) */
+        .info-box {
+            background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 25px; margin-bottom: 30px;
+        }
+        .info-box.premium {
+            background-color: #fffcf2; border: 1px solid var(--color-premium);
+        }
+        .badge {
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 700; margin-bottom: 8px;
+        }
+        .badge-navy { background: #e2e8f0; color: #1e293b; }
+        .badge-premium { background: var(--color-premium); color: #0f172a; }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+
+        /* 3단 비교 카드 (컨설팅 분석용 - 기존 스타일 유지) */
+        .grid-3-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 30px 0; }
+        .feature-card { 
+            background: white; border-radius: 12px; padding: 25px; 
+            border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            text-align: left; transition: all 0.3s ease;
+        }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .feature-icon { font-size: 2rem; margin-bottom: 15px; color: var(--color-secondary); }
+        .feature-title { font-weight: 800; margin-bottom: 10px; color: #333; font-size: 1.1rem; }
+        .feature-desc { font-size: 0.95rem; color: #666; line-height: 1.6; }
+        .step-number {
+            display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center;
+            background: var(--color-primary); color: white; border-radius: 50%; font-weight: bold; margin-right: 10px;
+        }
+
+        .card-list { padding-left: 20px; margin-top: 15px; text-align: left; }
+        .card-list li { margin-bottom: 10px; list-style-type: disc; font-size: 0.95rem; color: #444; }
+        .card-list li strong { color: var(--color-primary); }
+
+        /* 테이블 (체크리스트 - 기존 스타일 유지) */
+        .table-wrapper { overflow-x: auto; margin: 30px 0; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
+        .strategy-table { 
+            width: 100%; border-collapse: separate; border-spacing: 0; 
+            font-size: 0.95rem; min-width: 700px; 
+        }
+        .strategy-table th { 
+            background-color: var(--color-primary); color: white; padding: 18px; 
+            text-align: center; font-weight: 700; white-space: nowrap;
+        }
+        .strategy-table td { 
+            border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; 
+            padding: 18px; vertical-align: top; color: #333; 
+        }
+        .strategy-table tr:last-child td { border-bottom: none; }
+        .strategy-table tr td:last-child { border-right: none; }
+        
+        .col-category { background: #f8fafc; font-weight: 800; color: var(--color-primary); width: 20%; text-align: center; vertical-align: middle; }
+        .col-check { width: 60%; }
+        .col-tip { width: 20%; font-weight: 600; color: #5D7992; background: #f0f7ff; vertical-align: middle; text-align: center;}
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .grid-3-col { grid-template-columns: 1fr; }
+            .strategy-table { font-size: 0.85rem; }
+            .strategy-table th, .strategy-table td { padding: 12px 10px; }
+            .post-title { font-size: 1.8rem !important; }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans antialiased text-slate-800 selection:bg-[#d4af37] selection:text-[#0f172a] flex flex-col min-h-screen">
+
+    <nav class="fixed w-full z-50 bg-[#0f172a] border-b border-white/5 shadow-xl transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <a href="#" class="flex items-center gap-3 cursor-pointer group no-underline">
+                <div class="relative w-8 h-8 flex items-end justify-center">
+                    <div class="absolute bottom-0 left-0 w-3 h-3 bg-slate-600 rounded-sm skew-y-[-10deg] group-hover:bg-[#38bdf8]/50 transition-colors duration-300"></div>
+                    <div class="absolute bottom-2 left-2 w-3 h-3 bg-slate-400 rounded-sm skew-y-[-10deg] group-hover:bg-[#38bdf8] transition-colors duration-300"></div>
+                    <div class="absolute bottom-4 left-4 w-4 h-4 bg-gradient-to-tr from-[#38bdf8] to-[#34d399] rounded-sm skew-y-[-10deg] shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-white leading-none">Nan7<span class="text-[#38bdf8] font-light">3</span>Pro</span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2 md:gap-4">
+                <a href="https://blog.naver.com/nan-pro" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium no-underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Blog
+                </a><span class="text-white">|</span>
+                <a href="../../index.html#contact" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium no-underline">
+                    Contact<i class="fa-solid fa-comment"></i>
+                </a>
+            </div>
+
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-32 pb-20 px-4 relative z-10">
+        
+        <div class="bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] max-w-5xl mx-auto overflow-hidden blog-content border border-slate-200">
+            
+            <div class="post-thumbnail">
+                <img src="https://nan73pro.site/images/blog15.jpg" alt="특허 명세서 작성 가이드 배경" onerror="this.style.display='none';">
+                <div class="thumbnail-content">
+                    <div class="consulting-badge"><i class="fa-solid fa-award mr-2"></i>Premium IP Consulting Report</div>
+                    <h1 style="color:white; font-size: 2.5rem; font-weight:900; margin-bottom: 10px;">특허 명세서 작성 완전 정복</h1>
+                    <p style="color:#cbd5e1; font-size: 1.2rem;">업로드된 7종의 전문 자료 심층 분석을 통한 궁극의 가이드</p>
+                </div>
+            </div>
+
+            <div class="p-8 md:p-12 article-body">
+                <h1 class="post-title">내 발명을 강력한 법적 권리로 만드는 기술</h1>
+                <p class="post-subtitle"><b>문제 정의부터 최종 검증까지, 초보자를 위한 3단계 작성 프로세스</b></p>
+                
+                <p>안녕하세요. 당신의 아이디어를 최고의 자산으로 만들어드리는 <strong>Nan73Pro IP 컨설턴트</strong>입니다.</p>
+                <p>많은 분들이 좋은 아이디어를 가지고도 '특허 명세서'라는 높은 벽 앞에서 좌절합니다. 업로드해주신 방대한 분량의 특허청 가이드, 법령, 벤치마킹 자료들은 정보가 너무 많아 오히려 혼란을 주기도 합니다. 기술 문서이면서 동시에 법률 문서여야 하는 명세서의 이중적인 성격 때문입니다.</p>
+                <p>본 보고서는 제공된 모든 자료를 <strong>세계 최고 수준의 컨설팅 기준(10점 만점)</strong>으로 심층 분석하여, 누구나 따라 할 수 있는 <strong><span class="highlight">'최적화된 명세서 작성 3단계 프로세스'</span></strong>로 재구성했습니다. 이 글을 끝까지 읽으시면, 막막했던 명세서의 구조가 머릿속에 그려지고 당장 초안 작성을 시작할 수 있는 자신감을 얻게 될 것입니다.</p>
+
+                <div style="margin: 40px 0;">
+                    <h3 style="border:none; text-align:center; font-size:1.8rem; margin-bottom:30px;">Nan73Pro 3-Stage IP Process</h3>
+                    <div class="grid-3-col">
+                        <div class="feature-card" style="border-top: 4px solid var(--color-primary);">
+                            <i class="fa-solid fa-magnifying-glass-chart feature-icon"></i>
+                            <div class="feature-title"><span class="step-number">1</span>문제 정의 및 분석</div>
+                            <div class="feature-desc">발명의 핵심을 파악하고, 명세서 작성의 목적(기술 공개 vs 권리 획득)을 명확히 정의합니다. 기존 기술과의 차별점을 분석합니다.</div>
+                        </div>
+                        <div class="feature-card" style="border-top: 4px solid var(--color-secondary);">
+                            <i class="fa-solid fa-sitemap feature-icon"></i>
+                            <div class="feature-title"><span class="step-number">2</span>계획 및 수립 구조화</div>
+                            <div class="feature-desc">법적 요구사항을 충족하는 표준 목차를 수립하고, '청구항'을 중심으로 논리적인 작성 순서와 전략을 설계합니다.</div>
+                        </div>
+                        <div class="feature-card" style="border-top: 4px solid var(--color-premium);">
+                            <i class="fa-solid fa-clipboard-check feature-icon" style="color:var(--color-premium);"></i>
+                            <div class="feature-title"><span class="step-number">3</span>결과 검증 및 최적화</div>
+                            <div class="feature-desc">작성된 초안이 법적 요건(기재불비)을 피하고 강력한 권리 범위를 확보했는지 체크리스트를 통해 검증하고 다듬습니다.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2><i class="fa-solid fa-1"></i> 1단계: 문제 정의 및 분석 (마인드셋 셋팅)</h2>
+                <p>명세서 작성의 첫 단추는 '왜 쓰는가'를 이해하는 것입니다. 제공된 자료들은 공통적으로 명세서의 이중적 기능을 강조합니다. 이 균형을 맞추는 것이 핵심입니다.</p>
+
+                <div class="info-box premium">
+                    <span class="badge badge-premium"><i class="fa-solid fa-scale-balanced mr-2"></i>핵심 분석: 명세서의 두 가지 얼굴</span>
+                    <ul class="card-list">
+                        <li><strong>기술 문헌의 기능 (공개):</strong> 제3자(그 분야의 전문가)가 이 문서를 보고 발명을 재현할 수 있을 정도로 구체적이고 명확하게 기술 내용을 공개해야 합니다. (특허법 제42조 제3항 제1호)</li>
+                        <li><strong>권리 서류의 기능 (보호):</strong> 내가 독점하고 싶은 기술의 경계선(울타리)을 명확하게 글로 규정해야 합니다. 이것이 바로 '청구범위'입니다. (특허법 제42조 제4항)</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-weight: 700; color: var(--color-primary);">→ 결론: 너무 기술적인 내용에만 치우치면 권리가 좁아지고, 너무 추상적으로 권리만 주장하면 등록이 거절됩니다. 이 황금비율을 찾는 것이 목표입니다.</p>
+                </div>
+
+                <h3>발명의 핵(Core) 추출하기</h3>
+                <p>무턱대고 글을 쓰기 시작하면 안 됩니다. 먼저 내 발명을 한 문장으로 정의해 보세요. 기존에 있던 어떤 문제점(Pain Point)을 나의 어떤 독창적인 수단(Solution)으로 해결하여 어떤 효과(Benefit)를 얻었는가? 이 3단 논법이 명세서 전체를 관통하는 뼈대가 됩니다.</p>
+                <p><span class="highlight">Tip: '종래기술의 문제점 → 본 발명의 해결수단 → 발명의 효과'의 논리적 흐름이 끊기지 않아야 합니다.</span> (참고: 특허명세서-벤치마킹.pdf)</p>
+
+
+                <h2><i class="fa-solid fa-2"></i> 2단계: 계획 및 수립 구조화 (실전 작성 가이드)</h2>
+                <p>분석된 내용을 바탕으로 실제 명세서의 뼈대를 세우고 살을 붙이는 단계입니다. <strong>가장 중요한 전략은 '순서 뒤집기'입니다.</strong> 초보자는 1페이지부터 쓰는 것이 아니라, 가장 핵심인 '청구항'부터 설계해야 합니다.</p>
+
+                <h3>전략적 작성 순서 (Reverse Drafting)</h3>
+                <p>제공된 여러 가이드(명세서작성요령.pdf 등)를 종합해볼 때, 가장 효율적인 작성 순서는 다음과 같습니다. 이 순서를 따르면 논리적 오류를 줄일 수 있습니다.</p>
+                
+                <div class="grid-3-col" style="grid-template-columns: repeat(4, 1fr); gap:10px;">
+                    <div class="feature-card" style="padding:15px; text-align:center; background:#f0f9ff;">
+                        <div style="font-weight:800; color:var(--color-secondary); margin-bottom:5px;">STEP 1</div>
+                        <div style="font-weight:bold;">특허청구범위 설계</div>
+                        <div style="font-size:0.85rem; margin-top:5px;">권리의 울타리 먼저 치기</div>
+                    </div>
+                    <div class="feature-card" style="padding:15px; text-align:center; background:#f0f9ff;">
+                        <div style="font-weight:800; color:var(--color-secondary); margin-bottom:5px;">STEP 2</div>
+                        <div style="font-weight:bold;">발명의 설명 (상세)</div>
+                        <div style="font-size:0.85rem; margin-top:5px;">청구항을 뒷받침하는 구체적 내용</div>
+                    </div>
+                    <div class="feature-card" style="padding:15px; text-align:center; background:#f0f9ff;">
+                        <div style="font-weight:800; color:var(--color-secondary); margin-bottom:5px;">STEP 3</div>
+                        <div style="font-weight:bold;">발명의 설명 (개요)</div>
+                        <div style="font-size:0.85rem; margin-top:5px;">배경기술, 문제점, 해결수단 정리</div>
+                    </div>
+                    <div class="feature-card" style="padding:15px; text-align:center; background:#f0f9ff;">
+                        <div style="font-weight:800; color:var(--color-secondary); margin-bottom:5px;">STEP 4</div>
+                        <div style="font-weight:bold;">요약서 및 도면</div>
+                        <div style="font-size:0.85rem; margin-top:5px;">마무리 및 시각 자료 정리</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 50px;"></div>
+
+                <h4><span class="step-number">STEP 1</span>특허청구범위 (The Claims) - 명세서의 심장</h4>
+                <p>특허의 생명입니다. 내 땅의 경계선을 긋는 작업입니다. 여기서 사용된 단어 하나하나가 나중에 법적 분쟁 시 해석의 기준이 됩니다. (참고: 특허명세서작성 및 청구범위해석.hwp)</p>
+                <div class="info-box">
+                    <span class="badge badge-navy">작성 핵심 포인트</span>
+                    <ul class="card-list">
+                        <li><strong>독립항 (가장 넓은 울타리):</strong> 발명의 핵심 구성요소만 최소한으로 기재하여 가장 넓은 권리를 확보해야 합니다. 불필요한 한정어구는 절대 금물입니다.</li>
+                        <li><strong>종속항 (안전장치):</strong> 독립항의 구성요소를 구체화하거나 부가적인 특징을 추가하여, 독립항이 거절되더라도 방어할 수 있는 2차, 3차 방어선을 구축합니다.</li>
+                        <li><strong>명확성 원칙:</strong> '약간 높게', '적당히' 같은 애매한 표현은 피하고, 명확하고 간결한 기술 용어를 사용해야 합니다.</li>
+                    </ul>
+                </div>
+
+                <h4><span class="step-number">STEP 2</span>발명의 구체적인 설명 (Detailed Description)</h4>
+                <p>청구항에 적힌 내용을 '그 분야 종사자'가 읽고 실제로 만들 수 있을 정도로 친절하고 자세하게 설명하는 교과서입니다. <strong>가장 중요한 것은 청구항에 적힌 모든 구성요소가 여기서 구체적으로 설명되어야 한다는 점입니다.</strong></p>
+                <p>실시예(Example)를 풍부하게 기재하는 것이 좋습니다. 베스트 케이스뿐만 아니라 다양한 변형 케이스를 기재해야 권리 범위가 넓게 해석될 수 있습니다. 도면이 있다면 도면의 부호를 인용하며 설명하는 것이 원칙입니다.</p>
+
+                <h4><span class="step-number">STEP 3</span>발명의 설명 개요 (배경, 문제점, 해결수단, 효과)</h4>
+                <p>이제 앞부분을 채웁니다. 이 부분은 심사관에게 내 발명의 우수성을 설득하는 '제안서' 도입부와 같습니다.</p>
+                <ul class="card-list">
+                    <li><strong>배경기술:</strong> 내 발명과 가장 가까운 종래기술을 언급합니다. (너무 많이 적을 필요는 없습니다.)</li>
+                    <li><strong>해결하려는 과제:</strong> 그 종래기술이 가진 치명적인 단점이나 한계를 지적합니다.</li>
+                    <li><strong>과제의 해결 수단:</strong> 내 발명의 핵심 구성이 그 문제를 어떻게 해결하는지 요약합니다. (보통 독립항의 내용을 요약 기재합니다.)</li>
+                    <li><strong>발명의 효과:</strong> 내 발명으로 인해 얻게 되는 기술적, 경제적 이점을 구체적으로 자랑합니다.</li>
+                </ul>
+
+
+                <h2><i class="fa-solid fa-3"></i> 3단계: 결과 검증 및 최적화 (최종 체크리스트)</h2>
+                <p>초안 작성이 끝났다면, 이제 냉정한 평가자의 눈으로 검증해야 합니다. 제출 전 아래 체크리스트를 통해 치명적인 실수(기재불비)를 방지하고 명세서의 품질을 극대화하십시오.</p>
+
+                <div class="table-wrapper">
+                    <table class="strategy-table">
+                        <thead>
+                            <tr>
+                                <th>검증 영역</th>
+                                <th>체크 포인트 (Self-Check Question)</th>
+                                <th>최적화 팁 (Consultant Tip)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-category" rowspan="3">논리적<br>일관성</td>
+                                <td class="col-check">✅ [문제-해결-효과]의 흐름이 자연스러운가? 종래기술의 문제점이 본 발명에 의해 정확히 해결되었는가?</td>
+                                <td class="col-tip">3단 논법이 깨지면 발명의 진보성을 인정받기 어렵습니다.</td>
+                            </tr>
+                            <tr>
+                                <td class="col-check">✅ [청구항-상세설명]의 대응이 완벽한가? 청구항의 모든 구성요소가 상세설명에 구체적으로 기재되었는가?</td>
+                                <td class="col-tip">가장 흔한 거절 이유(기재불비)입니다. 1:1 대응을 꼭 확인하세요.</td>
+                            </tr>
+                            <tr>
+                                <td class="col-check">✅ [도면-설명] 도면에 표시된 모든 부호가 상세설명에서 빠짐없이 설명되었는가?</td>
+                                <td class="col-tip">도면 부호 누락은 치명적인 실수입니다.</td>
+                            </tr>
+                            <tr>
+                                <td class="col-category" rowspan="2">권리<br>범위</td>
+                                <td class="col-check">✅ 독립항에 불필요한 한정 사항(예: 재질, 색상, 수치 등)이 포함되어 권리가 지나치게 좁아지진 않았는가?</td>
+                                <td class="col-tip">핵심이 아니라면 과감히 삭제하거나 종속항으로 내리세요.</td>
+                            </tr>
+                            <tr>
+                                <td class="col-check">✅ 다양한 실시예와 변형예가 충분히 기재되어, 경쟁사의 회피 설계를 방지할 수 있는가?</td>
+                                <td class="col-tip">'~로 한정되는 것은 아니다'와 같은 표현을 전략적으로 사용하세요.</td>
+                            </tr>
+                            <tr>
+                                <td class="col-category">명확성</td>
+                                <td class="col-check">✅ 용어 사용이 통일되었는가? (같은 부품을 A라 불렀다 B라 불렀다 하지 않는가?)</td>
+                                <td class="col-tip">하나의 부품에는 하나의 명칭과 부호만 사용해야 합니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>마치며: 완벽함보다는 시작이 중요합니다</h3>
+                <p>특허 명세서 작성은 고도의 전문 영역이지만, 발명자 본인만큼 그 기술을 잘 아는 사람은 없습니다. 오늘 제시해 드린 <strong>[문제 정의 → 구조화 계획 → 결과 검증]</strong>의 3단계 프로세스를 따라 초안을 작성해 보십시오.</p>
+                <p>여러분이 작성한 충실한 초안은 향후 변리사와의 협업 시 시간과 비용을 획기적으로 줄이고, 훨씬 더 강력한 특허를 만드는 밑거름이 될 것입니다. 당신의 혁신을 응원합니다.</p>
+
+                <div style="border-bottom: 2px solid #eee; margin: 20px 0;"></div>
+                <div style="height:10px;"></div>
+
+                <script src="https://giscus.app/client.js"
+                        data-repo="nan73pro-webui/nan73pro.site"
+                        data-repo-id="R_kgDOQZfPvA"
+                        data-category="General"
+                        data-category-id="DIC_kwDOQZfPvM4CzdVd"
+                        data-mapping="pathname"
+                        data-strict="0"
+                        data-reactions-enabled="0"
+                        data-emit-metadata="0"
+                        data-input-position="bottom"
+                        data-theme="https://www.nan73pro.site/css/giscus_final.css"
+                        data-lang="ko"
+                        crossorigin="anonymous"
+                        async>
+                </script>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#0f172a] py-8 border-t border-white/10 text-center relative z-20">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-center items-center gap-3 text-slate-400 text-sm mb-5 font-medium" style="font-size: 14px;">
+                <a href="./IP_Insight_0014.html" class="hover:text-[#38bdf8] transition-colors">← 이전글</a>
+                <span class="text-slate-700">|</span>
+                <a href="./IP_Insight_0001.html" class="hover:text-[#38bdf8] transition-colors">처음글 →</a>
+            </div>
+            
+            <p class="text-2xl mb-5 font-bold text-white tracking-tight">
+                <a href="../../index.html" style="text-decoration: none; color: inherit;">Nan<span style="color: #6AD7FF">7</span><span style="color: #17C8C8">3</span>Pro.</a>
+            </p>
+
+            <p class="text-slate-600 text-sm">© 2025 Nan73Pro IP Consulting. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
