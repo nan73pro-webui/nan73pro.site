@@ -19,8 +19,20 @@
 .gsc-comment-box-textarea {
     border: 1px solid #0a0c10 !important;
 }
+
+/* 5. 버튼 디자인 수정 (요청하신 부분) */
 .gsc-button-primary {
-    background-color: #0a0c10 !important;
+    /* 배경색을 미리보기 탭과 같은 연한 회색으로 변경 (#f6f8fa는 깃허브 기본 탭 색상) */
+    background-color: #f6f8fa !important; 
+    
+    /* 테두리는 진한 검정 유지 */
     border-color: #0a0c10 !important;
-    color: #ffffff !important;
+    
+    /* 글자색을 검정으로 변경 */
+    color: #0a0c10 !important;
+}
+
+/* (선택사항) 마우스를 올렸을 때 약간 어둡게 처리하여 버튼임을 인식시킴 */
+.gsc-button-primary:hover {
+    background-color: #e1e4e8 !important;
 }
