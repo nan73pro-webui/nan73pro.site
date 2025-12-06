@@ -1,6 +1,6 @@
-/* giscus.css 파일 전체 내용 */
 @import url("https://giscus.app/themes/dark.css");
 
+/* 1. 사이트 테마 변수 재정의 (여기서 색상을 강제로 지정합니다) */
 main {
     --color-canvas-default: transparent !important;
     --color-canvas-subtle: #1e293b !important;
@@ -9,26 +9,33 @@ main {
     --color-fg-default: #f8fafc !important;
     --color-fg-muted: #94a3b8 !important;
     --color-accent-fg: #38bdf8 !important;
+    
+    /* [핵심] 버튼 색상 변수 강제 설정 */
+    --color-btn-primary-bg: #38bdf8 !important;
+    --color-btn-primary-border: #38bdf8 !important;
+    --color-btn-primary-text: #0f172a !important;
+    --color-btn-primary-hover-bg: #60a5fa !important;
+    --color-btn-primary-hover-border: #60a5fa !important;
 }
 
+/* 2. 상단 헤더 숨김 */
 .gsc-header, .gsc-reactions-count { display: none !important; }
 .gsc-timeline { display: block !important; }
 
+/* 3. 입력창 디자인 */
 .gsc-comment-box {
     background-color: #1e293b !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 0.75rem !important;
 }
-
 .gsc-comment-box:focus-within {
     border-color: #38bdf8 !important;
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.15) !important;
 }
-
 .gsc-comment-box-textarea { background-color: transparent !important; }
 
-/* 핵심: 버튼 색상 변경 (Tech Blue) */
-.gsc-button-primary {
+/* 4. [수정됨] 버튼 디자인 (이름을 gsc-btn-primary로 수정) */
+.gsc-btn-primary {
     background-color: #38bdf8 !important;
     border-color: #38bdf8 !important;
     color: #0f172a !important; 
@@ -37,13 +44,13 @@ main {
     transition: all 0.2s ease-in-out !important;
 }
 
-.gsc-button-primary:hover {
+.gsc-btn-primary:hover {
     background-color: #60a5fa !important;
     border-color: #60a5fa !important;
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.5) !important;
 }
 
-.gsc-button-primary:disabled {
+.gsc-btn-primary:disabled {
     background-color: #334155 !important;
     border-color: #334155 !important;
     color: #94a3b8 !important;
